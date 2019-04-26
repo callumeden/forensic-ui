@@ -1,19 +1,13 @@
 import APP_CONFIG from '../../../app.config';
+import { Node } from '../node'
 
-export class BlockNode implements d3.SimulationNodeDatum {
-	index?: number;
-  x?: number;
-  y?: number;
-  vx?: number;
-  vy?: number;
-  fx?: number | null;
-  fy?: number | null;
+export class BlockNode implements Node {
 
-	hash: number; 
+	id: string; 
 	linkCount: number = 0;
 
 	constructor(hash) {
-    this.hash = hash;
+    this.id = hash;
   }
 
   normal = () => {
