@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule }    from '@angular/common/http';
 
 import { D3Service, D3_DIRECTIVES } from './d3';
-
+import { MatListModule , MatCardModule } from '@angular/material';
 import { AppComponent } from './app.component';
 
 import { GraphComponent } from './visuals/graph/graph.component';
@@ -20,7 +20,9 @@ import { SHARED_VISUALS } from './visuals/shared';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatListModule,
+    MatCardModule
   ],
   providers: [D3Service],
   bootstrap: [AppComponent]

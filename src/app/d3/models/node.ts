@@ -12,4 +12,6 @@ export interface Node extends d3.SimulationNodeDatum {
 
   id: string;
   linkCount: number;
+  modelData;
+  displayText: string;
 }

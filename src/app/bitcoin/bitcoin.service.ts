@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Block } from './model/block'
+import { Block, Address } from './model'
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -13,12 +13,32 @@ export class BitcoinService {
 
   constructor(private http: HttpClient) { }
 
+  getAddresses(addresses: string[]) : Observable<Address>[] {
+  	let observables : Observable<Address>[] = [];
+  	addresses.forEach(address => observables.push(this.getAddress(address)));
+  	return observables;
+  }
+
+  getAddress(address: string) : Observable<Address> {
+  	return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress?address=" + address) 
+  	.pipe(
+  		tap(_ => console.info('got address')),
+      catchError(this.handleError<Address>('getBlock'))
+    );
+  }
+
+  getBlocks(hashes: string[]) : Observable<Block>[] {
+  	let observables : Observable<Block>[] = [];
+  	hashes.forEach(hash => observables.push(this.getBlock(hash)));
+  	return observables;
+  }
+
   getBlock(hash : string) : Observable<Block> {
   	return this.http.get<Block>(this.serviceDomain + "/bitcoin/getBlock?hash=" + hash) 
   	.pipe(
-  		tap(_ => console.info('fetched block')),
+  		tap(_ => console.info('success: fetched block')),
       catchError(this.handleError<Block>('getBlock'))
-    );;
+    );
   }
 
   private handleError<T> (operation = 'operation', result?: T) {

@@ -3,8 +3,10 @@ export * from './link-visual/link-visual.component';
 
 import { NodeVisualComponent } from './node-visual/node-visual.component';
 import { LinkVisualComponent } from './link-visual/link-visual.component';
+import { NodeDataVisualComponent} from './node-data-visual/node-data-visual.component';
 
 export const SHARED_VISUALS = [
     NodeVisualComponent,
-    LinkVisualComponent
+    LinkVisualComponent,
+    NodeDataVisualComponent
 ];

@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 const FORCES = {
   LINKS: 1 / 50,
   COLLISION: 1,
-  CHARGE: -1
+  CHARGE: -0.1
 }
 
 export class ForceDirectedGraph {
@@ -56,6 +56,16 @@ export class ForceDirectedGraph {
         .id(d => d['id'])
         .strength(FORCES.LINKS)
     );
+  }
+
+  addNodes(updatedNodes : Node[]) {
+    let currentNodes = new Set(this.nodes);
+    this.simulation.stop();
+
+    this.nodes = updatedNodes;
+
+    this.simulation.alphaTarget(0.3).restart();
+    this.initNodes();
   }
 
   initSimulation(options) {

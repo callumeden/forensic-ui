@@ -1,0 +1,10 @@
+<div class="node-data-wrap">
+	<mat-card *ngIf="(nodeData | json) != '{}'">
+		<mat-card-title>{{nodeData["displayText"]}}</mat-card-title>
+		<mat-card-content>
+			<mat-list dense>
+				<mat-list-item *ngFor="let key of keys();">{{key}} : {{nodeData.items[key]}}</mat-list-item>
+			</mat-list>
+		</mat-card-content>
+</mat-card>
+</div>

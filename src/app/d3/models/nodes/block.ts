@@ -1,13 +1,17 @@
 import APP_CONFIG from '../../../app.config';
 import { Node } from '../node'
+import { Block } from '../../../bitcoin/model';
 
 export class BlockNode implements Node {
 
 	id: string; 
-	linkCount: number = 0;
+	linkCount: number = 0; 
+  modelData : Block
+  displayText: string = "Block"
 
-	constructor(hash) {
+	constructor(hash: string, modelData : Block) {
     this.id = hash;
+    this.modelData = modelData;
   }
 
   normal = () => {
@@ -15,11 +19,11 @@ export class BlockNode implements Node {
   }
 
   get r() {
-    return 50 * this.normal() + 10;
+    return 50 * this.normal() + 30;
   }
 
   get fontSize() {
-    return (30 * this.normal() + 10) + 'px';
+    return (30 * this.normal() + 15) + 'px';
   }
 
   get color() {
