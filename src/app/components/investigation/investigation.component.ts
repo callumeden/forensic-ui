@@ -5,7 +5,6 @@ import { BitcoinService } from '../../bitcoin/bitcoin.service'
 import { InvestigationService } from './investigation.service';
 import { Block, Address, Output, Entity } from '../../bitcoin/model'
 import { Observable, of, forkJoin} from 'rxjs';
-import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 
 @Component({
   selector: 'investigation',
@@ -22,10 +21,8 @@ export class InvestigationComponent implements OnInit {
   nodesReady : boolean = false;
   subscriptions = [];
 
-  constructor(private router : Router,
-              private bitcoinService : BitcoinService, 
+  constructor(private bitcoinService : BitcoinService, 
               private investigationService: InvestigationService) {
-    this.listenForData();
   }
 
   ngOnDestroy() {
@@ -33,22 +30,7 @@ export class InvestigationComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.getBlocks()
-    // this.getAddresses()
-    const routerEventsSubscription = this.router.events.subscribe(this.handleRouterEvent);
-    this.subscriptions.push(routerEventsSubscription);
-  }
-
-  handleRouterEvent(event : Event) {
-    console.info('investigation component: nav event', event);
-    if (event instanceof NavigationStart) {
-      if (event.url != '/investigation') {
-        this.nodes = [];
-        this.links = [];
-
-      }
-      
-    }
+    this.listenForData();
   }
 
   listenForData() {
