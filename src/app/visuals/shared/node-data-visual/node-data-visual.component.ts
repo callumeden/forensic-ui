@@ -8,17 +8,23 @@ import { AppService } from '../../../app.service';
 })
 export class NodeDataVisualComponent implements OnInit {
 
-	private nodeData: {};
+	private nodeItems: {};
+	private nodeName: string;
 
 	constructor(private dataService: AppService) {
 	}
 
 	ngOnInit() {
-		this.dataService.currentMessage.subscribe(updatedData => {this.nodeData = updatedData});
+		this.dataService.currentMessage.subscribe(updatedData => {
+			this.nodeName = updatedData[0]; 
+			this.nodeItems = updatedData[1]});
 	}
 
 	keys() : Array<string> {
-    return Object.keys(this.nodeData.items);
+		if (this.nodeItems && this.nodeItems != '{}') {
+    	return Object.keys(this.nodeItems);
+		}
+		return [];
   }
 
 }

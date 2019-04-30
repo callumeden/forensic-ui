@@ -39,14 +39,11 @@ export class NodeVisualComponent implements AfterViewInit {
     let that = this;
 
     this.hoverTimeout = setTimeout(function () {
-      let displayData = {
-        'displayText' : that.node.displayText,
-        'items': {}
-      };
+      let displayData = {};
       for (let key in that.node.modelData) {
-        displayData.items[key] = that.node.modelData[key]
+        displayData[key] = that.node.modelData[key]
       }
-      that.dataService.changeMessage(displayData)
+      that.dataService.changeMessage(that.node.displayText, displayData)
     }, 500)
 	}
 
@@ -57,7 +54,7 @@ export class NodeVisualComponent implements AfterViewInit {
     this.d3Element.transition().duration(750).attr("r", this.originalRadius);
 
     this.hoverTimeout = setTimeout(function () {
-      that.dataService.changeMessage({})
+      that.dataService.changeMessage("", {})
     }, 500)
 
 	}

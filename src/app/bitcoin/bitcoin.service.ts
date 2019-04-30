@@ -13,6 +13,10 @@ export class BitcoinService {
 
   constructor(private http: HttpClient) { }
 
+  searchForAddress(address: string) {
+    return this.getAddress(address)
+  }
+
   getAddresses(addresses: string[]) : Observable<Address>[] {
   	let observables : Observable<Address>[] = [];
   	addresses.forEach(address => observables.push(this.getAddress(address)));

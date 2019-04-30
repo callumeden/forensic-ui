@@ -11,9 +11,8 @@ export class AppService {
 
 	constructor() { }
 
-	changeMessage(message : {}) {
-    this.messageSource.next(message)
+	changeMessage(nodeName: string, items : {}) {
+    this.messageSource.next([nodeName, items])
   }
-
 
 }

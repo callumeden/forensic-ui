@@ -1,0 +1,23 @@
+.address-search-form-wrap {
+	margin: auto;
+	margin-top: 15%;
+	margin: 20px;
+}
+.search-forms {
+	display: flex;
+  flex-direction: column;
+}
+.search-forms mat-form-field {
+	width: 100%;
+}
+
+.search-forms mat-card-actions {
+	text-align: center;
+}
+
+.loading-section {
+	display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
