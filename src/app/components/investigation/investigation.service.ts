@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Address } from '../../bitcoin/model';
 import { BehaviorSubject } from 'rxjs';
+import { Node } from '../../d3/models';
 
 @Injectable({
   providedIn: 'root'
@@ -14,4 +15,8 @@ export class InvestigationService {
 	provideAddressSearchResponse(response : Address) {
 		this.addressData.next(response)
 	} 
+
+	expandNeighbours(node : Node) {
+		debugger;
+	}
 }

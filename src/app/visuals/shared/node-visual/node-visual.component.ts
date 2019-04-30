@@ -1,6 +1,7 @@
 import { Component, Input, HostListener, ViewChild, AfterViewInit } from '@angular/core';
 import { Node} from '../../../d3';
 import { AppService } from '../../../app.service'
+import { InvestigationService} from '../../../components/investigation/investigation.service';
 
 import * as d3 from 'd3';
 
@@ -15,8 +16,9 @@ export class NodeVisualComponent implements AfterViewInit {
   private originalRadius: number;
   private d3Element;
   private hoverTimeout;
+  private isSingleClick : boolean;
 
-  constructor(private dataService : AppService) {}
+  constructor(private dataService : AppService, private investigationService: InvestigationService) {}
 
   ngAfterViewInit() {
   	this.d3Element = d3.select(this.nodeElement.nativeElement);
@@ -24,13 +26,28 @@ export class NodeVisualComponent implements AfterViewInit {
   }
 
   @HostListener("click") onClick(){
+    this.isSingleClick = true;
+    let that = this;
+    setTimeout(function() {
+      if (that.isSingleClick) {
+        that.handleSingleClick();
+      }
+    }, 250);
    
-    console.log("User Click using Host Listener")
   }
 
-  @HostListener("doubleClick") onDoubleClick(){
-  	
-    console.log("User DOUBLE Click using Host Listener")
+  @HostListener("dblclick") onDoubleClick(){
+    this.isSingleClick = false;
+    this.handleDoubleClick();
+    console.log("DOUBLE click on node");
+  }
+
+  handleSingleClick() {
+    console.log("Single click on node");
+  }
+
+  handleDoubleClick() {
+    this.investigationService.expandNeighbours(this.node);
   }
 
   @HostListener('mouseover') onMouseOver(d) {

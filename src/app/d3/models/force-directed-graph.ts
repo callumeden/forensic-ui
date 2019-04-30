@@ -98,6 +98,7 @@ export class ForceDirectedGraph {
             .radius(d => d['r'] + 5).iterations(2)
         );
 
+
       // Connecting the d3 ticker to an angular event emitter
       this.simulation.on('tick', function () {
         ticker.emit(this);
