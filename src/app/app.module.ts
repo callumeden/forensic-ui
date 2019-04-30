@@ -15,7 +15,7 @@ import { SHARED_VISUALS } from './visuals/shared';
 
 const appRoutes: Routes = [
 {path: 'investigation', component: InvestigationComponent},
-{path: '', redirectTo: '/investigation', pathMatch: 'full'},
+{path: '', redirectTo: '/search', pathMatch: 'full'},
 {path: 'search', component: SearchComponent}
 ]
 

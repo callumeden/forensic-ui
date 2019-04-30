@@ -68,6 +68,16 @@ export class ForceDirectedGraph {
     this.initNodes();
   }
 
+  addLinks(updatedLinks : Link[]) {
+    let currentLinks = new Set(this.links);
+    this.simulation.stop();
+
+    this.links = updatedLinks;
+
+    this.simulation.alphaTarget(0.3).restart();
+    this.initLinks();
+  }
+
   initSimulation(options) {
     if (!options || !options.width || !options.height) {
       throw new Error('missing options when initializing simulation');

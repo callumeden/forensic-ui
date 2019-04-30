@@ -42,7 +42,9 @@ export class GraphComponent implements OnChanges {
       this.graph.initSimulation(this.options)
     } else {
       this.graph.addNodes(this.stagingNodes);
+      this.graph.addLinks(this.stagingLinks);
       this.nodes = this.stagingNodes;
+      this.links = this.stagingLinks;
     }
 
     console.info('changee ', changes)
