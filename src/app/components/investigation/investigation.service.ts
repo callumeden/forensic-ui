@@ -8,10 +8,10 @@ import { BehaviorSubject } from 'rxjs';
 export class InvestigationService {
 
 	private addressData = new BehaviorSubject(null);
+	currentAddressData = this.addressData.asObservable();
 
 
 	provideAddressSearchResponse(response : Address) {
 		this.addressData.next(response)
-		debugger;
 	} 
 }

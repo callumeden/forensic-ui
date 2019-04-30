@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import APP_CONFIG from '../../app.config';
-import { Node, Link, BlockNode, AddressNode } from '../../d3';
+import { Node, Link, BlockNode, AddressNode, OutputNode } from '../../d3';
 import { BitcoinService } from '../../bitcoin/bitcoin.service'
 import { InvestigationService } from './investigation.service';
-import { Block, Address } from '../../bitcoin/model'
+import { Block, Address, Output } from '../../bitcoin/model'
 import { Observable, of, forkJoin} from 'rxjs';
 
 
@@ -42,8 +42,19 @@ export class InvestigationComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getBlocks()
-    this.getAddresses()
+    // this.getBlocks()
+    // this.getAddresses()
+    this.listenForData();
+  }
+
+  listenForData() {
+    this.investigationService.currentAddressData.subscribe(addressData => {
+      if (addressData) {
+        this.createOutputNodes(addressData.outputs);
+        this.createAddressNodes([addressData]);
+        this.nodesReady = true;
+      }
+    });
   }
 
   getAddresses() : void {
@@ -61,6 +72,18 @@ export class InvestigationComponent implements OnInit {
        console.info('pushing address', data);
        this.nodes.push(new AddressNode(data.address, data));
        this.changes ++;
+
+       data.outputs.forEach(output => {
+         this.links.push(new Link(data.address, output.outputId));
+       }, this)
+    }, this);
+  }
+
+  createOutputNodes(outputData : Output[]) {
+    outputData.forEach(data => {
+      console.info('pushing output data', data);
+      this.nodes.push(new OutputNode(data))
+      this.changes ++;
     }, this);
   }
 

@@ -41,8 +41,7 @@ const appRoutes: Routes = [
     MatProgressBarModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(
-      appRoutes,
-      { enableTracing: true } // <-- debugging purposes only
+      appRoutes
     )
   ],
   providers: [D3Service],
