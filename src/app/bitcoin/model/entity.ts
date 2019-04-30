@@ -1,3 +1,6 @@
+import { Address } from './address';
+
 export interface Entity {
-	name: string
+	name: string;
+	usesAddresses: Address[];
 }

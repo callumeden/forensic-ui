@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Address, Output } from '../../bitcoin/model';
 import { BehaviorSubject } from 'rxjs';
-import { Node, TransactionNode, OutputNode } from '../../d3/models';
+import { Node, TransactionNode, OutputNode, EntityNode } from '../../d3/models';
 import {BitcoinService} from '../../bitcoin/bitcoin.service';
 
 @Injectable({
@@ -18,6 +18,9 @@ export class InvestigationService {
 	private transactionData = new BehaviorSubject(null);
 	currentTransactionData = this.transactionData.asObservable();
 
+	private entityData = new BehaviorSubject(null);
+	currentEntityData = this.entityData.asObservable();
+
 	constructor(private bitcoinService : BitcoinService) {}
 
 	provideAddressSearchResponse(response : Address) {
@@ -31,6 +34,10 @@ export class InvestigationService {
 
 		if (node instanceof OutputNode) {
 			this.expandOutputNodeNeighbours(node);
+		}
+
+		if (node instanceof EntityNode) {
+			this.expandEntityNodeNeighbours(node);
 		}
 	}
 
@@ -48,6 +55,14 @@ export class InvestigationService {
 				this.outputData.next(output);
 			}
 		});
+	}
+
+	private expandEntityNodeNeighbours(node : EntityNode) {
+		this.bitcoinService.getEntity(node.modelData.name).subscribe(entity => {
+			if (entity) {
+				this.entityData.next(entity);
+			}
+		})
 	}
 
 }

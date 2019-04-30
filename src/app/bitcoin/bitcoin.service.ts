@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Block, Address, Output, Transaction } from './model'
+import { Block, Address, Output, Transaction, Entity } from './model'
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -58,6 +58,14 @@ export class BitcoinService {
   	.pipe(
   		tap(_ => console.info('success: fetched block')),
       catchError(this.handleError<Block>('getBlock'))
+    );
+  }
+
+  getEntity(name : string) : Observable<Entity> {
+    return this.http.get<Entity>(this.serviceDomain + "/bitcoin/getEntity?name=" + name)
+    .pipe(
+      tap(_ => console.info('success: fetched block')),
+      catchError(this.handleError<Entity>('getBlock'))
     );
   }
 

@@ -6,5 +6,5 @@ export interface Address {
 
   outputs: Output[];
 
-  entities: Entity[];
+  entity: Entity;
 }

@@ -20,6 +20,7 @@ export class InvestigationComponent implements OnInit {
   addressIds: Set<String> = new Set();
   transactionIds: Set<String> = new Set();
   blockHashes: Set<String> = new Set();
+  entityIds: Set<String> = new Set();
   changes: number = 0;
   blockData: Block;
   nodesReady : boolean = false;
@@ -40,8 +41,9 @@ export class InvestigationComponent implements OnInit {
   listenForData() {
     const addressSubscription = this.investigationService.currentAddressData.subscribe(addressData => {
       if (addressData) {
+        debugger;
         this.createOutputNodes(addressData.outputs);
-        this.createEntityNodes(addressData.entities);
+        this.createEntityNode(addressData.entity);
         this.createAddressNodes([addressData]);
         this.changes++;
         this.nodesReady = true;
@@ -63,10 +65,20 @@ export class InvestigationComponent implements OnInit {
         this.createTransactionNode(transactionData);
         this.changes++;
       }
+    });
+
+    const entitySubscription = this.investigationService.currentEntityData.subscribe(entityData => {
+      if (entityData) {
+        this.createAddressNodes(entityData.usesAddresses);
+        this.createEntityNode(entityData);
+        this.changes ++;
+      }
     })
 
     this.subscriptions.push(addressSubscription);
     this.subscriptions.push(outputSubscription);
+    this.subscriptions.push(transactionSubscription);
+    this.subscriptions.push(entitySubscription);
   }
 
   getAddresses() : void {
@@ -96,10 +108,8 @@ export class InvestigationComponent implements OnInit {
 
         }
 
-        if (data.entities) {
-          data.entities.forEach(entity => {
-            this.links.push(new Link(data.address, entity.name));
-          })
+        if (data.entity) {
+          this.links.push(new Link(data.address, data.entity.name));
         }
       }
 
@@ -140,13 +150,22 @@ export class InvestigationComponent implements OnInit {
     }
   }
 
-  createEntityNodes(entityData: Entity[]) {
+  createEntityNode(entityData: Entity) {
     if (!entityData) {
       return;
     }
-    entityData.forEach(data => {
-      this.nodes.push(new EntityNode(data));
-    }, this);
+
+    if (!this.entityIds.has(entityData.name)) {
+      this.nodes.push(new EntityNode(entityData));
+      this.entityIds.add(entityData.name);
+    }
+
+    if (entityData.usesAddresses) {
+      entityData.usesAddresses.forEach(address => {
+        this.links.push(new Link(entityData.name, address.address));
+      });
+    }
+    
   }
 
   createBlockNode(blockData : Block) {
