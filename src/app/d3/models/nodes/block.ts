@@ -27,7 +27,7 @@ export class BlockNode implements Node {
   }
 
   get color() {
-    let index = Math.floor(APP_CONFIG.SPECTRUM.length * this.normal());
-    return APP_CONFIG.SPECTRUM[index];
+    let index = Math.floor(APP_CONFIG.BLOCK_SPECTRUM.length * this.normal());
+    return APP_CONFIG.BLOCK_SPECTRUM[index];
   }
 }

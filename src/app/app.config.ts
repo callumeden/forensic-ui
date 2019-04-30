@@ -1,6 +1,6 @@
 const CONFIG = {
   N : 100,
-  SPECTRUM: [
+  BLOCK_SPECTRUM: [
     // "rgb(222,237,250)"
     "rgb(176,212,243)",
     "rgb(128,186,236)",
@@ -39,6 +39,9 @@ const CONFIG = {
     "rgb(102, 255, 255)",//70
     "rgb(77, 255, 255)",//65
     "rgb(51, 255, 255)"//60
+  ],
+  COINBASE_SPECTRUM: [
+    "rgb(194, 194, 214)"//80
   ]
 }
 

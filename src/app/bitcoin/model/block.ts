@@ -1,4 +1,5 @@
 import { Transaction } from './transaction';
+import { Coinbase } from './coinbase'; 
 export interface Block {
   hash: string;
   prevBlockHash: string;
@@ -12,4 +13,6 @@ export interface Block {
   child: Block;
 
   minedTransactions: Transaction[];
+
+  coinbase: Coinbase;
 }
