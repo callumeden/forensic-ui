@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import APP_CONFIG from '../../app.config';
-import { Node, Link, BlockNode, AddressNode, OutputNode, EntityNode } from '../../d3';
+import { Node, Link, BlockNode, AddressNode, OutputNode, EntityNode, TransactionNode } from '../../d3';
 import { BitcoinService } from '../../bitcoin/bitcoin.service'
 import { InvestigationService } from './investigation.service';
-import { Block, Address, Output, Entity } from '../../bitcoin/model'
+import { Block, Address, Output, Entity, Transaction } from '../../bitcoin/model'
 import { Observable, of, forkJoin} from 'rxjs';
 
 @Component({
@@ -16,6 +16,10 @@ export class InvestigationComponent implements OnInit {
 
   nodes: Node[] = [];
   links: Link[] = [];
+  outputIds: Set<string> = new Set();
+  addressIds: Set<String> = new Set();
+  transactionIds: Set<String> = new Set();
+
   changes: number = 0;
   blockData: Block;
   nodesReady : boolean = false;
@@ -39,10 +43,21 @@ export class InvestigationComponent implements OnInit {
         this.createOutputNodes(addressData.outputs);
         this.createEntityNodes(addressData.entities);
         this.createAddressNodes([addressData]);
+        this.changes++;
         this.nodesReady = true;
       }
     });
+
+    const outputSubscription = this.investigationService.currentOutputData.subscribe(outputData => {
+      if (outputData){
+        this.createTransactionNode(outputData.producedByTransaction);
+        this.createOutputNodes([outputData]);
+        this.changes++;
+      }
+    })
+
     this.subscriptions.push(addressSubscription);
+    this.subscriptions.push(outputSubscription);
   }
 
   getAddresses() : void {
@@ -59,23 +74,26 @@ export class InvestigationComponent implements OnInit {
 
   createAddressNodes(allAddressData : Address[]) {
     allAddressData.forEach(data => {
-       console.info('pushing address', data);
-       this.nodes.push(new AddressNode(data.address, data));
 
-       if (data.outputs) {
-         data.outputs.forEach(output => {
-           this.links.push(new Link(data.address, output.outputId));
-         }, this)
+      if (!this.addressIds.has(data.address)) {
+        this.addressIds.add(data.address);
+        console.info('pushing address', data);
+        this.nodes.push(new AddressNode(data.address, data));
 
-       }
+        if (data.outputs) {
+          data.outputs.forEach(output => {
+            this.links.push(new Link(data.address, output.outputId));
+          }, this)
 
-       if (data.entities) {
-         data.entities.forEach(entity => {
-           this.links.push(new Link(data.address, entity.name));
-         })
-       }
+        }
 
-       this.changes ++;
+        if (data.entities) {
+          data.entities.forEach(entity => {
+            this.links.push(new Link(data.address, entity.name));
+          })
+        }
+      }
+
     }, this);
   }
 
@@ -84,10 +102,27 @@ export class InvestigationComponent implements OnInit {
       return;
     }
     outputData.forEach(data => {
-      console.info('pushing output data', data);
-      this.nodes.push(new OutputNode(data))
-      this.changes ++;
+      if (!this.outputIds.has(data.outputId)){
+        console.info('pushing output data', data);
+        this.outputIds.add(data.outputId);
+        this.nodes.push(new OutputNode(data))
+      }
+
+      if (data.producedByTransaction) {
+        this.links.push(new Link(data.outputId, data.producedByTransaction.transactionId));
+      }
+
     }, this);
+
+  }
+
+  createTransactionNode(transactionData : Transaction) {
+    if (!transactionData || this.transactionIds.has(transactionData.transactionId)) {
+      return;
+    }
+
+    this.nodes.push(new TransactionNode(transactionData));
+    this.transactionIds.add(transactionData.transactionId);
   }
 
   createEntityNodes(entityData: Entity[]) {
@@ -96,7 +131,6 @@ export class InvestigationComponent implements OnInit {
     }
     entityData.forEach(data => {
       this.nodes.push(new EntityNode(data));
-      this.changes ++;
     }, this);
   }
 
