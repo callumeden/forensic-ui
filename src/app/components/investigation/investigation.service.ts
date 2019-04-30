@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Address, Output } from '../../bitcoin/model';
 import { BehaviorSubject } from 'rxjs';
-import { Node, TransactionNode, OutputNode, EntityNode } from '../../d3/models';
+import { Node, TransactionNode, OutputNode, EntityNode, AddressNode, BlockNode } from '../../d3/models';
 import {BitcoinService} from '../../bitcoin/bitcoin.service';
 
 @Injectable({
@@ -20,6 +20,9 @@ export class InvestigationService {
 
 	private entityData = new BehaviorSubject(null);
 	currentEntityData = this.entityData.asObservable();
+	
+	private blockData = new BehaviorSubject(null);
+	currentBlockData = this.blockData.asObservable();
 
 	constructor(private bitcoinService : BitcoinService) {}
 
@@ -38,6 +41,14 @@ export class InvestigationService {
 
 		if (node instanceof EntityNode) {
 			this.expandEntityNodeNeighbours(node);
+		}
+
+		if (node instanceof AddressNode) {
+			this.expandAddressNodeNeighbours(node);
+		}
+
+		if (node instanceof BlockNode) {
+			this.expandBlockNodeNeighbours(node);
 		}
 	}
 
@@ -61,6 +72,22 @@ export class InvestigationService {
 		this.bitcoinService.getEntity(node.modelData.name).subscribe(entity => {
 			if (entity) {
 				this.entityData.next(entity);
+			}
+		})
+	}
+
+	private expandAddressNodeNeighbours(node : AddressNode) {
+		this.bitcoinService.getAddress(node.modelData.address).subscribe(address => {
+			if (address) {
+				this.addressData.next(address);
+			}
+		})
+	}
+
+	private expandBlockNodeNeighbours(node : BlockNode) {
+		this.bitcoinService.getBlock(node.modelData.hash).subscribe(block => {
+			if (block) {
+				this.blockData.next(block);
 			}
 		})
 	}

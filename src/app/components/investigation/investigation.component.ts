@@ -41,7 +41,6 @@ export class InvestigationComponent implements OnInit {
   listenForData() {
     const addressSubscription = this.investigationService.currentAddressData.subscribe(addressData => {
       if (addressData) {
-        debugger;
         this.createOutputNodes(addressData.outputs);
         this.createEntityNode(addressData.entity);
         this.createAddressNodes([addressData]);
@@ -73,12 +72,23 @@ export class InvestigationComponent implements OnInit {
         this.createEntityNode(entityData);
         this.changes ++;
       }
-    })
+    });
+
+    const blockSubscription = this.investigationService.currentBlockData.subscribe(blockData => {
+      if (blockData) {
+        this.createBlockNode(blockData);
+        this.createBlockNode(blockData.parent);
+        this.createBlockNode(blockData.child);
+        this.createTransactionNodes(blockData.minedTransactions);
+        this.changes++;
+      }
+    });
 
     this.subscriptions.push(addressSubscription);
     this.subscriptions.push(outputSubscription);
     this.subscriptions.push(transactionSubscription);
     this.subscriptions.push(entitySubscription);
+    this.subscriptions.push(blockSubscription);
   }
 
   getAddresses() : void {
@@ -100,17 +110,17 @@ export class InvestigationComponent implements OnInit {
         this.addressIds.add(data.address);
         console.info('pushing address', data);
         this.nodes.push(new AddressNode(data.address, data));
+      }
 
-        if (data.outputs) {
-          data.outputs.forEach(output => {
-            this.links.push(new Link(data.address, output.outputId));
-          }, this)
+      if (data.outputs) {
+        data.outputs.forEach(output => {
+          this.links.push(new Link(data.address, output.outputId));
+        }, this)
 
-        }
+      }
 
-        if (data.entity) {
-          this.links.push(new Link(data.address, data.entity.name));
-        }
+      if (data.entity) {
+        this.links.push(new Link(data.address, data.entity.name));
       }
 
     }, this);
@@ -133,6 +143,12 @@ export class InvestigationComponent implements OnInit {
 
     }, this);
 
+  }
+
+  createTransactionNodes(transactionDataArray : Transaction[]) {
+    if (transactionDataArray) {
+      transactionDataArray.forEach(transaction => this.createTransactionNode(transaction));
+    }
   }
 
   createTransactionNode(transactionData : Transaction) {
@@ -169,12 +185,28 @@ export class InvestigationComponent implements OnInit {
   }
 
   createBlockNode(blockData : Block) {
-    if (!blockData || this.blockHashes.has(blockData.hash)) {
+    if (!blockData) {
       return;
     }
+    if (!this.blockHashes.has(blockData.hash)) {
+      this.nodes.push(new BlockNode(blockData));
+      this.blockHashes.add(blockData.hash);
+    }
 
-    this.nodes.push(new BlockNode(blockData));
-    this.blockHashes.add(blockData.hash);
+    if (blockData.child) {
+      this.links.push(new Link(blockData.hash, blockData.child.hash));
+    }
+
+    if (blockData.parent) {
+      this.links.push(new Link(blockData.hash, blockData.parent.hash));
+    }
+
+    if (blockData.minedTransactions) {
+      blockData.minedTransactions.forEach(transaction => {
+        this.links.push(new Link(blockData.hash, transaction.transactionId));
+      })
+    }
+    
   }
 
   getBlocks(): void {

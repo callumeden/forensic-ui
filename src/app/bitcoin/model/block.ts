@@ -1,3 +1,4 @@
+import { Transaction } from './transaction';
 export interface Block {
   hash: string;
   prevBlockHash: string;
@@ -6,4 +7,9 @@ export interface Block {
   gbp: number;
   usd: number;
   eur: number;
+
+  parent: Block;
+  child: Block;
+
+  minedTransactions: Transaction[];
 }
