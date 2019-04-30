@@ -19,7 +19,7 @@ export class InvestigationComponent implements OnInit {
   outputIds: Set<string> = new Set();
   addressIds: Set<String> = new Set();
   transactionIds: Set<String> = new Set();
-
+  blockHashes: Set<String> = new Set();
   changes: number = 0;
   blockData: Block;
   nodesReady : boolean = false;
@@ -52,6 +52,15 @@ export class InvestigationComponent implements OnInit {
       if (outputData){
         this.createTransactionNode(outputData.producedByTransaction);
         this.createOutputNodes([outputData]);
+        this.changes++;
+      }
+    });
+
+
+    const transactionSubscription = this.investigationService.currentTransactionData.subscribe(transactionData => {
+      if (transactionData) {
+        this.createBlockNode(transactionData.minedInBlock);
+        this.createTransactionNode(transactionData);
         this.changes++;
       }
     })
@@ -117,12 +126,18 @@ export class InvestigationComponent implements OnInit {
   }
 
   createTransactionNode(transactionData : Transaction) {
-    if (!transactionData || this.transactionIds.has(transactionData.transactionId)) {
+    if (!transactionData ) {
       return;
     }
 
-    this.nodes.push(new TransactionNode(transactionData));
-    this.transactionIds.add(transactionData.transactionId);
+    if (!this.transactionIds.has(transactionData.transactionId)) {
+      this.nodes.push(new TransactionNode(transactionData));
+      this.transactionIds.add(transactionData.transactionId);
+    }
+
+    if (transactionData.minedInBlock) {
+      this.links.push(new Link(transactionData.transactionId, transactionData.minedInBlock.hash));
+    }
   }
 
   createEntityNodes(entityData: Entity[]) {
@@ -132,6 +147,15 @@ export class InvestigationComponent implements OnInit {
     entityData.forEach(data => {
       this.nodes.push(new EntityNode(data));
     }, this);
+  }
+
+  createBlockNode(blockData : Block) {
+    if (!blockData || this.blockHashes.has(blockData.hash)) {
+      return;
+    }
+
+    this.nodes.push(new BlockNode(blockData));
+    this.blockHashes.add(blockData.hash);
   }
 
   getBlocks(): void {
@@ -158,7 +182,7 @@ export class InvestigationComponent implements OnInit {
 
   createBlockNodes(allBlocksData : Block[]) {
     allBlocksData.forEach(function (blockData) {
-        this.nodes.push(new BlockNode(blockData.hash, blockData));
+        this.nodes.push(new BlockNode(blockData));
     }, this)
   }
 

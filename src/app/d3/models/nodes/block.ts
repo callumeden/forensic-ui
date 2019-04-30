@@ -9,8 +9,8 @@ export class BlockNode implements Node {
   modelData : Block
   displayText: string = "Block"
 
-	constructor(hash: string, modelData : Block) {
-    this.id = hash;
+	constructor(modelData : Block) {
+    this.id = modelData.hash;
     this.modelData = modelData;
   }
 
