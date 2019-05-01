@@ -35,7 +35,9 @@ export class InvestigationComponent implements OnInit {
   coinbaseIds: Set<String> = new Set();
   linksBegin : Set<String> = new Set();
   linksEnd : Set<String> = new Set();
+  nodeLookup : Map<String, Node>  = new Map();
   changes: number = 0;
+  pendingLinkUpdates: Map<string, number> = new Map();
   subscriptions = [];
 
   constructor(private bitcoinService : BitcoinService, 
@@ -58,7 +60,7 @@ export class InvestigationComponent implements OnInit {
         this.createOutputNodes(addressData.outputs);
         this.createEntityNode(addressData.entity);
         this.createAddressNodes([addressData]);
-        this.changes++;
+        this.finaliseUpdate();
       }
     });
 
@@ -67,7 +69,7 @@ export class InvestigationComponent implements OnInit {
         this.createTransactionNode(outputData.producedByTransaction);
         this.createAddressNodes([outputData.lockedToAddress]);
         this.createOutputNodes([outputData]);
-        this.changes++;
+        this.finaliseUpdate();
       }
     });
 
@@ -78,7 +80,7 @@ export class InvestigationComponent implements OnInit {
         this.createOutputNodes(transactionData.inputs);
         this.createBlockNode(transactionData.minedInBlock);
         this.createTransactionNode(transactionData);
-        this.changes++;
+        this.finaliseUpdate();
       }
     });
 
@@ -94,10 +96,10 @@ export class InvestigationComponent implements OnInit {
       if (blockData) {
         this.createTransactionNodes(blockData.minedTransactions);
         this.createCoinbaseNode(blockData.coinbase);
-        this.createBlockNode(blockData);
         this.createBlockNode(blockData.parent);
         this.createBlockNode(blockData.child);
-        this.changes++;
+        this.createBlockNode(blockData);
+        this.finaliseUpdate();
       }
     });
 
@@ -105,7 +107,7 @@ export class InvestigationComponent implements OnInit {
       if (coinbaseData) {
         this.createBlockNode(coinbaseData.block);
         this.createCoinbaseNode(coinbaseData);
-        this.changes++;
+        this.finaliseUpdate();
       }
     })
 
@@ -117,13 +119,26 @@ export class InvestigationComponent implements OnInit {
     this.subscriptions.push(coinbaseSubscription);
   }
 
-  createAddressNodes(allAddressData : Address[]) {
-    allAddressData.forEach(data => {
+  private finaliseUpdate() {
+    let map = this.pendingLinkUpdates.keys()
+    
+    this.pendingLinkUpdates.forEach((count:number, id:string) => {
+      let nodeToUpdate = this.nodeLookup.get(id);
+      nodeToUpdate.linkCount = nodeToUpdate.linkCount + count;
+    })
+    this.pendingLinkUpdates = new Map();
+    this.changes++;
+  }
 
+  createAddressNodes(allAddressData : Address[]) {
+
+    allAddressData.forEach(data => {
       if (!this.addressIds.has(data.address)) {
         this.addressIds.add(data.address);
         console.info('pushing address', data);
-        this.nodes.push(new AddressNode(data.address, data));
+        let newAddressNode = new AddressNode(data.address, data)
+        this.nodes.push(newAddressNode);
+        this.nodeLookup.set(data.address, newAddressNode);
       }
 
       if (data.outputs) {
@@ -148,7 +163,9 @@ export class InvestigationComponent implements OnInit {
       if (!this.outputIds.has(data.outputId)){
         console.info('pushing output data', data);
         this.outputIds.add(data.outputId);
-        this.nodes.push(new OutputNode(data))
+        let newOutputNode = new OutputNode(data)
+        this.nodes.push(newOutputNode)
+        this.nodeLookup.set(data.outputId, newOutputNode);
       }
 
       if (data.producedByTransaction) {
@@ -174,8 +191,10 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (!this.transactionIds.has(transactionData.transactionId)) {
-      this.nodes.push(new TransactionNode(transactionData));
+      let newTransactionNode = new TransactionNode(transactionData)
+      this.nodes.push(newTransactionNode);
       this.transactionIds.add(transactionData.transactionId);
+      this.nodeLookup.set(transactionData.transactionId, newTransactionNode);
     }
 
     if (transactionData.minedInBlock) {
@@ -199,8 +218,10 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (!this.entityIds.has(entityData.name)) {
-      this.nodes.push(new EntityNode(entityData));
+      let newEntityNode = new EntityNode(entityData)
+      this.nodes.push(newEntityNode);
       this.entityIds.add(entityData.name);
+      this.nodeLookup.set(entityData.name, newEntityNode);
     }
 
     if (entityData.usesAddresses) {
@@ -216,8 +237,10 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (!this.blockHashes.has(blockData.hash)) {
-      this.nodes.push(new BlockNode(blockData));
+      let newBlockNode = new BlockNode(blockData)
+      this.nodes.push(newBlockNode);
       this.blockHashes.add(blockData.hash);
+      this.nodeLookup.set(blockData.hash, newBlockNode);
     }
 
     if (blockData.child) {
@@ -245,8 +268,10 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (!this.coinbaseIds.has(coinbaseData.coinbaseId)) {
-      this.nodes.push(new CoinbaseNode(coinbaseData));
+      let newCoinbaseNode = new CoinbaseNode(coinbaseData)
+      this.nodes.push(newCoinbaseNode);
       this.coinbaseIds.add(coinbaseData.coinbaseId);
+      this.nodeLookup.set(coinbaseData.coinbaseId, newCoinbaseNode);
     }
 
     if (coinbaseData.block) {
@@ -262,6 +287,17 @@ export class InvestigationComponent implements OnInit {
     this.links.push(new Link(sourceId, targetId, label));
     this.linksBegin.add(sourceId);
     this.linksEnd.add(targetId);
+    this.updateLinkCounts(sourceId);
+    this.updateLinkCounts(targetId);
+  }
+
+  private updateLinkCounts(id:string) {
+    if (this.pendingLinkUpdates.has(id)) {
+      let currentCount = this.pendingLinkUpdates.get(id);
+      this.pendingLinkUpdates.set(id, currentCount + 1);
+    } else {
+      this.pendingLinkUpdates.set(id, 1);
+    }
   }
   
 }
