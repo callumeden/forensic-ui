@@ -33,6 +33,8 @@ export class InvestigationComponent implements OnInit {
   blockHashes: Set<String> = new Set();
   entityIds: Set<String> = new Set();
   coinbaseIds: Set<String> = new Set();
+  linksBegin : Set<String> = new Set();
+  linksEnd : Set<String> = new Set();
   changes: number = 0;
   subscriptions = [];
 
@@ -126,13 +128,13 @@ export class InvestigationComponent implements OnInit {
 
       if (data.outputs) {
         data.outputs.forEach(output => {
-          this.links.push(new Link(data.address, output.outputId, LinkLabel.LOCKED_TO));
+          this.createNewLink(output.outputId, data.address, LinkLabel.LOCKED_TO);
         }, this)
 
       }
 
       if (data.entity) {
-        this.links.push(new Link(data.address, data.entity.name, LinkLabel.HAS_ENTITY));
+        this.createNewLink(data.address, data.entity.name, LinkLabel.HAS_ENTITY);
       }
 
     }, this);
@@ -150,11 +152,11 @@ export class InvestigationComponent implements OnInit {
       }
 
       if (data.producedByTransaction) {
-        this.links.push(new Link(data.outputId, data.producedByTransaction.transactionId, LinkLabel.OUTPUTS));
+        this.createNewLink(data.producedByTransaction.transactionId, data.outputId, LinkLabel.OUTPUTS);
       }
 
       if (data.lockedToAddress) {
-        this.links.push(new Link(data.outputId, data.lockedToAddress.address, LinkLabel.LOCKED_TO));
+        this.createNewLink(data.outputId, data.lockedToAddress.address, LinkLabel.LOCKED_TO);
       }
 
     }, this);
@@ -177,17 +179,17 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (transactionData.minedInBlock) {
-      this.links.push(new Link(transactionData.transactionId, transactionData.minedInBlock.hash, LinkLabel.MINED_IN));
+      this.createNewLink(transactionData.transactionId, transactionData.minedInBlock.hash, LinkLabel.MINED_IN);
     }
 
     if (transactionData.inputs) {
       transactionData.inputs.forEach(input => {
-        this.links.push(new Link(transactionData.transactionId, input.outputId, LinkLabel.INPUTS));
+        this.createNewLink(transactionData.transactionId, input.outputId, LinkLabel.INPUTS);
       })
     }
 
     if (transactionData.coinbaseInput) {
-      this.links.push(new Link(transactionData.transactionId, transactionData.coinbaseInput.coinbaseId, LinkLabel.INPUTS));
+      this.createNewLink(transactionData.coinbaseInput.coinbaseId, transactionData.transactionId,  LinkLabel.INPUTS);
     }
   }
 
@@ -203,7 +205,7 @@ export class InvestigationComponent implements OnInit {
 
     if (entityData.usesAddresses) {
       entityData.usesAddresses.forEach(address => {
-        this.links.push(new Link(entityData.name, address.address, LinkLabel.HAS_ENTITY));
+        this.createNewLink(address.address, entityData.name, LinkLabel.HAS_ENTITY);
       });
     }
   }
@@ -219,21 +221,21 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (blockData.child) {
-      this.links.push(new Link(blockData.hash, blockData.child.hash, LinkLabel.CHAINED_FROM));
+      this.createNewLink(blockData.child.hash, blockData.hash, LinkLabel.CHAINED_FROM);
     }
 
     if (blockData.parent) {
-      this.links.push(new Link(blockData.hash, blockData.parent.hash, LinkLabel.CHAINED_FROM));
+      this.createNewLink(blockData.hash, blockData.parent.hash, LinkLabel.CHAINED_FROM);
     }
 
     if (blockData.minedTransactions) {
       blockData.minedTransactions.forEach(transaction => {
-        this.links.push(new Link(blockData.hash, transaction.transactionId, LinkLabel.MINED_IN));
+        this.createNewLink(transaction.transactionId, blockData.hash, LinkLabel.MINED_IN);
       })
     }
 
     if (blockData.coinbase) {
-      this.links.push(new Link(blockData.hash, blockData.coinbase.coinbaseId, LinkLabel.COINBASE));
+      this.createNewLink(blockData.hash, blockData.coinbase.coinbaseId, LinkLabel.COINBASE);
     }
   }
 
@@ -248,8 +250,18 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (coinbaseData.block) {
-      this.links.push(new Link(coinbaseData.coinbaseId, coinbaseData.block.hash, LinkLabel.COINBASE));
+      this.createNewLink(coinbaseData.block.hash, coinbaseData.coinbaseId, LinkLabel.COINBASE);
     }
+  }
+
+  private createNewLink(sourceId : string, targetId: string, label : LinkLabel) {
+    if (this.linksBegin.has(sourceId) && this.linksEnd.has(targetId)) {
+      console.info('dupe detected');
+      return;
+    }
+    this.links.push(new Link(sourceId, targetId, label));
+    this.linksBegin.add(sourceId);
+    this.linksEnd.add(targetId);
   }
   
 }

@@ -1,7 +1,16 @@
 <svg:g>
+
+<svg:defs>
+
+  <marker id="arrow" viewBox="0 -5 10 10" refX="25" refY="0" markerWidth="10" markerHeight="10" orient="auto">
+      <path d="M0,-5L10,0L0,5" class="arrow-head" />
+    </marker>
+
+</svg:defs>
+
 <svg:line
         class="link"
-        fill="#A5ABB6"
+        marker-end="url(#arrow)"
         [attr.x1]="link.source.x"
         [attr.y1]="link.source.y"
         [attr.x2]="link.target.x"
