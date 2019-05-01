@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Block, Address, Output, Transaction, Entity } from './model'
+import { Block, Address, Output, Transaction, Entity, Coinbase} from './model'
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -27,7 +27,7 @@ export class BitcoinService {
   	return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress?address=" + address) 
   	.pipe(
   		tap(_ => console.info('got address')),
-      catchError(this.handleError<Address>('getBlock'))
+      catchError(this.handleError<Address>('getAddress'))
     );
   }
 
@@ -35,7 +35,7 @@ export class BitcoinService {
     return this.http.get<Output>(this.serviceDomain + "/bitcoin/getOutput?id=" + outputId)
     .pipe(
       tap(_ => console.info('got output')),
-      catchError(this.handleError<Output>('Get output'))
+      catchError(this.handleError<Output>('getOutput'))
     );
   }
 
@@ -65,7 +65,15 @@ export class BitcoinService {
     return this.http.get<Entity>(this.serviceDomain + "/bitcoin/getEntity?name=" + name)
     .pipe(
       tap(_ => console.info('success: fetched block')),
-      catchError(this.handleError<Entity>('getBlock'))
+      catchError(this.handleError<Entity>('getEntity'))
+    );
+  }
+
+  getCoinbase(coinbaseId: string) : Observable<Coinbase> {
+    return this.http.get<Coinbase>(this.serviceDomain + "/bitcoin/getCoinbase?id=" + coinbaseId)
+    .pipe(
+      tap(_ => console.info('success: fetched block')),
+      catchError(this.handleError<Coinbase>('getCoinbase'))
     );
   }
 

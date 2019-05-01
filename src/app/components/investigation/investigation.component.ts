@@ -36,10 +36,10 @@ export class InvestigationComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.listenForData();
+    this.createNewDataSubscriptions();
   }
 
-  listenForData() {
+  createNewDataSubscriptions() {
     const addressSubscription = this.investigationService.currentAddressData.subscribe(addressData => {
       if (addressData) {
         this.createOutputNodes(addressData.outputs);
@@ -61,6 +61,8 @@ export class InvestigationComponent implements OnInit {
 
     const transactionSubscription = this.investigationService.currentTransactionData.subscribe(transactionData => {
       if (transactionData) {
+        this.createCoinbaseNode(transactionData.coinbaseInput);
+        this.createOutputNodes(transactionData.inputs);
         this.createBlockNode(transactionData.minedInBlock);
         this.createTransactionNode(transactionData);
         this.changes++;
@@ -85,6 +87,14 @@ export class InvestigationComponent implements OnInit {
         this.changes++;
       }
     });
+
+    const coinbaseSubscription = this.investigationService.currentCoinbaseData.subscribe(coinbaseData => {
+      if (coinbaseData) {
+        this.createBlockNode(coinbaseData.block);
+        this.createCoinbaseNode(coinbaseData);
+        this.changes++;
+      }
+    })
 
     this.subscriptions.push(addressSubscription);
     this.subscriptions.push(outputSubscription);
@@ -166,6 +176,16 @@ export class InvestigationComponent implements OnInit {
     if (transactionData.minedInBlock) {
       this.links.push(new Link(transactionData.transactionId, transactionData.minedInBlock.hash));
     }
+
+    if (transactionData.inputs) {
+      transactionData.inputs.forEach(input => {
+        this.links.push(new Link(transactionData.transactionId, input.outputId));
+      })
+    }
+
+    if (transactionData.coinbaseInput) {
+      this.links.push(new Link(transactionData.transactionId, transactionData.coinbaseInput.coinbaseId));
+    }
   }
 
   createEntityNode(entityData: Entity) {
@@ -226,6 +246,9 @@ export class InvestigationComponent implements OnInit {
       this.coinbaseIds.add(coinbaseData.coinbaseId);
     }
 
+    if (coinbaseData.block) {
+      this.links.push(new Link(coinbaseData.coinbaseId, coinbaseData.block.hash));
+    }
   }
 
   

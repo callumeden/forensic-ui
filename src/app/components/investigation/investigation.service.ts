@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Address, Output } from '../../bitcoin/model';
 import { BehaviorSubject } from 'rxjs';
-import { Node, TransactionNode, OutputNode, EntityNode, AddressNode, BlockNode } from '../../d3/models';
+import { Node, TransactionNode, OutputNode, EntityNode, AddressNode, BlockNode, CoinbaseNode } from '../../d3/models';
 import {BitcoinService} from '../../bitcoin/bitcoin.service';
 
 @Injectable({
@@ -23,6 +23,9 @@ export class InvestigationService {
 	
 	private blockData = new BehaviorSubject(null);
 	currentBlockData = this.blockData.asObservable();
+
+	private coinbaseData = new BehaviorSubject(null);
+	currentCoinbaseData = this.coinbaseData.asObservable();
 
 	constructor(private bitcoinService : BitcoinService) {}
 
@@ -49,6 +52,10 @@ export class InvestigationService {
 
 		if (node instanceof BlockNode) {
 			this.expandBlockNodeNeighbours(node);
+		}
+
+		if (node instanceof CoinbaseNode) {
+			this.expandCoinbaseNodeNeighbours(node);
 		}
 	}
 
@@ -88,6 +95,14 @@ export class InvestigationService {
 		this.bitcoinService.getBlock(node.modelData.hash).subscribe(block => {
 			if (block) {
 				this.blockData.next(block);
+			}
+		})
+	}
+
+	private expandCoinbaseNodeNeighbours(node : CoinbaseNode) {
+		this.bitcoinService.getCoinbase(node.modelData.coinbaseId).subscribe(coinbase => {
+			if (coinbase) {
+				this.coinbaseData.next(coinbase);
 			}
 		})
 	}
