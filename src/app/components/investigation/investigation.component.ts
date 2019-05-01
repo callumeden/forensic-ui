@@ -7,12 +7,22 @@ import { Block, Address, Output, Entity, Transaction, Coinbase } from '../../bit
 import { Observable, of, forkJoin} from 'rxjs';
 import { Router } from '@angular/router';
 
+enum LinkLabel {
+  CHAINED_FROM="CHAINED_FROM",
+  COINBASE="COINBASE",
+  HAS_ENTITY="HAS_ENTITY",
+  INPUTS="INPUTS",
+  LOCKED_TO="LOCKED_TO",
+  MINED_IN="MINED_IN",
+  OUTPUTS="OUTPUTS"
+}
+
+
 @Component({
   selector: 'investigation',
   templateUrl: './investigation.component.html',
   styleUrls: ['./investigation.component.css']
 })
-
 export class InvestigationComponent implements OnInit {
 
   nodes: Node[] = [];
@@ -116,13 +126,13 @@ export class InvestigationComponent implements OnInit {
 
       if (data.outputs) {
         data.outputs.forEach(output => {
-          this.links.push(new Link(data.address, output.outputId));
+          this.links.push(new Link(data.address, output.outputId, LinkLabel.LOCKED_TO));
         }, this)
 
       }
 
       if (data.entity) {
-        this.links.push(new Link(data.address, data.entity.name));
+        this.links.push(new Link(data.address, data.entity.name, LinkLabel.HAS_ENTITY));
       }
 
     }, this);
@@ -140,11 +150,11 @@ export class InvestigationComponent implements OnInit {
       }
 
       if (data.producedByTransaction) {
-        this.links.push(new Link(data.outputId, data.producedByTransaction.transactionId));
+        this.links.push(new Link(data.outputId, data.producedByTransaction.transactionId, LinkLabel.OUTPUTS));
       }
 
       if (data.lockedToAddress) {
-        this.links.push(new Link(data.outputId, data.lockedToAddress.address));
+        this.links.push(new Link(data.outputId, data.lockedToAddress.address, LinkLabel.LOCKED_TO));
       }
 
     }, this);
@@ -167,17 +177,17 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (transactionData.minedInBlock) {
-      this.links.push(new Link(transactionData.transactionId, transactionData.minedInBlock.hash));
+      this.links.push(new Link(transactionData.transactionId, transactionData.minedInBlock.hash, LinkLabel.MINED_IN));
     }
 
     if (transactionData.inputs) {
       transactionData.inputs.forEach(input => {
-        this.links.push(new Link(transactionData.transactionId, input.outputId));
+        this.links.push(new Link(transactionData.transactionId, input.outputId, LinkLabel.INPUTS));
       })
     }
 
     if (transactionData.coinbaseInput) {
-      this.links.push(new Link(transactionData.transactionId, transactionData.coinbaseInput.coinbaseId));
+      this.links.push(new Link(transactionData.transactionId, transactionData.coinbaseInput.coinbaseId, LinkLabel.INPUTS));
     }
   }
 
@@ -193,7 +203,7 @@ export class InvestigationComponent implements OnInit {
 
     if (entityData.usesAddresses) {
       entityData.usesAddresses.forEach(address => {
-        this.links.push(new Link(entityData.name, address.address));
+        this.links.push(new Link(entityData.name, address.address, LinkLabel.HAS_ENTITY));
       });
     }
   }
@@ -209,21 +219,21 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (blockData.child) {
-      this.links.push(new Link(blockData.hash, blockData.child.hash));
+      this.links.push(new Link(blockData.hash, blockData.child.hash, LinkLabel.CHAINED_FROM));
     }
 
     if (blockData.parent) {
-      this.links.push(new Link(blockData.hash, blockData.parent.hash));
+      this.links.push(new Link(blockData.hash, blockData.parent.hash, LinkLabel.CHAINED_FROM));
     }
 
     if (blockData.minedTransactions) {
       blockData.minedTransactions.forEach(transaction => {
-        this.links.push(new Link(blockData.hash, transaction.transactionId));
+        this.links.push(new Link(blockData.hash, transaction.transactionId, LinkLabel.MINED_IN));
       })
     }
 
     if (blockData.coinbase) {
-      this.links.push(new Link(blockData.hash, blockData.coinbase.coinbaseId));
+      this.links.push(new Link(blockData.hash, blockData.coinbase.coinbaseId, LinkLabel.COINBASE));
     }
   }
 
@@ -238,7 +248,7 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (coinbaseData.block) {
-      this.links.push(new Link(coinbaseData.coinbaseId, coinbaseData.block.hash));
+      this.links.push(new Link(coinbaseData.coinbaseId, coinbaseData.block.hash, LinkLabel.COINBASE));
     }
   }
   

@@ -1,7 +1,16 @@
+<svg:g>
 <svg:line
         class="link"
+        fill="#A5ABB6"
         [attr.x1]="link.source.x"
         [attr.y1]="link.source.y"
         [attr.x2]="link.target.x"
-        [attr.y2]="link.target.y"
-></svg:line>
+        [attr.y2]="link.target.y">
+</svg:line>
+
+<svg:text
+        class="link-label"
+        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2) + ',' + ((link.source.y + link.target.y)/2) + ')'">
+        {{link.type}}
+</svg:text>
+</svg:g>
