@@ -44,7 +44,6 @@ export class ForceDirectedGraph {
   }
 
   addNodes(updatedNodes : Node[]) {
-    let currentNodes = new Set(this.nodes);
     this.simulation.stop();
 
     this.nodes = updatedNodes;
@@ -57,7 +56,6 @@ export class ForceDirectedGraph {
   }
 
   addLinks(updatedLinks : Link[]) {
-    let currentLinks = new Set(this.links);
     this.simulation.stop();
 
     this.links = updatedLinks;
