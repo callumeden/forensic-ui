@@ -27,11 +27,20 @@ export class InvestigationService {
 	private coinbaseData = new BehaviorSubject(null);
 	currentCoinbaseData = this.coinbaseData.asObservable();
 
-	constructor(private bitcoinService : BitcoinService) {}
-
 	provideAddressSearchResponse(response : Address) {
 		this.addressData.next(response)
 	} 
+
+	constructor(private bitcoinService : BitcoinService) {}
+
+	cleanData() {
+		this.addressData.next(null);
+		this.outputData.next(null);
+		this.transactionData.next(null);
+		this.entityData.next(null);
+		this.blockData.next(null);
+		this.coinbaseData.next(null)
+	}
 
 	expandNeighbours(node : Node) {
 		if (node instanceof TransactionNode) {

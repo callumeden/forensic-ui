@@ -31,6 +31,7 @@ export class InvestigationComponent implements OnInit {
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.investigationService.cleanData();
   }
 
   ngOnInit() {
@@ -50,6 +51,7 @@ export class InvestigationComponent implements OnInit {
     const outputSubscription = this.investigationService.currentOutputData.subscribe(outputData => {
       if (outputData){
         this.createTransactionNode(outputData.producedByTransaction);
+        this.createAddressNodes([outputData.lockedToAddress]);
         this.createOutputNodes([outputData]);
         this.changes++;
       }
@@ -98,6 +100,7 @@ export class InvestigationComponent implements OnInit {
     this.subscriptions.push(transactionSubscription);
     this.subscriptions.push(entitySubscription);
     this.subscriptions.push(blockSubscription);
+    this.subscriptions.push(coinbaseSubscription);
   }
 
   createAddressNodes(allAddressData : Address[]) {
@@ -138,8 +141,11 @@ export class InvestigationComponent implements OnInit {
         this.links.push(new Link(data.outputId, data.producedByTransaction.transactionId));
       }
 
-    }, this);
+      if (data.lockedToAddress) {
+        this.links.push(new Link(data.outputId, data.lockedToAddress.address));
+      }
 
+    }, this);
   }
 
   createTransactionNodes(transactionDataArray : Transaction[]) {
@@ -188,7 +194,6 @@ export class InvestigationComponent implements OnInit {
         this.links.push(new Link(entityData.name, address.address));
       });
     }
-    
   }
 
   createBlockNode(blockData : Block) {
@@ -218,7 +223,6 @@ export class InvestigationComponent implements OnInit {
     if (blockData.coinbase) {
       this.links.push(new Link(blockData.hash, blockData.coinbase.coinbaseId));
     }
-    
   }
 
   createCoinbaseNode(coinbaseData : Coinbase) {
