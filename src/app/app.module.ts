@@ -12,10 +12,11 @@ import { AppComponent } from './app.component'
 import { GraphComponent } from './visuals/graph/graph.component';
 import { SearchComponent } from './components/search/search.component';
 import { SHARED_VISUALS } from './visuals/shared';
+import { InvestigationGuard } from './components/investigation/investigaiton-guard.service';
 
 const appRoutes: Routes = [
-{path: 'investigation', component: InvestigationComponent},
-{path: '', redirectTo: '/search', pathMatch: 'full'},
+{path: 'investigation', component: InvestigationComponent, canActivate: [InvestigationGuard]},
+{path: '**', redirectTo: '/search', pathMatch: 'full'},
 {path: 'search', component: SearchComponent}
 ]
 

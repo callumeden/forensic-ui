@@ -27,13 +27,17 @@ export class InvestigationService {
 	private coinbaseData = new BehaviorSubject(null);
 	currentCoinbaseData = this.coinbaseData.asObservable();
 
+	investigationActive : boolean = false;
+
 	provideAddressSearchResponse(response : Address) {
+		this.investigationActive = true;
 		this.addressData.next(response)
 	} 
 
 	constructor(private bitcoinService : BitcoinService) {}
 
 	cleanData() {
+		this.investigationActive = false;
 		this.addressData.next(null);
 		this.outputData.next(null);
 		this.transactionData.next(null);

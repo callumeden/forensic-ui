@@ -5,6 +5,7 @@ import { BitcoinService } from '../../bitcoin/bitcoin.service'
 import { InvestigationService } from './investigation.service';
 import { Block, Address, Output, Entity, Transaction, Coinbase } from '../../bitcoin/model'
 import { Observable, of, forkJoin} from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'investigation',
@@ -26,7 +27,8 @@ export class InvestigationComponent implements OnInit {
   subscriptions = [];
 
   constructor(private bitcoinService : BitcoinService, 
-              private investigationService: InvestigationService) {
+              private investigationService: InvestigationService,
+              private router: Router) {
   }
 
   ngOnDestroy() {
