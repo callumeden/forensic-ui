@@ -23,8 +23,6 @@ export class InvestigationComponent implements OnInit {
   entityIds: Set<String> = new Set();
   coinbaseIds: Set<String> = new Set();
   changes: number = 0;
-  blockData: Block;
-  nodesReady : boolean = false;
   subscriptions = [];
 
   constructor(private bitcoinService : BitcoinService, 
@@ -46,7 +44,6 @@ export class InvestigationComponent implements OnInit {
         this.createEntityNode(addressData.entity);
         this.createAddressNodes([addressData]);
         this.changes++;
-        this.nodesReady = true;
       }
     });
 
@@ -101,18 +98,6 @@ export class InvestigationComponent implements OnInit {
     this.subscriptions.push(transactionSubscription);
     this.subscriptions.push(entitySubscription);
     this.subscriptions.push(blockSubscription);
-  }
-
-  getAddresses() : void {
-    let addressObservables : Observable<Address>[] = 
-      this.bitcoinService.getAddresses(["1DEwdHYmo8q6AhSHG7UgxEjttNMFdw9e7u", "1AQ2m6GH78oLgZYCdueUb4Zjxg1L6BkHZM", "1KzvBTUbdwNBXiTkzr1msFUtPf7Vu2zLiu"])
-
-    const addressObservablesSubscription = forkJoin(addressObservables).subscribe(allAddressData => {
-      console.info('success')
-      this.createAddressNodes(allAddressData);
-    });
-
-    this.subscriptions.push(addressObservablesSubscription);
   }
 
   createAddressNodes(allAddressData : Address[]) {
@@ -250,9 +235,5 @@ export class InvestigationComponent implements OnInit {
       this.links.push(new Link(coinbaseData.coinbaseId, coinbaseData.block.hash));
     }
   }
-
-  
-
- 
   
 }
