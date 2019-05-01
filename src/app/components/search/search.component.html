@@ -13,6 +13,8 @@
       <mat-card-actions>
         <button type="submit" mat-raised-button color="primary">Search</button>
       </mat-card-actions>
+      <mat-error *ngIf="invalidAddress">{{errorMessage}}</mat-error>
+
 
       <section class="loading-section">
       <mat-progress-bar

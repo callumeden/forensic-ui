@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { BitcoinService } from '../../bitcoin/bitcoin.service'
 import { InvestigationService } from '../investigation/investigation.service'
 import {Router} from '@angular/router';
+import { Address } from '../../bitcoin/model';
 
 @Component({
   selector: 'search',
@@ -18,19 +19,34 @@ export class SearchComponent {
 	}
 
 	private waitingOnResponse : Boolean;
-
+	invalidAddress : boolean = false;
+	errorMessage : string;
 	onAddressSearch(form : NgForm) {
 		if (form.valid) {
 			this.waitingOnResponse = true;
 			console.info('fetching address data', form.value.address)
-			this.bitcoinService.searchForAddress(form.value.address).subscribe(response => {
-				this.investigationService.provideAddressSearchResponse(response);
-				this.router.navigateByUrl('/investigation');
-				this.waitingOnResponse = false;
-			})
+			this.bitcoinService.searchForAddress(form.value.address).subscribe(
+
+				(response : Address) => {
+					this.investigationService.provideAddressSearchResponse(response);
+					this.router.navigateByUrl('/investigation');
+					this.waitingOnResponse = false;
+				},
+
+				error => {
+					this.invalidAddress = true;
+					let errorText = typeof(error.error) == 'string' ? error.error : error.statusText;
+					this.errorMessage = "Something went wrong... Status : " + error.status + ", " + errorText;
+					console.error('address search got error', error);
+					this.waitingOnResponse = false;
+				}
+
+
+			)
 			return;
 		}
 		console.error('bad form input')
 		
 	}	
+
 }

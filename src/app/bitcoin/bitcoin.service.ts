@@ -26,8 +26,7 @@ export class BitcoinService {
   getAddress(address: string) : Observable<Address> {
   	return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress?address=" + address) 
   	.pipe(
-  		tap(_ => console.info('got address')),
-      catchError(this.handleError<Address>('getAddress'))
+  		tap(_ => console.info('got address'))
     );
   }
 
