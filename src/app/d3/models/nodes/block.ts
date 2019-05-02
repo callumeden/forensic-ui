@@ -8,6 +8,7 @@ export class BlockNode implements Node {
 	linkCount: number = 0; 
   modelData : Block
   displayText: string = "Block"
+  totalLinksInGraph : number = 0;
 
 	constructor(modelData : Block) {
     this.id = modelData.hash;

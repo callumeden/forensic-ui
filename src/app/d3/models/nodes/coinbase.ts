@@ -8,6 +8,7 @@ export class CoinbaseNode implements Node {
 	linkCount: number = 0;
   modelData : Coinbase
   displayText: string = "Coinbase"
+  totalLinksInGraph : number = 0;
 
 	constructor(modelData: Coinbase) {
     this.id = modelData.coinbaseId;

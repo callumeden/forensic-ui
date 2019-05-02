@@ -8,6 +8,7 @@ export class EntityNode implements Node {
 	linkCount: number = 0;
   modelData : Entity
   displayText: string = "Entity"
+  totalLinksInGraph : number = 0;
 
 	constructor(modelData: Entity) {
     this.id = modelData.name;

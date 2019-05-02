@@ -39,6 +39,7 @@ export class InvestigationComponent implements OnInit {
   changes: number = 0;
   pendingLinkUpdates: Map<string, number> = new Map();
   subscriptions = [];
+  totalLinkCount: number = 0;
 
   constructor(private bitcoinService : BitcoinService, 
               private investigationService: InvestigationService,
@@ -121,12 +122,20 @@ export class InvestigationComponent implements OnInit {
 
   private finaliseUpdate() {
     let map = this.pendingLinkUpdates.keys()
-    
     this.pendingLinkUpdates.forEach((count:number, id:string) => {
       let nodeToUpdate = this.nodeLookup.get(id);
       nodeToUpdate.linkCount = nodeToUpdate.linkCount + count;
-    })
+      this.totalLinkCount += count;
+    });
+
     this.pendingLinkUpdates = new Map();
+
+    this.nodeLookup.forEach((node: Node, id: string) => {
+      //the total link count is always double the real link count as its the sum of link 
+      //counts for src and dest node, but too much work to keep track, so div 2 will do it. 
+      node.totalLinksInGraph = this.totalLinkCount / 2;
+    });
+
     this.changes++;
   }
 
@@ -161,7 +170,6 @@ export class InvestigationComponent implements OnInit {
     }
     outputData.forEach(data => {
       if (!this.outputIds.has(data.outputId)){
-        console.info('pushing output data', data);
         this.outputIds.add(data.outputId);
         let newOutputNode = new OutputNode(data)
         this.nodes.push(newOutputNode)
@@ -296,6 +304,7 @@ export class InvestigationComponent implements OnInit {
   }
 
   private updateLinkCounts(id:string) {
+
     if (this.pendingLinkUpdates.has(id)) {
       let currentCount = this.pendingLinkUpdates.get(id);
       this.pendingLinkUpdates.set(id, currentCount + 1);

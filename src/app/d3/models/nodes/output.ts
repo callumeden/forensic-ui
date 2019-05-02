@@ -7,6 +7,7 @@ export class OutputNode implements Node {
 	linkCount: number = 0; 
   modelData : Output
   displayText: string = "Output"
+  totalLinksInGraph : number = 0;
 
   constructor(modelData: Output) {
   	this.id = modelData.outputId;

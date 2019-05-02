@@ -8,6 +8,7 @@ export class TransactionNode implements Node {
 	linkCount: number = 0; 
   modelData : Transaction
   displayText: string = "Transaction"
+  totalLinksInGraph : number = 1;
 
 	constructor(modelData : Transaction) {
     this.id = modelData.transactionId;
@@ -15,7 +16,7 @@ export class TransactionNode implements Node {
   }
 
   normal = () => {
-    return Math.sqrt(this.linkCount / APP_CONFIG.N);
+    return Math.sqrt(this.linkCount / this.totalLinksInGraph);
   }
 
   get r() {

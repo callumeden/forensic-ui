@@ -46,8 +46,6 @@ export class GraphComponent implements OnChanges {
       this.nodes = this.stagingNodes;
       this.links = this.stagingLinks;
     }
-
-    console.info('changee ', changes)
   }
 
   get options() {

@@ -14,4 +14,6 @@ export interface Node extends d3.SimulationNodeDatum {
   linkCount: number;
   modelData;
   displayText: string;
+  totalLinksInGraph : number;
+
 }

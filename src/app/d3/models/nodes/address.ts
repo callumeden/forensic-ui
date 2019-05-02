@@ -8,6 +8,7 @@ export class AddressNode implements Node {
 	linkCount: number = 0;
   modelData : Address
   displayText: string = "Address"
+  totalLinksInGraph : number = 0;
 
 	constructor(address : string, modelData: Address) {
     this.id = address;
