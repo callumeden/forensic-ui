@@ -68,6 +68,7 @@ export class InvestigationComponent implements OnInit {
     const outputSubscription = this.investigationService.currentOutputData.subscribe(outputData => {
       if (outputData){
         this.createTransactionNode(outputData.producedByTransaction);
+        this.createTransactionNode(outputData.inputsTransaction);
         this.createAddressNodes([outputData.lockedToAddress]);
         this.createOutputNodes([outputData]);
         this.finaliseUpdate();
@@ -184,6 +185,10 @@ export class InvestigationComponent implements OnInit {
         this.createNewLink(data.outputId, data.lockedToAddress.address, LinkLabel.LOCKED_TO);
       }
 
+      if (data.inputsTransaction) {
+        this.createNewLink(data.outputId, data.inputsTransaction.transactionId);
+      }
+
     }, this);
   }
 
@@ -211,7 +216,7 @@ export class InvestigationComponent implements OnInit {
 
     if (transactionData.inputs) {
       transactionData.inputs.forEach(input => {
-        this.createNewLink(transactionData.transactionId, input.outputId, LinkLabel.INPUTS);
+        this.createNewLink(input.outputId, transactionData.transactionId, LinkLabel.INPUTS);
       })
     }
 

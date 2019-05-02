@@ -49,7 +49,7 @@ export class ForceDirectedGraph {
     this.nodes = updatedNodes;
 
     this.simulation
-    .alphaTarget(1)
+    .alpha(0.8)
     .restart();
 
     this.initNodes();
@@ -61,7 +61,7 @@ export class ForceDirectedGraph {
     this.links = updatedLinks;
 
     this.simulation
-      .alphaTarget(1)
+      .alpha(0.8)
       .restart();
 
     this.initLinks();

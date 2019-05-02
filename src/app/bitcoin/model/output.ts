@@ -8,5 +8,7 @@ export interface Output {
 	
 	producedByTransaction: Transaction;
 
+	inputsTransaction: Transaction;
+
 	lockedToAddress: Address;
 }

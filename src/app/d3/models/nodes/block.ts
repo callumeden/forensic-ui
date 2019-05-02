@@ -24,7 +24,7 @@ export class BlockNode implements Node {
   }
 
   get fontSize() {
-    return (30 * this.normal() + 15) + 'px';
+    return (20 * this.normal() + 15) + 'px';
   }
 
   get color() {
