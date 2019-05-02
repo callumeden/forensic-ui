@@ -277,6 +277,10 @@ export class InvestigationComponent implements OnInit {
     if (coinbaseData.block) {
       this.createNewLink(coinbaseData.block.hash, coinbaseData.coinbaseId, LinkLabel.COINBASE);
     }
+
+    if (coinbaseData.inputsTransaction) {
+      this.createNewLink(coinbaseData.coinbaseId, coinbaseData.inputsTransaction.transactionId, LinkLabel.INPUTS);
+    }
   }
 
   private createNewLink(sourceId : string, targetId: string, label : LinkLabel) {
