@@ -90,7 +90,7 @@ export class InvestigationComponent implements OnInit {
       if (entityData) {
         this.createAddressNodes(entityData.usesAddresses);
         this.createEntityNode(entityData);
-        this.changes ++;
+        this.finaliseUpdate();
       }
     });
 
@@ -309,7 +309,6 @@ export class InvestigationComponent implements OnInit {
   }
 
   private updateLinkCounts(id:string) {
-
     if (this.pendingLinkUpdates.has(id)) {
       let currentCount = this.pendingLinkUpdates.get(id);
       this.pendingLinkUpdates.set(id, currentCount + 1);

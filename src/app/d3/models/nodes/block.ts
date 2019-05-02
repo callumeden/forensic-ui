@@ -20,7 +20,7 @@ export class BlockNode implements Node {
   }
 
   get r() {
-    return 50 * this.normal() + 30;
+    return (50 * this.normal()) + 30;
   }
 
   get fontSize() {
