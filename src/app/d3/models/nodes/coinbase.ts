@@ -8,7 +8,7 @@ export class CoinbaseNode implements Node {
 	linkCount: number = 0;
   modelData : Coinbase
   displayText: string = "Coinbase"
-  totalLinksInGraph : number = 0;
+  totalLinksInGraph : number = 1;
 
 	constructor(modelData: Coinbase) {
     this.id = modelData.coinbaseId;
@@ -16,7 +16,7 @@ export class CoinbaseNode implements Node {
   }
 
   normal = () => {
-  	return Math.sqrt(this.linkCount / APP_CONFIG.N);
+  	return Math.sqrt(this.linkCount / this.totalLinksInGraph);
   }
 
   get r() {
@@ -28,7 +28,7 @@ export class CoinbaseNode implements Node {
   }
 
   get color() {
-    let index = Math.floor(APP_CONFIG.COINBASE_SPECTRUM.length * this.normal());
+    let index = Math.floor((APP_CONFIG.COINBASE_SPECTRUM.length - 1) * this.normal());
     return APP_CONFIG.COINBASE_SPECTRUM[index];
   }
   

@@ -7,7 +7,7 @@ export class OutputNode implements Node {
 	linkCount: number = 0; 
   modelData : Output
   displayText: string = "Output"
-  totalLinksInGraph : number = 0;
+  totalLinksInGraph : number = 1;
 
   constructor(modelData: Output) {
   	this.id = modelData.outputId;
@@ -15,7 +15,7 @@ export class OutputNode implements Node {
   }
 
 	normal = () => {
-  	return Math.sqrt(this.linkCount / APP_CONFIG.N);
+  	return Math.sqrt(this.linkCount / this.totalLinksInGraph);
   }
 
   get r() {
@@ -27,7 +27,7 @@ export class OutputNode implements Node {
   }
 
   get color() {
-    let index = Math.floor(APP_CONFIG.OUTPUT_SPECTRUM.length * this.normal());
+    let index = Math.floor((APP_CONFIG.OUTPUT_SPECTRUM.length - 1) * this.normal());
     return APP_CONFIG.OUTPUT_SPECTRUM[index];
   }
 

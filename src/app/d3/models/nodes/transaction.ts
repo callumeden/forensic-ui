@@ -28,7 +28,7 @@ export class TransactionNode implements Node {
   }
 
   get color() {
-    let index = Math.floor(APP_CONFIG.TRANSACTION_SPECTRUM.length * this.normal());
+    let index = Math.floor((APP_CONFIG.ADDRESS_SPECTRUM.length - 1) * this.normal());
     return APP_CONFIG.TRANSACTION_SPECTRUM[index];
   }
 }

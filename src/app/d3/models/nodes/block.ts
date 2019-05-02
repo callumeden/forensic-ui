@@ -8,7 +8,7 @@ export class BlockNode implements Node {
 	linkCount: number = 0; 
   modelData : Block
   displayText: string = "Block"
-  totalLinksInGraph : number = 0;
+  totalLinksInGraph : number = 1;
 
 	constructor(modelData : Block) {
     this.id = modelData.hash;
@@ -16,7 +16,7 @@ export class BlockNode implements Node {
   }
 
   normal = () => {
-    return Math.sqrt(this.linkCount / APP_CONFIG.N);
+    return Math.sqrt(this.linkCount / this.totalLinksInGraph);
   }
 
   get r() {
@@ -28,7 +28,7 @@ export class BlockNode implements Node {
   }
 
   get color() {
-    let index = Math.floor(APP_CONFIG.BLOCK_SPECTRUM.length * this.normal());
+    let index = Math.floor((APP_CONFIG.BLOCK_SPECTRUM.length - 1) * this.normal());
     return APP_CONFIG.BLOCK_SPECTRUM[index];
   }
 }

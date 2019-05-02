@@ -8,7 +8,7 @@ export class AddressNode implements Node {
 	linkCount: number = 0;
   modelData : Address
   displayText: string = "Address"
-  totalLinksInGraph : number = 0;
+  totalLinksInGraph : number = 1;
 
 	constructor(address : string, modelData: Address) {
     this.id = address;
@@ -16,7 +16,7 @@ export class AddressNode implements Node {
   }
 
   normal = () => {
-  	return Math.sqrt(this.linkCount / APP_CONFIG.N);
+  	return Math.sqrt(this.linkCount / this.totalLinksInGraph);
   }
 
   get r() {
@@ -28,7 +28,7 @@ export class AddressNode implements Node {
   }
 
   get color() {
-    let index = Math.floor(APP_CONFIG.ADDRESS_SPECTRUM.length * this.normal());
+    let index = Math.floor((APP_CONFIG.ADDRESS_SPECTRUM.length - 1) * this.normal());
     return APP_CONFIG.ADDRESS_SPECTRUM[index];
   }
   

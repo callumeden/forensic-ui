@@ -8,7 +8,7 @@ export class EntityNode implements Node {
 	linkCount: number = 0;
   modelData : Entity
   displayText: string = "Entity"
-  totalLinksInGraph : number = 0;
+  totalLinksInGraph : number = 1;
 
 	constructor(modelData: Entity) {
     this.id = modelData.name;
@@ -16,7 +16,7 @@ export class EntityNode implements Node {
   }
 
   normal = () => {
-  	return Math.sqrt(this.linkCount / APP_CONFIG.N);
+  	return Math.sqrt(this.linkCount / this.totalLinksInGraph);
   }
 
   get r() {
@@ -28,7 +28,7 @@ export class EntityNode implements Node {
   }
 
   get color() {
-    let index = Math.floor(APP_CONFIG.ENTITY_SPECTRUM.length * this.normal());
+    let index = Math.floor((APP_CONFIG.ENTITY_SPECTRUM.length - 1) * this.normal());
     return APP_CONFIG.ENTITY_SPECTRUM[index];
   }
   
