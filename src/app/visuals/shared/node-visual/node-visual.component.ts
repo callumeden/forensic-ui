@@ -1,4 +1,4 @@
-import { Component, Input, HostListener, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, HostListener, ViewChild, AfterViewInit, EventEmitter } from '@angular/core';
 import { Node} from '../../../d3';
 import { AppService } from '../../../app.service'
 import { InvestigationService} from '../../../components/investigation/investigation.service';
@@ -18,6 +18,9 @@ export class NodeVisualComponent implements AfterViewInit {
   private hoverTimeout;
   private isSingleClick : boolean;
 
+  private lastEvent : MouseEvent;
+  private mouseDown : boolean = false;
+
   constructor(private dataService : AppService, private investigationService: InvestigationService) {}
 
   ngAfterViewInit() {
@@ -25,21 +28,39 @@ export class NodeVisualComponent implements AfterViewInit {
   	this.originalRadius = +this.d3Element.attr("r")
   }
 
-  @HostListener("click") onClick(){
-    this.isSingleClick = true;
-    let that = this;
-    setTimeout(function() {
-      if (that.isSingleClick) {
-        that.handleSingleClick();
-      }
-    }, 250);
-   
+  // @HostListener("click") 
+  // onClick(){
+  //   this.isSingleClick = true;
+  //   let that = this;
+  //   setTimeout(function() {
+  //     if (that.isSingleClick) {
+  //       that.handleSingleClick();
+  //     }
+  //   }, 250);
+  // }
+
+  @HostListener('mousemove', ['$event']) 
+  onMouseMoveEvent(event) {
+    // console.info('mouse mocve', this.mouseDown)
+    if (this.mouseDown) {
+      console.info('moving');
+    }
+  }
+
+  @HostListener('mousedown', ['$event'])
+  onMouseDownEvent(event) {
+    console.info('mouse down')
+    this.mouseDown = true;
+  }
+
+  @HostListener('window:mouseup', ['$event'])
+  onMouseUp(event) {
+    console.log(event);
   }
 
   @HostListener("dblclick") onDoubleClick(){
     this.isSingleClick = false;
     this.handleDoubleClick();
-    console.log("DOUBLE click on node");
   }
 
   handleSingleClick() {
@@ -71,7 +92,7 @@ export class NodeVisualComponent implements AfterViewInit {
     this.d3Element.transition().duration(750).attr("r", this.originalRadius);
 
     this.hoverTimeout = setTimeout(function () {
-      that.dataService.changeMessage("", {})
+      // that.dataService.changeMessage("", {})
     }, 500)
 
 	}

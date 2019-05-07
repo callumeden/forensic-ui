@@ -186,7 +186,7 @@ export class InvestigationComponent implements OnInit {
       }
 
       if (data.inputsTransaction) {
-        this.createNewLink(data.outputId, data.inputsTransaction.transactionId);
+        this.createNewLink(data.outputId, data.inputsTransaction.transactionId, LinkLabel.INPUTS);
       }
 
     }, this);

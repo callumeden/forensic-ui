@@ -8,4 +8,10 @@ import { Link } from '../../../d3';
 })
 export class LinkVisualComponent  {
   @Input('linkVisual') link: Link;
+
+  constructor() {
+
+  }
+
+  
 }

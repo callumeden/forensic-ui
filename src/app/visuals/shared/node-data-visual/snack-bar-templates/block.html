@@ -1,0 +1,11 @@
+<h3>Block <mat-chip color='accent' selected>{{data.hash}}</mat-chip> </h3>
+<mat-divider></mat-divider>
+<mat-chip-list class="mat-chip-list-stacked" aria-orientation="vertical">
+  <mat-chip color='primary' selected>Timestamp: {{data.timestamp}}</mat-chip>
+  <mat-chip color='primary' selected>Parent Block Hash: {{data.prevBlockHash}}</mat-chip>
+</mat-chip-list>
+<mat-chip-list>
+  <mat-chip color='primary' selected>GBP: {{data.gbp | currency: 'GBP'}}</mat-chip>
+  <mat-chip color='primary' selected>USD: {{data.usd | currency: 'USD'}}</mat-chip>
+  <mat-chip color='primary' selected>EUR: {{data.eur | currency: 'EUR'}}</mat-chip>
+</mat-chip-list>

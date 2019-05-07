@@ -1,0 +1,9 @@
+.mat-divider {
+	margin: 10px;
+	background-color: white;
+}
+
+::ng-deep .node-snackbar {
+	padding: 20px;
+	max-width: 75vw;
+}

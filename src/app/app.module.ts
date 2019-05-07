@@ -5,7 +5,7 @@ import { HttpClientModule }    from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { D3Service, D3_DIRECTIVES } from './d3';
-import { MatListModule , MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule} from '@angular/material';
+import { MatListModule , MatCardModule, MatDividerModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { InvestigationComponent } from './components/investigation/investigation.component';
 import { AppComponent } from './app.component' 
@@ -13,6 +13,7 @@ import { GraphComponent } from './visuals/graph/graph.component';
 import { SearchComponent } from './components/search/search.component';
 import { SHARED_VISUALS } from './visuals/shared';
 import { InvestigationGuard } from './components/investigation/investigaiton-guard.service';
+import { NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent} from './visuals/shared/node-data-visual/node-data-visual.component';
 
 const appRoutes: Routes = [
 {path: 'investigation', component: InvestigationComponent, canActivate: [InvestigationGuard]},
@@ -23,6 +24,11 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     InvestigationComponent,
+    NodeDataVisualComponent,
+    AddressNodeSnackbarComponent,
+    OutputNodeSnackbarComponent,
+    TransactionNodeSnackbarComponent,
+    BlockNodeSnackbarComponent,
     GraphComponent,
     AppComponent,
     SearchComponent,
@@ -37,15 +43,21 @@ const appRoutes: Routes = [
     MatListModule,
     MatCardModule,
     MatFormFieldModule,
+    MatChipsModule,
     MatInputModule,
     MatButtonModule,
+    MatDividerModule,
+    MatSnackBarModule,
     MatProgressBarModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(
       appRoutes
     )
   ],
-  providers: [D3Service],
+  entryComponents: [NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent],
+  providers: [D3Service, 
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 250000}}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
