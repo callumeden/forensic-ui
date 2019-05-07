@@ -28,8 +28,6 @@ export class NodeDataVisualComponent implements OnInit {
 		});
 	}
 
-	
-
   openSnackBar(name: string, nodeItems: any) {
   	console.info(name)
   	console.info(nodeItems)
@@ -63,7 +61,6 @@ export class NodeDataVisualComponent implements OnInit {
   			});
   			break;
   	}
-  	
 
   }
 

@@ -56,7 +56,7 @@ const appRoutes: Routes = [
   ],
   entryComponents: [NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent],
   providers: [D3Service, 
-    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 250000}}
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 5000}}
   ],
   bootstrap: [AppComponent]
 })
