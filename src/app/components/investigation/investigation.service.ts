@@ -27,12 +27,19 @@ export class InvestigationService {
 	private coinbaseData = new BehaviorSubject(null);
 	currentCoinbaseData = this.coinbaseData.asObservable();
 
+	private customNodeData = new BehaviorSubject(null);
+	currentCustomNodeData = this.customNodeData.asObservable();
+
 	investigationActive : boolean = false;
 
 	provideAddressSearchResponse(response : Address) {
 		this.investigationActive = true;
 		this.addressData.next(response)
 	} 
+
+	provideNewCustomNodeData(customNodeData) {
+		this.customNodeData.next(customNodeData);
+	}
 
 	constructor(private bitcoinService : BitcoinService) {}
 

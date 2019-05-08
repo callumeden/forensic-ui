@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { NgForm } from '@angular/forms';
 import { BitcoinService } from '../../bitcoin/bitcoin.service'
 import { InvestigationService } from '../investigation/investigation.service'
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { Address } from '../../bitcoin/model';
 
 @Component({

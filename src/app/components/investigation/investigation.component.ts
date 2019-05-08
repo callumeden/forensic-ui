@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import APP_CONFIG from '../../app.config';
-import { Node, Link, BlockNode, AddressNode, OutputNode, EntityNode, TransactionNode, CoinbaseNode } from '../../d3';
+import { Node, Link, BlockNode, AddressNode, OutputNode, EntityNode, TransactionNode, CoinbaseNode, CustomNode } from '../../d3';
 import { BitcoinService } from '../../bitcoin/bitcoin.service'
 import { InvestigationService } from './investigation.service';
 import { Block, Address, Output, Entity, Transaction, Coinbase } from '../../bitcoin/model'
 import { Observable, of, forkJoin} from 'rxjs';
-import { Router } from '@angular/router';
 
 enum LinkLabel {
   CHAINED_FROM="CHAINED_FROM",
@@ -42,8 +41,7 @@ export class InvestigationComponent implements OnInit {
   totalLinkCount: number = 0;
 
   constructor(private bitcoinService : BitcoinService, 
-              private investigationService: InvestigationService,
-              private router: Router) {
+              private investigationService: InvestigationService) {
   }
 
   ngOnDestroy() {
@@ -113,12 +111,20 @@ export class InvestigationComponent implements OnInit {
       }
     })
 
+    const customNodeSubscription = this.investigationService.currentCustomNodeData.subscribe(customNodeData => {
+      if (customNodeData) {
+        this.createCustomNode(customNodeData);
+        this.finaliseUpdate();
+      }
+    })
+
     this.subscriptions.push(addressSubscription);
     this.subscriptions.push(outputSubscription);
     this.subscriptions.push(transactionSubscription);
     this.subscriptions.push(entitySubscription);
     this.subscriptions.push(blockSubscription);
     this.subscriptions.push(coinbaseSubscription);
+    this.subscriptions.push(customNodeSubscription);
   }
 
   private finaliseUpdate() {
@@ -294,6 +300,10 @@ export class InvestigationComponent implements OnInit {
     if (coinbaseData.inputsTransaction) {
       this.createNewLink(coinbaseData.coinbaseId, coinbaseData.inputsTransaction.transactionId, LinkLabel.INPUTS);
     }
+  }
+
+  createCustomNode(customNodeData) {
+    this.nodes.push(new CustomNode(customNodeData));
   }
 
   private createNewLink(sourceId : string, targetId: string, label : LinkLabel) {

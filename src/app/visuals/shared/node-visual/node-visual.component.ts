@@ -53,7 +53,7 @@ export class NodeVisualComponent implements AfterViewInit {
     this.mouseDown = true;
   }
 
-  @HostListener('window:mouseup', ['$event'])
+  @HostListener('mouseup', ['$event'])
   onMouseUp(event) {
     console.log(event);
   }
