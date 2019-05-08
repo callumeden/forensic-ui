@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheet, MatBottomSheetRef } from '@angular/material';
 import { InvestigationService } from '../investigation/investigation.service';
 import { AddLinkService } from './add-link.service';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { AppService } from '../../app.service';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'add-node',
@@ -15,7 +15,11 @@ import { AppService } from '../../app.service';
 })
 export class AddNodeComponent implements OnInit {
 
-	constructor (private router : Router, private bottomSheet: MatBottomSheet, private dataService : AddLinkService, private appService : AppService) {
+	constructor (
+    private router : Router, 
+    private dataService : AddLinkService, 
+    private appService : AppService,
+    private dialog : MatDialog) {
 	}
 
   ngOnInit() {
@@ -27,8 +31,10 @@ export class AddNodeComponent implements OnInit {
   }
 
 	addNewNode() {
-		const bottomSheetRef = this.bottomSheet.open(AddNodeBottomSheet, {
+		const dialogRef = this.dialog.open(AddNodeBottomSheet, {
+      width: '70vw',
   		data: { names: ['Frodo', 'Bilbo'] },
+      panelClass: 'add-node-dialog'
 		});
 	}
 
@@ -38,8 +44,10 @@ export class AddNodeComponent implements OnInit {
 	}
 
   buildNewLink(newLinkRequestData) {
-    this.bottomSheet.open(AddLinkBottomSheet, {
-      data: newLinkRequestData
+    this.dialog.open(AddLinkBottomSheet, {
+      width: '70vw',
+      data: newLinkRequestData,
+      panelClass: 'add-link-dialog'
     });
   }
 }
@@ -51,15 +59,15 @@ export class AddNodeComponent implements OnInit {
 })
 export class AddNodeBottomSheet {
 
-  constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: any, 
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, 
   						private investigationService: InvestigationService,
-  						private bottomSheetRef: MatBottomSheetRef<AddNodeBottomSheet>) { }
+  						private dialogRef: MatDialogRef<AddNodeBottomSheet>) { }
 
   onSubmitNewNodeForm(form) {
 
   	if (form.valid) {
   		this.investigationService.provideNewCustomNodeData(form.value);
-  		this.bottomSheetRef.dismiss();
+  		this.dialogRef.close();
   	}
 
   }
@@ -71,9 +79,9 @@ export class AddNodeBottomSheet {
 })
 export class AddLinkBottomSheet implements OnInit {
 
-  constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: any, 
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, 
               private investigationService: InvestigationService,
-              private bottomSheetRef: MatBottomSheetRef<AddLinkBottomSheet>) { }
+              private dialogRef: MatDialogRef<AddLinkBottomSheet>) { }
 
   myControl = new FormControl();
   options: string[];
@@ -92,7 +100,7 @@ export class AddLinkBottomSheet implements OnInit {
   onSubmitNewLinkForm(form) {
     if (form.valid && this.investigationService.isValidId(this.myControl.value)) {
       this.investigationService.createCustomLink(this.data, this.myControl.value);
-      this.bottomSheetRef.dismiss();
+      this.dialogRef.close();
     }
   }
 

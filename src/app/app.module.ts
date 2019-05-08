@@ -5,7 +5,7 @@ import { HttpClientModule }    from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { D3Service, D3_DIRECTIVES } from './d3';
-import { MatListModule , MatCardModule, MatBottomSheetModule, MatAutocompleteModule, MatDividerModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
+import { MatListModule , MatCardModule, MatBottomSheetModule, MatDialogModule, MatAutocompleteModule, MatDividerModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { InvestigationComponent } from './components/investigation/investigation.component';
 import { AddNodeComponent, AddNodeBottomSheet, AddLinkBottomSheet } from './components/add-node/add-node.component';
@@ -56,6 +56,7 @@ const appRoutes: Routes = [
     MatSnackBarModule,
     MatProgressBarModule,
     BrowserAnimationsModule,
+    MatDialogModule,
     ClipboardModule,
     RouterModule.forRoot(
       appRoutes

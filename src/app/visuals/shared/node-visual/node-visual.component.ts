@@ -28,34 +28,9 @@ export class NodeVisualComponent implements AfterViewInit {
   	this.originalRadius = +this.d3Element.attr("r")
   }
 
-  // @HostListener("click") 
-  // onClick(){
-  //   this.isSingleClick = true;
-  //   let that = this;
-  //   setTimeout(function() {
-  //     if (that.isSingleClick) {
-  //       that.handleSingleClick();
-  //     }
-  //   }, 250);
-  // }
-
-  @HostListener('mousemove', ['$event']) 
-  onMouseMoveEvent(event) {
-    // console.info('mouse mocve', this.mouseDown)
-    if (this.mouseDown) {
-      console.info('moving');
-    }
-  }
-
   @HostListener('mousedown', ['$event'])
   onMouseDownEvent(event) {
-    console.info('mouse down')
     this.mouseDown = true;
-  }
-
-  @HostListener('mouseup', ['$event'])
-  onMouseUp(event) {
-    console.log(event);
   }
 
   @HostListener("dblclick") onDoubleClick(){
