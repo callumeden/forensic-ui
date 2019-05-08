@@ -46,7 +46,8 @@ export class AddNodeComponent implements OnInit {
 
 @Component({
   selector: 'add-node-sheet',
-  templateUrl: './add-node-bottom-sheet.component.html'
+  templateUrl: './add-node-bottom-sheet.component.html',
+  styleUrls: ['./add-link.component.css']
 })
 export class AddNodeBottomSheet {
 

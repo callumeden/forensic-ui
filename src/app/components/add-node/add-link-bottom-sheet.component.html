@@ -8,21 +8,29 @@
 	  <form #f="ngForm" (ngSubmit)="onSubmitNewLinkForm(f)" layout-align="center center">
 	    <mat-card-content>
 
-			  <mat-form-field>
-			  	<input matInput placeholder="Source Node" disabled value="{{data.name}}">
-			  	<mat-hint align="start"><strong>This is the ID of the source node you're creating the link from.</strong> </mat-hint>
-			  </mat-form-field>
+	    	<table class="full-width" cellspacing="0">
+	    		<tr>
+		    		<td>
+							<mat-form-field>
+			  				<input matInput placeholder="Source Node" disabled value="{{data.name}}">
+			  				<mat-hint align="start"><strong>This is the ID of the source node you're creating the link from.</strong> </mat-hint>
+			  				</mat-form-field>
+		    		</td>
+		    		
+		    		<td>
+		    			<mat-form-field>
+			  				<input type="text" [(ngModel)]="targetId"  name="targetId" placeholder="Target Node ID" matInput [formControl]="myControl" [matAutocomplete]="auto">
+          			<mat-hint align="start"><strong>The ID of the target node in this new link.</strong> </mat-hint>
+			    			<mat-autocomplete #auto="matAutocomplete">
+				      		<mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+				       		 {{option}}
+				      		</mat-option>
+			    			</mat-autocomplete>
 
-			  <mat-form-field>
-			  	<input type="text" [(ngModel)]="targetId"  name="targetId" placeholder="Target Node ID" matInput [formControl]="myControl" [matAutocomplete]="auto">
-          <mat-hint align="start"><strong>The ID of the target node in this new link.</strong> </mat-hint>
-			    <mat-autocomplete #auto="matAutocomplete">
-			      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-			        {{option}}
-			      </mat-option>
-			    </mat-autocomplete>
-
-			  </mat-form-field>
+			  			</mat-form-field>
+		    		</td>
+  				</tr>
+  			</table>
 
 			</mat-card-content>
 
