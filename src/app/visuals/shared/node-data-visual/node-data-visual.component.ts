@@ -28,6 +28,12 @@ export class NodeDataVisualComponent implements OnInit {
 			}
 
 		});
+
+    this.dataService.currentDismissMessage.subscribe(dismissMessage => {
+      if (dismissMessage) {
+        this.nodeInfoSnackBar.dismiss();
+      }
+    })
 	}
 
   openSnackBar(name: string, nodeItems: any) {

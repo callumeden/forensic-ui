@@ -75,6 +75,8 @@ export class InvestigationService {
 		this.entityData.next(null);
 		this.blockData.next(null);
 		this.coinbaseData.next(null)
+		this.customNodeData.next(null);
+		this.customLinkData.next(null);
 	}
 
 	expandNeighbours(node : Node) {

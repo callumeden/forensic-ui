@@ -6,6 +6,7 @@ import { AddLinkService } from './add-link.service';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { AppService } from '../../app.service';
 
 @Component({
   selector: 'add-node',
@@ -14,7 +15,7 @@ import { map, startWith } from 'rxjs/operators';
 })
 export class AddNodeComponent implements OnInit {
 
-	constructor (private router : Router, private bottomSheet: MatBottomSheet, private dataService : AddLinkService,) {
+	constructor (private router : Router, private bottomSheet: MatBottomSheet, private dataService : AddLinkService, private appService : AppService) {
 	}
 
   ngOnInit() {
@@ -32,6 +33,7 @@ export class AddNodeComponent implements OnInit {
 	}
 
 	navigateToSearch() {
+    this.appService.dismissInvestigationViews();
 		this.router.navigate(['search']);
 	}
 
