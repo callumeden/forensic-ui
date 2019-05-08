@@ -1,0 +1,43 @@
+<mat-card>
+	<div class="example-container">
+		<mat-card-title>
+      Create a new link
+    </mat-card-title>
+
+
+	  <form #f="ngForm" (ngSubmit)="onSubmitNewLinkForm(f)" layout-align="center center">
+	    <mat-card-content>
+
+			  <mat-form-field>
+			  	<input matInput placeholder="Source Node" disabled value="{{data.name}}">
+			  	<mat-hint align="start"><strong>This is the ID of the source node you're creating the link from.</strong> </mat-hint>
+			  </mat-form-field>
+
+			  <mat-form-field>
+          <input required [(ngModel)]="targetId"  name="targetId" class="full-width" matInput #message placeholder="Target Node ID">
+          <mat-hint align="start"><strong>The ID of the target node in this new link.</strong> </mat-hint>
+        </mat-form-field>
+
+
+			 <!--  <mat-form-field>
+			  	<input type="text" placeholder="Destination Node" matInput [formControl]="myControl" [matAutocomplete]="auto">
+			    <mat-autocomplete #auto="matAutocomplete">
+			      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+			        {{option}}
+			      </mat-option>
+			    </mat-autocomplete>
+
+			  </mat-form-field> -->
+
+
+
+			</mat-card-content>
+
+	   	<mat-card-actions>
+        <button type="submit" mat-raised-button color="primary">Add node</button>
+     	</mat-card-actions>
+	  </form>
+
+
+	</div>
+</mat-card>

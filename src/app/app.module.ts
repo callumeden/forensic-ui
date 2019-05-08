@@ -5,10 +5,10 @@ import { HttpClientModule }    from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { D3Service, D3_DIRECTIVES } from './d3';
-import { MatListModule , MatCardModule, MatBottomSheetModule, MatDividerModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
+import { MatListModule , MatCardModule, MatBottomSheetModule, MatAutocompleteModule, MatDividerModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { InvestigationComponent } from './components/investigation/investigation.component';
-import { AddNodeComponent, AddNodeBottomSheet } from './components/add-node/add-node.component';
+import { AddNodeComponent, AddNodeBottomSheet, AddLinkBottomSheet } from './components/add-node/add-node.component';
 import { AppComponent } from './app.component' 
 import { GraphComponent } from './visuals/graph/graph.component';
 import { SearchComponent } from './components/search/search.component';
@@ -16,7 +16,6 @@ import { SHARED_VISUALS } from './visuals/shared';
 import { InvestigationGuard } from './components/investigation/investigaiton-guard.service';
 import { NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, CustomNodeSnackbarComponent} from './visuals/shared/node-data-visual/node-data-visual.component';
 import { ClipboardModule } from 'ngx-clipboard';
-
 const appRoutes: Routes = [
 {path: 'investigation', component: InvestigationComponent, canActivate: [InvestigationGuard]},
 {path: '**', redirectTo: '/search', pathMatch: 'full'},
@@ -33,6 +32,7 @@ const appRoutes: Routes = [
     BlockNodeSnackbarComponent,
     CustomNodeSnackbarComponent,
     AddNodeBottomSheet,
+    AddLinkBottomSheet,
     GraphComponent,
     AppComponent,
     SearchComponent,
@@ -49,6 +49,7 @@ const appRoutes: Routes = [
     MatFormFieldModule,
     MatChipsModule,
     MatBottomSheetModule,
+    MatAutocompleteModule,
     MatInputModule,
     MatButtonModule,
     MatDividerModule,
@@ -60,7 +61,7 @@ const appRoutes: Routes = [
       appRoutes
     )
   ],
-  entryComponents: [NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, AddNodeBottomSheet, CustomNodeSnackbarComponent],
+  entryComponents: [NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, AddNodeBottomSheet, AddLinkBottomSheet, CustomNodeSnackbarComponent],
   providers: [D3Service, 
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 500000}}
   ],

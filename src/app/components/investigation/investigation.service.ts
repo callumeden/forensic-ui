@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Address, Output } from '../../bitcoin/model';
 import { BehaviorSubject } from 'rxjs';
 import { Node, TransactionNode, OutputNode, EntityNode, AddressNode, BlockNode, CoinbaseNode } from '../../d3/models';
-import {BitcoinService} from '../../bitcoin/bitcoin.service';
+import { BitcoinService } from '../../bitcoin/bitcoin.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +30,9 @@ export class InvestigationService {
 	private customNodeData = new BehaviorSubject(null);
 	currentCustomNodeData = this.customNodeData.asObservable();
 
+	private customLinkData = new BehaviorSubject(null);
+	currentCustomLinkData = this.customLinkData.asObservable();
+
 	investigationActive : boolean = false;
 
 	provideAddressSearchResponse(response : Address) {
@@ -39,6 +42,13 @@ export class InvestigationService {
 
 	provideNewCustomNodeData(customNodeData) {
 		this.customNodeData.next(customNodeData);
+	}
+
+	createCustomLink(sourceNodeData, targetNodeData) {
+		this.customLinkData.next({
+			'src': sourceNodeData.name,
+			'target': targetNodeData.targetId
+		});
 	}
 
 	constructor(private bitcoinService : BitcoinService) {}

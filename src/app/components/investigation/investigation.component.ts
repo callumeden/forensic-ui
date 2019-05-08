@@ -13,7 +13,8 @@ enum LinkLabel {
   INPUTS="INPUTS",
   LOCKED_TO="LOCKED_TO",
   MINED_IN="MINED_IN",
-  OUTPUTS="OUTPUTS"
+  OUTPUTS="OUTPUTS",
+  CUSTOM="CUSTOM"
 }
 
 
@@ -34,6 +35,7 @@ export class InvestigationComponent implements OnInit {
   coinbaseIds: Set<String> = new Set();
   linksBegin : Set<String> = new Set();
   linksEnd : Set<String> = new Set();
+  customNodeIds: Set<String> = new Set();
   nodeLookup : Map<String, Node>  = new Map();
   changes: number = 0;
   pendingLinkUpdates: Map<string, number> = new Map();
@@ -118,6 +120,14 @@ export class InvestigationComponent implements OnInit {
       }
     })
 
+
+    const customLinkSubscription = this.investigationService.currentCustomLinkData.subscribe(customLinkData => {
+      if (customLinkData) {
+        this.createCustomLink(customLinkData);
+        this.finaliseUpdate();
+      }
+    })
+
     this.subscriptions.push(addressSubscription);
     this.subscriptions.push(outputSubscription);
     this.subscriptions.push(transactionSubscription);
@@ -125,6 +135,7 @@ export class InvestigationComponent implements OnInit {
     this.subscriptions.push(blockSubscription);
     this.subscriptions.push(coinbaseSubscription);
     this.subscriptions.push(customNodeSubscription);
+    this.subscriptions.push(customLinkSubscription);
   }
 
   private finaliseUpdate() {
@@ -303,7 +314,14 @@ export class InvestigationComponent implements OnInit {
   }
 
   createCustomNode(customNodeData) {
-    this.nodes.push(new CustomNode(customNodeData));
+    let newCustomNode = new CustomNode(customNodeData)
+    this.nodes.push(newCustomNode);
+    this.customNodeIds.add(customNodeData.name);
+    this.nodeLookup.set(customNodeData.name, newCustomNode);
+  }
+
+  createCustomLink(customLinkData) {
+    this.createNewLink(customLinkData.src, customLinkData.target, LinkLabel.CUSTOM);
   }
 
   private createNewLink(sourceId : string, targetId: string, label : LinkLabel) {

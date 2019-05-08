@@ -1,7 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { AppService } from '../../../app.service';
-import { MatSnackBar, MAT_SNACK_BAR_DATA} from '@angular/material';
+import { MatSnackBar, MatSnackBarRef, MAT_SNACK_BAR_DATA} from '@angular/material';
 import { NodeType } from '../../../bitcoin/model';
+import { AddLinkService } from '../../../components/add-node/add-link.service';
 
 @Component({
   selector: 'nodeDataVisual',
@@ -30,9 +31,6 @@ export class NodeDataVisualComponent implements OnInit {
 	}
 
   openSnackBar(name: string, nodeItems: any) {
-  	console.info(name)
-  	console.info(nodeItems)
-    
   	switch (name) {
   		case NodeType.ADDRESS:
   			this.nodeInfoSnackBar.openFromComponent(AddressNodeSnackbarComponent, {
@@ -80,10 +78,6 @@ export class NodeDataVisualComponent implements OnInit {
 })
 export class AddressNodeSnackbarComponent {
   constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) { }
-
-  handleClick(data) {
-    debugger;
-  }
 }
 
 @Component({
@@ -119,6 +113,13 @@ export class BlockNodeSnackbarComponent {
   styleUrls: ['./snack-bar-customisation.css']
 })
 export class CustomNodeSnackbarComponent {
-  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) { }
+  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,  
+    private snackbarRef: MatSnackBarRef<CustomNodeSnackbarComponent>,
+    private dataService : AddLinkService) { }
+
+  createCustomLink() {
+    this.snackbarRef.dismiss();
+    this.dataService.newLinkRequest(this.data);
+  }
 }
 
