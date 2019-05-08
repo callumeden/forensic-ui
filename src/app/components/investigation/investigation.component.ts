@@ -33,8 +33,8 @@ export class InvestigationComponent implements OnInit {
   blockHashes: Set<String> = new Set();
   entityIds: Set<String> = new Set();
   coinbaseIds: Set<String> = new Set();
-  linksBegin : Set<String> = new Set();
-  linksEnd : Set<String> = new Set();
+
+  linksUnique: Set<String> = new Set();
   customNodeIds: Set<String> = new Set();
   nodeLookup : Map<String, Node>  = new Map();
   changes: number = 0;
@@ -166,6 +166,7 @@ export class InvestigationComponent implements OnInit {
         let newAddressNode = new AddressNode(data.address, data)
         this.nodes.push(newAddressNode);
         this.nodeLookup.set(data.address, newAddressNode);
+        this.investigationService.registerId(data.address);
       }
 
       if (data.outputs) {
@@ -192,6 +193,7 @@ export class InvestigationComponent implements OnInit {
         let newOutputNode = new OutputNode(data)
         this.nodes.push(newOutputNode)
         this.nodeLookup.set(data.outputId, newOutputNode);
+        this.investigationService.registerId(data.outputId);
       }
 
       if (data.producedByTransaction) {
@@ -225,6 +227,7 @@ export class InvestigationComponent implements OnInit {
       this.nodes.push(newTransactionNode);
       this.transactionIds.add(transactionData.transactionId);
       this.nodeLookup.set(transactionData.transactionId, newTransactionNode);
+      this.investigationService.registerId(transactionData.transactionId);
     }
 
     if (transactionData.minedInBlock) {
@@ -252,6 +255,7 @@ export class InvestigationComponent implements OnInit {
       this.nodes.push(newEntityNode);
       this.entityIds.add(entityData.name);
       this.nodeLookup.set(entityData.name, newEntityNode);
+      this.investigationService.registerId(entityData.name);
     }
 
     if (entityData.usesAddresses) {
@@ -271,6 +275,7 @@ export class InvestigationComponent implements OnInit {
       this.nodes.push(newBlockNode);
       this.blockHashes.add(blockData.hash);
       this.nodeLookup.set(blockData.hash, newBlockNode);
+      this.investigationService.registerId(blockData.hash);
     }
 
     if (blockData.child) {
@@ -302,6 +307,7 @@ export class InvestigationComponent implements OnInit {
       this.nodes.push(newCoinbaseNode);
       this.coinbaseIds.add(coinbaseData.coinbaseId);
       this.nodeLookup.set(coinbaseData.coinbaseId, newCoinbaseNode);
+      this.investigationService.registerId(coinbaseData.coinbaseId);
     }
 
     if (coinbaseData.block) {
@@ -314,10 +320,13 @@ export class InvestigationComponent implements OnInit {
   }
 
   createCustomNode(customNodeData) {
-    let newCustomNode = new CustomNode(customNodeData)
-    this.nodes.push(newCustomNode);
-    this.customNodeIds.add(customNodeData.name);
-    this.nodeLookup.set(customNodeData.name, newCustomNode);
+    if (!this.customNodeIds.has(customNodeData.name)) {
+      let newCustomNode = new CustomNode(customNodeData)
+      this.nodes.push(newCustomNode);
+      this.customNodeIds.add(customNodeData.name);
+      this.nodeLookup.set(customNodeData.name, newCustomNode);
+      this.investigationService.registerId(customNodeData.name);
+    }
   }
 
   createCustomLink(customLinkData) {
@@ -325,13 +334,11 @@ export class InvestigationComponent implements OnInit {
   }
 
   private createNewLink(sourceId : string, targetId: string, label : LinkLabel) {
-    if (this.linksBegin.has(sourceId) && this.linksEnd.has(targetId)) {
-      console.info('dupe detected');
+    if (this.linksUnique.has(this.buildLinkString(sourceId, targetId, label))) {
       return;
     }
     this.links.push(new Link(sourceId, targetId, label));
-    this.linksBegin.add(sourceId);
-    this.linksEnd.add(targetId);
+    this.linksUnique.add(this.buildLinkString(sourceId, targetId, label));
     this.updateLinkCounts(sourceId);
     this.updateLinkCounts(targetId);
   }
@@ -343,6 +350,10 @@ export class InvestigationComponent implements OnInit {
     } else {
       this.pendingLinkUpdates.set(id, 1);
     }
+  }
+
+  private buildLinkString(sourceId : string, targetId : string, label: LinkLabel) {
+    return sourceId + "->" + label.toString() + "->" + targetId;
   }
   
 }
