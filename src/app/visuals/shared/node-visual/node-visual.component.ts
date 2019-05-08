@@ -81,7 +81,7 @@ export class NodeVisualComponent implements AfterViewInit {
       for (let key in that.node.modelData) {
         displayData[key] = that.node.modelData[key]
       }
-      that.dataService.changeMessage(that.node.displayText, displayData)
+      that.dataService.changeMessage(that.node.type, displayData)
     }, 500)
 	}
 

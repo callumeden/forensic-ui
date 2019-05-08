@@ -1,6 +1,6 @@
 import APP_CONFIG from '../../../app.config';
 import { Node } from '../node'
-import { Block } from '../../../bitcoin/model';
+import { Block, NodeType } from '../../../bitcoin/model';
 
 export class BlockNode implements Node {
 
@@ -8,6 +8,7 @@ export class BlockNode implements Node {
 	linkCount: number = 0; 
   modelData : Block
   displayText: string = "Block"
+  type: NodeType = NodeType.BLOCK;
   totalLinksInGraph : number = 1;
 
 	constructor(modelData : Block) {

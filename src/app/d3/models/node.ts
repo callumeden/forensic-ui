@@ -1,4 +1,5 @@
 import APP_CONFIG from '../../app.config';
+import { NodeType } from '../../bitcoin/model';
 
 export interface Node extends d3.SimulationNodeDatum {
   // optional - defining optional implementation properties - required for relevant typing assistance
@@ -15,5 +16,6 @@ export interface Node extends d3.SimulationNodeDatum {
   modelData;
   displayText: string;
   totalLinksInGraph : number;
+  type: NodeType;
 
 }

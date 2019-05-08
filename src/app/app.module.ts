@@ -14,7 +14,8 @@ import { GraphComponent } from './visuals/graph/graph.component';
 import { SearchComponent } from './components/search/search.component';
 import { SHARED_VISUALS } from './visuals/shared';
 import { InvestigationGuard } from './components/investigation/investigaiton-guard.service';
-import { NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent} from './visuals/shared/node-data-visual/node-data-visual.component';
+import { NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, CustomNodeSnackbarComponent} from './visuals/shared/node-data-visual/node-data-visual.component';
+import { ClipboardModule } from 'ngx-clipboard';
 
 const appRoutes: Routes = [
 {path: 'investigation', component: InvestigationComponent, canActivate: [InvestigationGuard]},
@@ -30,6 +31,7 @@ const appRoutes: Routes = [
     OutputNodeSnackbarComponent,
     TransactionNodeSnackbarComponent,
     BlockNodeSnackbarComponent,
+    CustomNodeSnackbarComponent,
     AddNodeBottomSheet,
     GraphComponent,
     AppComponent,
@@ -53,13 +55,14 @@ const appRoutes: Routes = [
     MatSnackBarModule,
     MatProgressBarModule,
     BrowserAnimationsModule,
+    ClipboardModule,
     RouterModule.forRoot(
       appRoutes
     )
   ],
-  entryComponents: [NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, AddNodeBottomSheet],
+  entryComponents: [NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, AddNodeBottomSheet, CustomNodeSnackbarComponent],
   providers: [D3Service, 
-    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 5000}}
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 500000}}
   ],
   bootstrap: [AppComponent]
 })

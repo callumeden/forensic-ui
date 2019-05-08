@@ -1,6 +1,6 @@
 import { Node } from '../node'
 import APP_CONFIG from '../../../app.config';
-import { Entity } from '../../../bitcoin/model'
+import { Entity, NodeType } from '../../../bitcoin/model'
 
 export class EntityNode implements Node {
 
@@ -8,6 +8,7 @@ export class EntityNode implements Node {
 	linkCount: number = 0;
   modelData : Entity
   displayText: string = "Entity"
+  type: NodeType = NodeType.ENTITY;
   totalLinksInGraph : number = 1;
 
 	constructor(modelData: Entity) {

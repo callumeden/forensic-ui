@@ -1,4 +1,4 @@
-import { Output } from '../../../bitcoin/model';
+import { Output, NodeType } from '../../../bitcoin/model';
 import { Node } from '../node'
 import APP_CONFIG from '../../../app.config';
 
@@ -7,6 +7,7 @@ export class OutputNode implements Node {
 	linkCount: number = 0; 
   modelData : Output
   displayText: string = "Output"
+  type: NodeType = NodeType.OUTPUT;
   totalLinksInGraph : number = 1;
 
   constructor(modelData: Output) {

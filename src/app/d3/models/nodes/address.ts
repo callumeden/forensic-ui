@@ -1,13 +1,14 @@
 import { Node } from '../node'
 import APP_CONFIG from '../../../app.config';
-import { Address } from '../../../bitcoin/model'
+import { Address, NodeType } from '../../../bitcoin/model'
 
 export class AddressNode implements Node {
 
 	id: string; 
 	linkCount: number = 0;
-  modelData : Address
-  displayText: string = "Address"
+  modelData : Address;
+  displayText: string = "Address";
+  type: NodeType = NodeType.ADDRESS;
   totalLinksInGraph : number = 1;
 
 	constructor(address : string, modelData: Address) {

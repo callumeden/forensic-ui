@@ -1,5 +1,5 @@
-<h3>Output <mat-chip color='accent' selected>{{data.outputId}}</mat-chip></h3>
+<h3>Output <mat-chip ngxClipboard [cbContent]="data.outputId" color='accent' selected>{{data.outputId}}</mat-chip></h3>
 <mat-divider></mat-divider>
 <mat-chip-list class="mat-chip-list-stacked" aria-orientation="vertical">
-  <mat-chip color='primary' selected>Value (BTC) : {{data.value}}</mat-chip>
+  <mat-chip ngxClipboard [cbContent]="data.value" color='primary' selected>Value (BTC) : {{data.value}}</mat-chip>
 </mat-chip-list>

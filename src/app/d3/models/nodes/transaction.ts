@@ -1,13 +1,14 @@
 import APP_CONFIG from '../../../app.config';
 import { Node } from '../node'
-import { Transaction } from '../../../bitcoin/model';
+import { Transaction, NodeType } from '../../../bitcoin/model';
 
 export class TransactionNode implements Node {
 
 	id: string; 
 	linkCount: number = 0; 
-  modelData : Transaction
-  displayText: string = "Transaction"
+  modelData : Transaction;
+  displayText: string = "Transaction";
+  type: NodeType = NodeType.TRANSACTION;
   totalLinksInGraph : number = 1;
 
 	constructor(modelData : Transaction) {

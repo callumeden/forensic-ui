@@ -1,6 +1,6 @@
 import { Node } from '../node'
 import APP_CONFIG from '../../../app.config';
-import { Coinbase } from '../../../bitcoin/model'
+import { Coinbase, NodeType } from '../../../bitcoin/model'
 
 export class CoinbaseNode implements Node {
 
@@ -8,6 +8,7 @@ export class CoinbaseNode implements Node {
 	linkCount: number = 0;
   modelData : Coinbase
   displayText: string = "Coinbase"
+  type: NodeType = NodeType.COINBASE;
   totalLinksInGraph : number = 1;
 
 	constructor(modelData: Coinbase) {

@@ -1,1 +1,2 @@
-<h3>Address <mat-chip color='accent' selected>{{data.address}}</mat-chip></h3>
+<h3>Address <mat-chip ngxClipboard [cbContent]="data.address" color='accent' selected>{{data.address}}</mat-chip></h3>
+<mat-chip-list></mat-chip-list>

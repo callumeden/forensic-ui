@@ -1,6 +1,6 @@
 import { Node } from '../node'
 import APP_CONFIG from '../../../app.config';
-import { Custom } from '../../../bitcoin/model'
+import { Custom, NodeType } from '../../../bitcoin/model'
 
 export class CustomNode implements Node {
 
@@ -8,6 +8,7 @@ export class CustomNode implements Node {
 	linkCount: number = 0;
   displayText: string;
   modelData: Custom;
+  type: NodeType = NodeType.CUSTOM;
   totalLinksInGraph : number = 1;
 
 	constructor(modelData : Custom) {

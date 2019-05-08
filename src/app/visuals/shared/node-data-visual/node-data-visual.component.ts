@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { AppService } from '../../../app.service';
 import { MatSnackBar, MAT_SNACK_BAR_DATA} from '@angular/material';
+import { NodeType } from '../../../bitcoin/model';
 
 @Component({
   selector: 'nodeDataVisual',
@@ -31,35 +32,41 @@ export class NodeDataVisualComponent implements OnInit {
   openSnackBar(name: string, nodeItems: any) {
   	console.info(name)
   	console.info(nodeItems)
-
+    
   	switch (name) {
-  		case "Address":
+  		case NodeType.ADDRESS:
   			this.nodeInfoSnackBar.openFromComponent(AddressNodeSnackbarComponent, {
   				data: nodeItems,
   				panelClass: 'node-snackbar'
    			});
   			break;
 
-  		case "Output":
+  		case NodeType.OUTPUT:
   			this.nodeInfoSnackBar.openFromComponent(OutputNodeSnackbarComponent, {
   				data: nodeItems,
   				panelClass: 'node-snackbar'
    			});
    			break;
 
-   		case "Transaction":
+   		case NodeType.TRANSACTION:
    			this.nodeInfoSnackBar.openFromComponent(TransactionNodeSnackbarComponent, {
    				data: nodeItems,
    				panelClass: 'node-snackbar'
    			});
   			break;
 
-  		case "Block":
+  		case NodeType.BLOCK:
   			this.nodeInfoSnackBar.openFromComponent(BlockNodeSnackbarComponent, {
   				data: nodeItems,
   				panelClass: 'node-snackbar'
   			});
   			break;
+
+      case NodeType.CUSTOM:
+        this.nodeInfoSnackBar.openFromComponent(CustomNodeSnackbarComponent, {
+          data: nodeItems,
+          panelClass: 'node-snackbar'
+        })
   	}
 
   }
@@ -73,6 +80,10 @@ export class NodeDataVisualComponent implements OnInit {
 })
 export class AddressNodeSnackbarComponent {
   constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) { }
+
+  handleClick(data) {
+    debugger;
+  }
 }
 
 @Component({
@@ -99,6 +110,15 @@ export class TransactionNodeSnackbarComponent {
 	styleUrls: ['./snack-bar-customisation.css']
 })
 export class BlockNodeSnackbarComponent {
+  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) { }
+}
+
+@Component({
+  selector: 'custom-node-snack-bar',
+  templateUrl: './snack-bar-templates/custom.html',
+  styleUrls: ['./snack-bar-customisation.css']
+})
+export class CustomNodeSnackbarComponent {
   constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) { }
 }
 
