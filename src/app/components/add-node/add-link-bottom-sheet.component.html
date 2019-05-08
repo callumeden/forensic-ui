@@ -14,22 +14,15 @@
 			  </mat-form-field>
 
 			  <mat-form-field>
-          <input required [(ngModel)]="targetId"  name="targetId" class="full-width" matInput #message placeholder="Target Node ID">
+			  	<input type="text" [(ngModel)]="targetId"  name="targetId" placeholder="Target Node ID" matInput [formControl]="myControl" [matAutocomplete]="auto">
           <mat-hint align="start"><strong>The ID of the target node in this new link.</strong> </mat-hint>
-        </mat-form-field>
-
-
-			 <!--  <mat-form-field>
-			  	<input type="text" placeholder="Destination Node" matInput [formControl]="myControl" [matAutocomplete]="auto">
 			    <mat-autocomplete #auto="matAutocomplete">
 			      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
 			        {{option}}
 			      </mat-option>
 			    </mat-autocomplete>
 
-			  </mat-form-field> -->
-
-
+			  </mat-form-field>
 
 			</mat-card-content>
 

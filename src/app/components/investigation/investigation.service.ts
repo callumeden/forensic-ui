@@ -9,7 +9,7 @@ import { BitcoinService } from '../../bitcoin/bitcoin.service';
 })
 export class InvestigationService {
 
-	private allIds : Set<String> = new Set();
+	private allIds : Set<string> = new Set();
 
 	private addressData = new BehaviorSubject(null);
 	currentAddressData = this.addressData.asObservable();
@@ -49,7 +49,7 @@ export class InvestigationService {
 	createCustomLink(sourceNodeData, targetNodeData) {
 		this.customLinkData.next({
 			'src': sourceNodeData.name,
-			'target': targetNodeData.targetId
+			'target': targetNodeData
 		});
 	}
 
@@ -59,6 +59,10 @@ export class InvestigationService {
 
 	isValidId(id : string) {
 		return this.allIds.has(id);
+	}
+
+	getAllIds() {
+		return Array.from(this.allIds)
 	}
 
 	constructor(private bitcoinService : BitcoinService) {}

@@ -1,8 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {MAT_BOTTOM_SHEET_DATA, MatBottomSheet, MatBottomSheetRef} from '@angular/material';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheet, MatBottomSheetRef } from '@angular/material';
 import { InvestigationService } from '../investigation/investigation.service';
 import { AddLinkService } from './add-link.service';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'add-node',
@@ -63,17 +66,37 @@ export class AddNodeBottomSheet {
   selector: 'add-link-sheet',
   templateUrl: './add-link-bottom-sheet.component.html'
 })
-export class AddLinkBottomSheet {
+export class AddLinkBottomSheet implements OnInit {
 
   constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: any, 
               private investigationService: InvestigationService,
               private bottomSheetRef: MatBottomSheetRef<AddLinkBottomSheet>) { }
 
+  myControl = new FormControl();
+  options: string[];
+  filteredOptions: Observable<string[]>;
+
+  ngOnInit() {
+    this.options = this.investigationService.getAllIds();
+
+    this.filteredOptions = this.myControl.valueChanges
+    .pipe(
+      startWith(''),
+      map(value => this._filter(value))
+    );
+
+  }
   onSubmitNewLinkForm(form) {
-    if (form.valid) {
-      this.investigationService.createCustomLink(this.data, form.value);
+    if (form.valid && this.investigationService.isValidId(this.myControl.value)) {
+      this.investigationService.createCustomLink(this.data, this.myControl.value);
       this.bottomSheetRef.dismiss();
     }
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.options.filter(option => option.toLowerCase().includes(filterValue));
   }
 
 }
