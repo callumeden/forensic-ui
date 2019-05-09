@@ -11,24 +11,35 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+   
+
     <form *ngIf="selected && selected.value == 'photo-id'" #f="ngForm" (ngSubmit)="addPhotoIdNode(f)" layout-align="center center">
       <mat-card-content>
         <mat-form-field>
           <input required [(ngModel)]="name" name="name" class="full-width" matInput #message maxlength="35" placeholder="Name of node">
         </mat-form-field>
 
+        <div class="row upload-file-row">
+          <div *ngIf="!uploadSuccess" class="custom-file col-md-10">
+            <input type="file" class="custom-file-input" id="customFile" name="photo" ng2FileSelect [uploader]="uploader">
+            <label class="custom-file-label" for="customFile">Choose file</label>
+          </div>
+          <div class="col-md-2">
+            <button *ngIf="!uploadSuccess" type="button" class="btn btn-success btn-s" (click)="saveImage()" [disabled]="!uploader.getNotUploadedItems().length">
+              Upload
+            </button>
+          </div>
+        </div>
 
-         <input type="file" name="photo" ng2FileSelect [uploader]="uploader" />
+        <div *ngIf="uploadSuccess" class="alert alert-success" role="alert">
+          Photo ID upload sucessful.
+        </div>
 
-<button type="button" class="btn btn-success btn-s" 
-  (click)="uploader.uploadAll()" 
-  [disabled]="!uploader.getNotUploadedItems().length" >
-      Upload an Image
-</button>
-
+        <mat-progress-bar class="space-above" *ngIf="uploading" color="primary" mode="indeterminate">
+        </mat-progress-bar>
       </mat-card-content>
       <mat-card-actions>
-        <button type="submit" mat-raised-button color="primary">Add node {{selected.viewValue}}</button>
+        <button [disabled]="!uploadSuccess" type="submit" mat-raised-button color="primary">Add node {{selected.viewValue}}</button>
       </mat-card-actions>
     </form>
   </div>

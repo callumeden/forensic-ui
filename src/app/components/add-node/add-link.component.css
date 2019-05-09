@@ -5,3 +5,12 @@
 ::ng-deep mat-form-field {
 	width: 100%
 }
+
+.upload-file-row {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+::ng-deep mat-progress-bar.space-above {
+	margin-top: 10px;
+}

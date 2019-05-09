@@ -8,7 +8,8 @@ import { D3Service, D3_DIRECTIVES } from './d3';
 import { MatListModule , MatCardModule, MatBottomSheetModule, MatDialogModule, MatSelectModule, MatAutocompleteModule, MatDividerModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { InvestigationComponent } from './components/investigation/investigation.component';
-import { AddNodeComponent, AddNodeBottomSheet, AddLinkBottomSheet } from './components/add-node/add-node.component';
+import { AddNodeComponent, AddLinkDialog } from './components/add-node/add-node.component';
+import { AddNodeDialog } from './components/add-node/add-node-dialog.component';
 import { AppComponent } from './app.component' 
 import { GraphComponent } from './visuals/graph/graph.component';
 import { SearchComponent } from './components/search/search.component';
@@ -32,8 +33,8 @@ const appRoutes: Routes = [
     TransactionNodeSnackbarComponent,
     BlockNodeSnackbarComponent,
     CustomNodeSnackbarComponent,
-    AddNodeBottomSheet,
-    AddLinkBottomSheet,
+    AddNodeDialog,
+    AddLinkDialog,
     FileSelectDirective,
     GraphComponent,
     AppComponent,
@@ -65,7 +66,7 @@ const appRoutes: Routes = [
       appRoutes
     )
   ],
-  entryComponents: [NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, AddNodeBottomSheet, AddLinkBottomSheet, CustomNodeSnackbarComponent],
+  entryComponents: [NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, AddNodeDialog, AddLinkDialog, CustomNodeSnackbarComponent],
   providers: [D3Service, 
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 500000}}
   ],

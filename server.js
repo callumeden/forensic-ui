@@ -34,7 +34,8 @@ app.get('/api', function (req, res) {
 });
  
 app.post('/api/upload',upload.single('photo'), function (req, res) {
-    if (!req.file) {
+  setTimeout(function() {
+if (!req.file) {
         console.log("No file received");
         return res.send({
           success: false
@@ -46,6 +47,9 @@ app.post('/api/upload',upload.single('photo'), function (req, res) {
           success: true
         })
       }
+  }, 2000);
+  
+    
 });
  
 const PORT = process.env.PORT || 3000;
