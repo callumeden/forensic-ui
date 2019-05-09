@@ -8,6 +8,7 @@ import { map, startWith } from 'rxjs/operators';
 import { AppService } from '../../app.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AddNodeDialog } from './add-node-dialog.component';
+import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'add-node',
@@ -55,7 +56,7 @@ export class AddNodeComponent implements OnInit {
 
 @Component({
   selector: 'add-link-sheet',
-  templateUrl: './add-link-bottom-sheet.component.html'
+  templateUrl: './add-link-dialog.component.html'
 })
 export class AddLinkDialog implements OnInit {
 
@@ -66,6 +67,8 @@ export class AddLinkDialog implements OnInit {
   myControl = new FormControl();
   options: string[];
   filteredOptions: Observable<string[]>;
+  forward: boolean = true;
+  faArrowsAltH = faArrowsAltH;
 
   ngOnInit() {
     this.options = this.investigationService.getAllIds();
@@ -79,7 +82,12 @@ export class AddLinkDialog implements OnInit {
   }
   onSubmitNewLinkForm(form) {
     if (form.valid && this.investigationService.isValidId(this.myControl.value)) {
-      this.investigationService.createCustomLink(this.data, this.myControl.value);
+      if (this.forward) {
+        this.investigationService.createCustomLink(this.data.name, this.myControl.value);
+      } else {
+        this.investigationService.createCustomLink(this.myControl.value, this.data.name);
+      }
+      
       this.dialogRef.close();
     }
   }

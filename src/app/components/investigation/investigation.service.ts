@@ -48,7 +48,7 @@ export class InvestigationService {
 
 	createCustomLink(sourceNodeData, targetNodeData) {
 		this.customLinkData.next({
-			'src': sourceNodeData.name,
+			'src': sourceNodeData,
 			'target': targetNodeData
 		});
 	}

@@ -12,7 +12,7 @@ const URL = 'http://localhost:3000/api/upload';
 
 @Component({
   selector: 'add-node-sheet',
-  templateUrl: './add-node-bottom-sheet.component.html',
+  templateUrl: './add-node-dialog.component.html',
   styleUrls: ['./add-link.component.css']
 })
 export class AddNodeDialog implements OnInit {

@@ -18,6 +18,7 @@ import { InvestigationGuard } from './components/investigation/investigaiton-gua
 import { NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, CustomNodeSnackbarComponent} from './visuals/shared/node-data-visual/node-data-visual.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import { FileSelectDirective } from 'ng2-file-upload';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 const appRoutes: Routes = [
 {path: 'investigation', component: InvestigationComponent, canActivate: [InvestigationGuard]},
 {path: '**', redirectTo: '/search', pathMatch: 'full'},
@@ -55,6 +56,7 @@ const appRoutes: Routes = [
     MatAutocompleteModule,
     MatInputModule,
     MatSelectModule,
+    FontAwesomeModule,
     MatButtonModule,
     MatDividerModule,
     MatSnackBarModule,

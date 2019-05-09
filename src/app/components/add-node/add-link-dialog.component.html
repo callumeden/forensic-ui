@@ -1,0 +1,81 @@
+<mat-card>
+	<div class="example-container">
+		<mat-card-title>
+      Create a new link
+    </mat-card-title>
+
+
+	  <form #f="ngForm" (ngSubmit)="onSubmitNewLinkForm(f)" layout-align="center center">
+	    <mat-card-content>
+
+	    	<table class="full-width" cellspacing="0">
+	    		<tr>
+		    		
+		    		<td *ngIf="forward">
+							<mat-form-field>
+			  				<input matInput placeholder="Source Node ID" disabled value="{{data.name}}">
+			  				<mat-hint align="start"><strong>The ID of the source node you're creating the link from.</strong> </mat-hint>
+			  				</mat-form-field>
+		    		</td>
+
+		    		<td *ngIf="forward">
+			    		<button class="btn btn-md primary" (click)="forward = !forward">
+	  						<fa-icon [icon]="faArrowsAltH"></fa-icon>
+							</button>
+						</td>
+
+		    		<td *ngIf="forward">
+		    			<mat-form-field>
+			  				<input type="text" [(ngModel)]="targetId"  name="targetId" placeholder="Target Node ID" matInput [formControl]="myControl" [matAutocomplete]="auto">
+          			<mat-hint align="start"><strong>This is the ID of the target node you're creating the link to.</strong> </mat-hint>
+			    			<mat-autocomplete #auto="matAutocomplete">
+				      		<mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+				       		 {{option}}
+				      		</mat-option>
+			    			</mat-autocomplete>
+
+			  			</mat-form-field>
+		    		</td>
+
+
+		    		<td *ngIf="!forward">
+		    			<mat-form-field>
+			  				<input type="text" [(ngModel)]="targetId"  name="targetId" placeholder="Source Node ID" matInput [formControl]="myControl" [matAutocomplete]="auto">
+          			<mat-hint align="start"><strong>The ID of the source node you're creating the link from.</strong> </mat-hint>
+			    			<mat-autocomplete #auto="matAutocomplete">
+				      		<mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+				       		 {{option}}
+				      		</mat-option>
+			    			</mat-autocomplete>
+
+			  			</mat-form-field>
+		    		</td>
+
+		    		<td *ngIf="!forward">
+			    		<button class="btn btn-md primary" (click)="forward = !forward">
+	  						<fa-icon [icon]="faArrowsAltH"></fa-icon>
+							</button>
+						</td>
+
+		    		<td *ngIf="!forward">
+							<mat-form-field>
+			  				<input matInput placeholder="Target Node ID" disabled value="{{data.name}}">
+			  				<mat-hint align="start"><strong>This is the ID of the target node you're creating the link to.</strong> </mat-hint>
+			  				</mat-form-field>
+		    		</td>
+
+
+
+  				</tr>
+  			</table>
+
+			</mat-card-content>
+
+	   	<mat-card-actions>
+        <button type="submit" mat-raised-button color="primary">Add node</button>
+     	</mat-card-actions>
+	  </form>
+
+
+	</div>
+</mat-card>

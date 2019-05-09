@@ -21,6 +21,10 @@
     "@angular/platform-browser": "~7.2.15",
     "@angular/platform-browser-dynamic": "~7.2.15",
     "@angular/router": "~7.2.15",
+    "@fortawesome/angular-fontawesome": "^0.3.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.18",
+    "@fortawesome/free-solid-svg-icons": "^5.8.2",
+    "add": "^2.0.6",
     "body-parser": "^1.19.0",
     "bootstrap": "^4.3.1",
     "core-js": "^2.5.4",
@@ -32,6 +36,7 @@
     "rxjs": "~6.5.1",
     "rxjs-compat": "^6.5.1",
     "tslib": "^1.9.0",
+    "yarn": "^1.15.2",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
@@ -39,6 +44,7 @@
     "@angular/cli": "~7.3.9",
     "@angular/compiler-cli": "~7.2.15",
     "@angular/language-service": "~7.2.15",
+    "@fortawesome/fontawesome-free": "^5.8.2",
     "@types/d3": "^5.7.2",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
