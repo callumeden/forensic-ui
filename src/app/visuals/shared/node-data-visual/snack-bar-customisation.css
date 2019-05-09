@@ -12,3 +12,8 @@
 	padding: 20px;
 	max-width: 75vw;
 }
+
+
+::ng-deep .photo-id {
+	margin: 10px;
+}

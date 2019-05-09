@@ -7,3 +7,4 @@ export * from './transaction';
 export * from './coinbase';
 export * from './custom';
 export * from './nodetype';
+export * from './custom-node-type';

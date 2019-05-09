@@ -6,14 +6,17 @@ const bodyParser = require('body-parser')
 const app = express();
 const router = express.Router();
 
-const DIR = './uploads';
+const DIR = path.join(__dirname, '/uploads');
+app.use('/uploads', express.static(DIR));
  
 let storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, DIR);
     },
     filename: (req, file, cb) => {
-      cb(null, file.fieldname + '-' + Date.now() + '.' + path.extname(file.originalname));
+      let fileName = file.fieldname + '-' + file.originalname
+      console.log('file name is', fileName);
+      cb(null, fileName);
     }
 });
 let upload = multer({storage: storage});
@@ -30,25 +33,29 @@ app.use(function (req, res, next) {
 });
  
 app.get('/api', function (req, res) {
+  console.info('api hit');
   res.end('file catcher example');
 });
- 
-app.post('/api/upload',upload.single('photo'), function (req, res) {
-  setTimeout(function() {
-if (!req.file) {
-        console.log("No file received");
-        return res.send({
-          success: false
-        });
-    
-      } else {
-        console.log('file received');
-        return res.send({
-          success: true
-        })
-      }
-  }, 2000);
+
+app.get('/api/retrieve', function (req, res) {
+  console.info('retrieve hit');
   
+});
+ 
+app.post('/api/upload', upload.single('photo'), function (req, res) {
+  if (!req.file) {
+    console.log("No file received");
+    return res.send({
+      success: false
+    });
+
+  } else {
+    console.log('file received');
+    return res.send({
+      success: true
+    })
+  }
+
     
 });
  

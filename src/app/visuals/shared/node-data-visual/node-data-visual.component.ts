@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { AppService } from '../../../app.service';
 import { MatSnackBar, MatSnackBarRef, MAT_SNACK_BAR_DATA} from '@angular/material';
-import { NodeType } from '../../../bitcoin/model';
+import { NodeType, CustomNodeType } from '../../../bitcoin/model';
 import { AddLinkService } from '../../../components/add-node/add-link.service';
 
 @Component({
@@ -118,14 +118,32 @@ export class BlockNodeSnackbarComponent {
   templateUrl: './snack-bar-templates/custom.html',
   styleUrls: ['./snack-bar-customisation.css']
 })
-export class CustomNodeSnackbarComponent {
+export class CustomNodeSnackbarComponent implements OnInit {
   constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,  
     private snackbarRef: MatSnackBarRef<CustomNodeSnackbarComponent>,
-    private dataService : AddLinkService) { }
+    private dataService : AddLinkService,
+    private appService : AppService) { }
 
+  public CustomNodeType = CustomNodeType;  
+  readonly uploadHost : string = "http://localhost:3000/uploads/";
+  private photoIdSrc: string;
+  
   createCustomLink() {
     this.snackbarRef.dismiss();
     this.dataService.newLinkRequest(this.data);
+  }
+
+  ngOnInit() {
+    if (this.data.nodeType == CustomNodeType.PHOTO_ID) {
+      this.setPhotoIdSrc();
+    }
+  }
+
+
+  setPhotoIdSrc() {
+    let file = this.data.photoIdModel.file;
+    this.photoIdSrc = this.uploadHost + file.alias + "-" + file.file.name;
+
   }
 }
 

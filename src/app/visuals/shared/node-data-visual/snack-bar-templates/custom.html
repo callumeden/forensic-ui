@@ -1,4 +1,10 @@
-<h3>Custom <mat-chip color='accent' selected ngxClipboard [cbContent]="data.name">{{data.name}}</mat-chip></h3>
-<mat-chip-list></mat-chip-list>
+<h3>{{data.nodeType}} <mat-chip color='accent' selected ngxClipboard [cbContent]="data.name">{{data.name}}</mat-chip></h3>
+
+
+<mat-chip-list *ngIf="data.nodeType == CustomNodeType.PHOTO_ID">
+</mat-chip-list>
+<div class="photo-id">
+<img [src]="photoIdSrc" class="rounded mx-auto d-block" width="100vw"> 
+</div>
 <mat-divider></mat-divider>
 <button mat-raised-button color="primary" (click)="createCustomLink()">Create a link</button>

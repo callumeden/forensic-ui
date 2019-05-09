@@ -13,7 +13,7 @@ export class CustomNode implements Node {
 
 	constructor(modelData : Custom) {
     this.id = modelData.name;
-    this.displayText = modelData.name;
+    this.displayText = modelData.nodeType.toString();
     this.modelData = modelData
   }
 

@@ -1,9 +1,10 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { InvestigationService } from '../investigation/investigation.service';
-import { FileUploader, FileSelectDirective } from 'ng2-file-upload/ng2-file-upload';
+import { FileUploader, FileSelectDirective, FileItem } from 'ng2-file-upload/ng2-file-upload';
+import { Custom, CustomNodeType } from '../../bitcoin/model';
 
-export interface CustomNodeType {
+export interface CustomNodeOptions {
   value: string;
   viewValue: string;
 }
@@ -21,7 +22,7 @@ export class AddNodeDialog implements OnInit {
   						private dialogRef: MatDialogRef<AddNodeDialog>) { }
 
 
-  nodeTypes : CustomNodeType[] = [
+  nodeTypes : CustomNodeOptions[] = [
     {value: "photo-id", viewValue: "Photographic ID"}, 
     {value: "delivery", viewValue: "Delivery Information"}, 
     {value: "invoice", viewValue: "Invoice"}, 
@@ -29,7 +30,7 @@ export class AddNodeDialog implements OnInit {
   ]
   private uploading : boolean = false;
   private uploadSuccess: boolean = false;
-  
+  private uploadedFile : FileItem;
   public uploader: FileUploader = new FileUploader({url: URL, itemAlias: "photo"});
   
 
@@ -39,14 +40,16 @@ export class AddNodeDialog implements OnInit {
          console.log('ImageUpload:uploaded:', item, status, response);
          this.uploading = false;
          this.uploadSuccess = true;
+         this.uploadedFile = item;
      };
   }
 
-
   addPhotoIdNode(form) {
+  	if (form.valid && this.uploadSuccess) {
+      let photoIdModel = {file: this.uploadedFile}
+      let model : Custom = {name: form.value.name, nodeType: CustomNodeType.PHOTO_ID, photoIdModel: photoIdModel};
 
-  	if (form.valid) {
-  		this.investigationService.provideNewCustomNodeData(form.value);
+  		this.investigationService.provideNewCustomNodeData(model);
   		this.dialogRef.close();
   	}
 
