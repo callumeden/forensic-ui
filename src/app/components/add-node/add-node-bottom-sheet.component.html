@@ -1,18 +1,35 @@
 <mat-card>
-	<div class="example-container">
-		<mat-card-title>
+  <div class="example-container">
+    <mat-card-title>
       Add a new node
     </mat-card-title>
-	  <form #f="ngForm" (ngSubmit)="onSubmitNewNodeForm(f)" layout-align="center center">
-	    <mat-card-content>
-			  <mat-form-field>
-			    <input required [(ngModel)]="name"  name="name" class="full-width" matInput #message maxlength="35" placeholder="Name of node">
-			  </mat-form-field>
-			</mat-card-content>
-	   	<mat-card-actions>
-        <button type="submit" mat-raised-button color="primary">Add node</button>
-     	</mat-card-actions>
-	  </form>
+    <mat-form-field>
+      <mat-label>Custom Node Type</mat-label>
+      <mat-select [(value)]="selected">
+        <mat-option *ngFor="let nodeType of nodeTypes" [value]="nodeType">
+          {{nodeType.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <form *ngIf="selected && selected.value == 'photo-id'" #f="ngForm" (ngSubmit)="addPhotoIdNode(f)" layout-align="center center">
+      <mat-card-content>
+        <mat-form-field>
+          <input required [(ngModel)]="name" name="name" class="full-width" matInput #message maxlength="35" placeholder="Name of node">
+        </mat-form-field>
 
-	</div>
+
+         <input type="file" name="photo" ng2FileSelect [uploader]="uploader" />
+
+<button type="button" class="btn btn-success btn-s" 
+  (click)="uploader.uploadAll()" 
+  [disabled]="!uploader.getNotUploadedItems().length" >
+      Upload an Image
+</button>
+
+      </mat-card-content>
+      <mat-card-actions>
+        <button type="submit" mat-raised-button color="primary">Add node {{selected.viewValue}}</button>
+      </mat-card-actions>
+    </form>
+  </div>
 </mat-card>

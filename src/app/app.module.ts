@@ -5,7 +5,7 @@ import { HttpClientModule }    from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { D3Service, D3_DIRECTIVES } from './d3';
-import { MatListModule , MatCardModule, MatBottomSheetModule, MatDialogModule, MatAutocompleteModule, MatDividerModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
+import { MatListModule , MatCardModule, MatBottomSheetModule, MatDialogModule, MatSelectModule, MatAutocompleteModule, MatDividerModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { InvestigationComponent } from './components/investigation/investigation.component';
 import { AddNodeComponent, AddNodeBottomSheet, AddLinkBottomSheet } from './components/add-node/add-node.component';
@@ -16,6 +16,7 @@ import { SHARED_VISUALS } from './visuals/shared';
 import { InvestigationGuard } from './components/investigation/investigaiton-guard.service';
 import { NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, CustomNodeSnackbarComponent} from './visuals/shared/node-data-visual/node-data-visual.component';
 import { ClipboardModule } from 'ngx-clipboard';
+import { FileSelectDirective } from 'ng2-file-upload';
 const appRoutes: Routes = [
 {path: 'investigation', component: InvestigationComponent, canActivate: [InvestigationGuard]},
 {path: '**', redirectTo: '/search', pathMatch: 'full'},
@@ -24,7 +25,7 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     InvestigationComponent,
-    AddNodeComponent,
+    AddNodeComponent, 
     NodeDataVisualComponent,
     AddressNodeSnackbarComponent,
     OutputNodeSnackbarComponent,
@@ -33,6 +34,7 @@ const appRoutes: Routes = [
     CustomNodeSnackbarComponent,
     AddNodeBottomSheet,
     AddLinkBottomSheet,
+    FileSelectDirective,
     GraphComponent,
     AppComponent,
     SearchComponent,
@@ -51,6 +53,7 @@ const appRoutes: Routes = [
     MatBottomSheetModule,
     MatAutocompleteModule,
     MatInputModule,
+    MatSelectModule,
     MatButtonModule,
     MatDividerModule,
     MatSnackBarModule,
