@@ -13,7 +13,7 @@
     </mat-form-field>
    
 
-    <form *ngIf="selected && selected.value == 'photo-id'" #f="ngForm" (ngSubmit)="addPhotoIdNode(f)" layout-align="center center">
+    <form *ngIf="selected && selected.value == 'photo-id'" #f="ngForm" (ngSubmit)="addCustomNode(selected, f)" layout-align="center center">
       <mat-card-content>
         <mat-form-field>
           <input required [(ngModel)]="name" name="name" class="full-width" matInput #message maxlength="35" placeholder="Name of node">
@@ -35,11 +35,29 @@
         </div>
 
         <div *ngIf="uploadSuccess" class="alert alert-success" role="alert">
-          Upload of Photo ID {{selectedFileName}} was successful.
+          Upload of {{selected.viewValue}} {{selectedFileName}} was successful.
         </div>
 
         <mat-progress-bar class="space-above" *ngIf="uploading" color="primary" mode="indeterminate">
         </mat-progress-bar>
+
+        <table class="custom-props">
+          <tr *ngFor="let item of counter(customFieldCount); let i = index">
+            <td>
+              <mat-form-field class="field-full-width">
+                <input (ngModel) = "prop-name-[i]" id="prop-name-{{i}}" name="prop-name-{{i}}" matInput placeholder="Property name">
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field class="field-full-width">
+                <input (ngModel) = "prop-val-[i]" name="prop-val-{{i}}" id="prop-val-{{i}}" matInput placeholder="Property value">
+              </mat-form-field>
+            </td>
+          </tr>
+        </table>
+
+        <button mat-stroked-button type="button" color="primary" mat-button role="button" (click)="customFieldCount = customFieldCount + 1">Add a property</button>
+
       </mat-card-content>
       <mat-card-actions>
         <button [disabled]="!uploadSuccess" type="submit" mat-raised-button color="accent">Add node {{selected.viewValue}}</button>

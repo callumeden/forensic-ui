@@ -4,7 +4,7 @@ import { FileItem } from 'ng2-file-upload/ng2-file-upload';
 export interface Custom {
 	name: string;
 	nodeType: CustomNodeType;
-
+	userProps: {};
 	photoIdModel?: PhotoIdData
 }
 

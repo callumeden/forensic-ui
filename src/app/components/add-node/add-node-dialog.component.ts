@@ -33,7 +33,8 @@ export class AddNodeDialog implements OnInit {
   private uploadedFile : FileItem;
   public uploader: FileUploader = new FileUploader({url: URL, itemAlias: "photo"});
   private selectedFileName : string;
-  
+  private customFieldCount: number = 0;
+  private counter = Array;
 
   ngOnInit() {
     this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
@@ -49,11 +50,39 @@ export class AddNodeDialog implements OnInit {
     this.selectedFileName = event.target.files[0].name;
   }
 
-  addPhotoIdNode(form) {
-  	if (form.valid && this.uploadSuccess) {
-      let photoIdModel = {file: this.uploadedFile}
-      let model : Custom = {name: form.value.name, nodeType: CustomNodeType.PHOTO_ID, photoIdModel: photoIdModel};
+  addCustomNode(selected, form) {
+    if (!form.valid) {
+      return;
+    }
 
+    switch (selected.value) {
+      case 'photo-id':
+        this.addPhotoIdNode(form);
+        break;
+
+      default:
+        // code...
+        break;
+    };
+  }
+
+  addPhotoIdNode(form) {
+  	if (this.uploadSuccess) {
+      let photoIdModel = {file: this.uploadedFile}
+
+      let userProperties = {};
+      if (this.customFieldCount > 0) {
+
+        for (let i = 0; i < this.customFieldCount; i ++) {
+          debugger;
+          let propNameField = 'prop-name-' + i;
+          let propValField = 'prop-val-' + i;
+          userProperties[form.value[propNameField]] = form.value[propValField];
+        }
+      }
+
+      let model : Custom = {name: form.value.name, nodeType: CustomNodeType.PHOTO_ID, userProps: userProperties, photoIdModel: photoIdModel};
+      
   		this.investigationService.provideNewCustomNodeData(model);
   		this.dialogRef.close();
   	}
