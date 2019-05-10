@@ -32,5 +32,5 @@ export class EntityNode implements Node {
     let index = Math.floor((APP_CONFIG.ENTITY_SPECTRUM.length - 1) * this.normal());
     return APP_CONFIG.ENTITY_SPECTRUM[index];
   }
-  
+
 }

@@ -13,7 +13,6 @@ import * as d3 from 'd3';
 export class NodeVisualComponent implements AfterViewInit {
   @Input('nodeVisual') private node: Node;
   @ViewChild("myNode") private nodeElement; 
-  private originalRadius: number;
   private d3Element;
   private hoverTimeout;
   private isSingleClick : boolean;
@@ -25,7 +24,6 @@ export class NodeVisualComponent implements AfterViewInit {
 
   ngAfterViewInit() {
   	this.d3Element = d3.select(this.nodeElement.nativeElement);
-  	this.originalRadius = +this.d3Element.attr("r")
   }
 
   @HostListener('mousedown', ['$event'])
@@ -48,7 +46,7 @@ export class NodeVisualComponent implements AfterViewInit {
 
   @HostListener('mouseover') onMouseOver(d) {
     clearTimeout(this.hoverTimeout)
-    this.d3Element.transition().duration(750).attr("r", this.originalRadius * 2)
+    this.d3Element.transition().duration(750).attr("r", this.node.r * 2)
     let that = this;
 
     this.hoverTimeout = setTimeout(function () {
@@ -64,7 +62,7 @@ export class NodeVisualComponent implements AfterViewInit {
     clearTimeout(this.hoverTimeout)
 
     let that = this;
-    this.d3Element.transition().duration(750).attr("r", this.originalRadius);
+    this.d3Element.transition().duration(750).attr("r", this.node.r);
 
     this.hoverTimeout = setTimeout(function () {
       // that.dataService.changeMessage("", {})

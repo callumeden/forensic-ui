@@ -10,7 +10,8 @@ export interface Node extends d3.SimulationNodeDatum {
   vy?: number;
   fx?: number | null;
   fy?: number | null;
-
+  r?:number;
+  
   id: string;
   linkCount: number;
   modelData;
