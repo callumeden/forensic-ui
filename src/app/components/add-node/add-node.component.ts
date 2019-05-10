@@ -24,17 +24,24 @@ export class AddNodeComponent implements OnInit {
     private dialog : MatDialog) {
 	}
 
+  private subscriptions = [];
+
   ngOnInit() {
     const newLinkRequestSubscription = this.dataService.currentNewLinkRequest.subscribe(newLinkRequestData => {
       if (newLinkRequestData) {
         this.buildNewLink(newLinkRequestData);
       }
     });
+
+
+    this.subscriptions.push(newLinkRequestSubscription);
   }
 
   ngOnDestroy() {
     this.appService.dismissInvestigationViews();
     this.dataService.clearLinkRequests();
+
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
 	addNewNode() {
@@ -46,8 +53,6 @@ export class AddNodeComponent implements OnInit {
 	}
 
 	navigateToSearch() {
-    this.appService.dismissInvestigationViews();
-    this.dataService.clearLinkRequests();
 		this.router.navigate(['search']);
 	}
 
