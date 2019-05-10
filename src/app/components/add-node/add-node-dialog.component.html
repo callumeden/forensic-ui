@@ -13,39 +13,43 @@
     </mat-form-field>
    
 
-    <form *ngIf="selected && selected.value == 'photo-id'" #f="ngForm" (ngSubmit)="addCustomNode(selected, f)" layout-align="center center">
+    <form *ngIf="selected" #f="ngForm" (ngSubmit)="addCustomNode(selected, f)" layout-align="center center">
       <mat-card-content>
         <mat-form-field>
           <input required [(ngModel)]="name" name="name" class="full-width" matInput #message maxlength="35" placeholder="Name of node">
         </mat-form-field>
 
-        <div class="row upload-file-row">
-          <div *ngIf="!uploadSuccess" class="custom-file col-md-10">
-            <input type="file" class="custom-file-input" id="customFile" name="photo" ng2FileSelect [uploader]="uploader" (change)="fileEvent($event)">
-            <label class="custom-file-label" for="customFile">
-              <span *ngIf="!selectedFileName">Choose file</span>
-              <span *ngIf="selectedFileName">{{selectedFileName}}</span>
-            </label>
+        <div *ngIf="selected.value == CustomNodeType.PHOTO_ID">
+          <div class="row upload-file-row">
+            <div *ngIf="!uploadSuccess" class="custom-file col-md-10">
+              <input type="file" class="custom-file-input" id="customFile" name="photo" ng2FileSelect [uploader]="uploader" (change)="fileEvent($event)">
+              <label class="custom-file-label" for="customFile">
+                <span *ngIf="!selectedFileName">Choose file</span>
+                <span *ngIf="selectedFileName">{{selectedFileName}}</span>
+              </label>
+            </div>
+            <div class="col-md-2">
+              <button *ngIf="!uploadSuccess" type="button" class="btn btn-success btn-s" (click)="saveImage()" [disabled]="!uploader.getNotUploadedItems().length">
+                Upload
+              </button>
+            </div>
           </div>
-          <div class="col-md-2">
-            <button *ngIf="!uploadSuccess" type="button" class="btn btn-success btn-s" (click)="saveImage()" [disabled]="!uploader.getNotUploadedItems().length">
-              Upload
-            </button>
+
+          <div *ngIf="uploadSuccess" class="alert alert-success" role="alert">
+            Upload of {{selected.viewValue}} {{selectedFileName}} was successful.
           </div>
+
+          <mat-progress-bar class="space-above" *ngIf="uploading" color="primary" mode="indeterminate">
+          </mat-progress-bar>
         </div>
 
-        <div *ngIf="uploadSuccess" class="alert alert-success" role="alert">
-          Upload of {{selected.viewValue}} {{selectedFileName}} was successful.
-        </div>
-
-        <mat-progress-bar class="space-above" *ngIf="uploading" color="primary" mode="indeterminate">
-        </mat-progress-bar>
 
         <table class="custom-props">
-          <tr *ngFor="let item of counter(customFieldCount); let i = index">
+          <tr  *ngFor="let item of counter(customFieldCount); let i = index">
             <td>
               <mat-form-field class="field-full-width">
                 <input (ngModel) = "prop-name-[i]" id="prop-name-{{i}}" name="prop-name-{{i}}" matInput placeholder="Property name">
+                <mat-hint align="start"><strong>Ensure this name is unique for this node, otherwise the propety will be overwritten.</strong> </mat-hint>
               </mat-form-field>
             </td>
             <td>
@@ -56,11 +60,12 @@
           </tr>
         </table>
 
-        <button mat-stroked-button type="button" color="primary" mat-button role="button" (click)="customFieldCount = customFieldCount + 1">Add a property</button>
+        <button class="add-field-button" mat-stroked-button type="button" color="primary" mat-button role="button" (click)="customFieldCount = customFieldCount + 1">Add a property</button>
 
       </mat-card-content>
       <mat-card-actions>
-        <button [disabled]="!uploadSuccess" type="submit" mat-raised-button color="accent">Add node {{selected.viewValue}}</button>
+        <button [disabled]="selected.value == CustomNodeType.PHOTO_ID && !uploadSuccess" type="submit" mat-raised-button color="accent">Add node {{selected.viewValue}}</button>
+
       </mat-card-actions>
     </form>
   </div>

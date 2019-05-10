@@ -5,7 +5,7 @@ import { FileUploader, FileSelectDirective, FileItem } from 'ng2-file-upload/ng2
 import { Custom, CustomNodeType } from '../../bitcoin/model';
 
 export interface CustomNodeOptions {
-  value: string;
+  value: CustomNodeType;
   viewValue: string;
 }
 const URL = 'http://localhost:3000/api/upload';
@@ -23,11 +23,12 @@ export class AddNodeDialog implements OnInit {
 
 
   nodeTypes : CustomNodeOptions[] = [
-    {value: "photo-id", viewValue: "Photographic ID"}, 
-    {value: "delivery", viewValue: "Delivery Information"}, 
-    {value: "invoice", viewValue: "Invoice"}, 
-    {value: "other", viewValue: "Other"}
+    {value: CustomNodeType.PHOTO_ID, viewValue: "Photographic ID"}, 
+    {value: CustomNodeType.DELIVERY, viewValue: "Delivery Information"}, 
+    {value: CustomNodeType.INVOICE, viewValue: "Invoice"}, 
+    {value: CustomNodeType.OTHER, viewValue: "Other"}
   ]
+  
   private uploading : boolean = false;
   private uploadSuccess: boolean = false;
   private uploadedFile : FileItem;
@@ -35,6 +36,7 @@ export class AddNodeDialog implements OnInit {
   private selectedFileName : string;
   private customFieldCount: number = 0;
   private counter = Array;
+  private CustomNodeType = CustomNodeType;
 
   ngOnInit() {
     this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
@@ -54,39 +56,49 @@ export class AddNodeDialog implements OnInit {
     if (!form.valid) {
       return;
     }
-
+    
     switch (selected.value) {
-      case 'photo-id':
-        this.addPhotoIdNode(form);
+      case CustomNodeType.PHOTO_ID:
+        this.addPhotoIdNode(selected, form);
         break;
 
       default:
-        // code...
+        this.addOtherCustomNode(selected, form);
         break;
     };
   }
 
-  addPhotoIdNode(form) {
+  addPhotoIdNode(selected, form) {
   	if (this.uploadSuccess) {
       let photoIdModel = {file: this.uploadedFile}
 
-      let userProperties = {};
-      if (this.customFieldCount > 0) {
-
-        for (let i = 0; i < this.customFieldCount; i ++) {
-          debugger;
-          let propNameField = 'prop-name-' + i;
-          let propValField = 'prop-val-' + i;
-          userProperties[form.value[propNameField]] = form.value[propValField];
-        }
-      }
-
-      let model : Custom = {name: form.value.name, nodeType: CustomNodeType.PHOTO_ID, userProps: userProperties, photoIdModel: photoIdModel};
+      let userProperties = this.retrieveUserProps(form);
+      let model : Custom = {name: form.value.name, nodeType: selected.value, userProps: userProperties, photoIdModel: photoIdModel};
       
   		this.investigationService.provideNewCustomNodeData(model);
   		this.dialogRef.close();
   	}
 
+  }
+
+  addOtherCustomNode(selected, form) {
+    let model : Custom = {name: form.value.name, nodeType: selected.value, userProps: this.retrieveUserProps(form)};
+    this.investigationService.provideNewCustomNodeData(model);
+    this.dialogRef.close();
+  }
+
+  retrieveUserProps(form) {
+   let userProperties = {};
+    if (this.customFieldCount > 0) {
+
+      for (let i = 0; i < this.customFieldCount; i ++) {
+        let propNameField = 'prop-name-' + i;
+        let propValField = 'prop-val-' + i;
+        userProperties[form.value[propNameField]] = form.value[propValField];
+      }
+    }
+
+    return userProperties;
   }
 
   saveImage(photoId) {
