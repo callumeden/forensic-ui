@@ -32,6 +32,11 @@ export class AddNodeComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.appService.dismissInvestigationViews();
+    this.dataService.clearLinkRequests();
+  }
+
 	addNewNode() {
 		const dialogRef = this.dialog.open(AddNodeDialog, {
       width: '70vw',
@@ -84,9 +89,9 @@ export class AddLinkDialog implements OnInit {
   onSubmitNewLinkForm(form) {
     if (form.valid && this.investigationService.isValidId(this.myControl.value)) {
       if (this.forward) {
-        this.investigationService.createCustomLink(this.data.name, this.myControl.value);
+        this.investigationService.createCustomLink(this.data.name, this.myControl.value, form.value.label);
       } else {
-        this.investigationService.createCustomLink(this.myControl.value, this.data.name);
+        this.investigationService.createCustomLink(this.myControl.value, this.data.name, form.value.label);
       }
       
       this.dialogRef.close();

@@ -330,10 +330,10 @@ export class InvestigationComponent implements OnInit {
   }
 
   createCustomLink(customLinkData) {
-    this.createNewLink(customLinkData.src, customLinkData.target, LinkLabel.CUSTOM);
+    this.createNewLink(customLinkData.src, customLinkData.target, customLinkData.label);
   }
 
-  private createNewLink(sourceId : string, targetId: string, label : LinkLabel) {
+  private createNewLink(sourceId : string, targetId: string, label) {
     if (this.linksUnique.has(this.buildLinkString(sourceId, targetId, label))) {
       return;
     }

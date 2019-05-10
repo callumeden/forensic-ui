@@ -19,7 +19,7 @@
 		    		</td>
 
 		    		<td *ngIf="forward">
-			    		<button class="btn btn-md primary" (click)="forward = !forward">
+			    		<button type="button" class="btn btn-md primary" (click)="forward = !forward">
 	  						<fa-icon [icon]="faArrowsAltH"></fa-icon>
 							</button>
 						</td>
@@ -37,7 +37,6 @@
 			  			</mat-form-field>
 		    		</td>
 
-
 		    		<td *ngIf="!forward">
 		    			<mat-form-field>
 			  				<input type="text" [(ngModel)]="targetId"  name="targetId" placeholder="Source Node ID" matInput [formControl]="myControl" [matAutocomplete]="auto">
@@ -52,7 +51,7 @@
 		    		</td>
 
 		    		<td *ngIf="!forward">
-			    		<button class="btn btn-md primary" (click)="forward = !forward">
+			    		<button type="button" class="btn btn-md primary" (click)="forward = !forward">
 	  						<fa-icon [icon]="faArrowsAltH"></fa-icon>
 							</button>
 						</td>
@@ -64,15 +63,17 @@
 			  				</mat-form-field>
 		    		</td>
 
-
-
   				</tr>
   			</table>
+
+  			<mat-form-field>
+  				<input required [(ngModel)]="label"  name="label" maxlength="35" matInput placeholder="New Link Label" >
+  			</mat-form-field>
 
 			</mat-card-content>
 
 	   	<mat-card-actions>
-        <button type="submit" mat-raised-button color="primary">Add node</button>
+        <button type="submit" mat-raised-button color="accent">Create Link</button>
      	</mat-card-actions>
 	  </form>
 
