@@ -32,6 +32,7 @@ export class AddNodeDialog implements OnInit {
   private uploadSuccess: boolean = false;
   private uploadedFile : FileItem;
   public uploader: FileUploader = new FileUploader({url: URL, itemAlias: "photo"});
+  private selectedFileName : string;
   
 
   ngOnInit() {
@@ -42,6 +43,10 @@ export class AddNodeDialog implements OnInit {
          this.uploadSuccess = true;
          this.uploadedFile = item;
      };
+  }
+
+  fileEvent(event) {
+    this.selectedFileName = event.target.files[0].name;
   }
 
   addPhotoIdNode(form) {

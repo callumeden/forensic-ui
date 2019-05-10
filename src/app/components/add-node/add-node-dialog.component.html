@@ -21,8 +21,11 @@
 
         <div class="row upload-file-row">
           <div *ngIf="!uploadSuccess" class="custom-file col-md-10">
-            <input type="file" class="custom-file-input" id="customFile" name="photo" ng2FileSelect [uploader]="uploader">
-            <label class="custom-file-label" for="customFile">Choose file</label>
+            <input type="file" class="custom-file-input" id="customFile" name="photo" ng2FileSelect [uploader]="uploader" (change)="fileEvent($event)">
+            <label class="custom-file-label" for="customFile">
+              <span *ngIf="!selectedFileName">Choose file</span>
+              <span *ngIf="selectedFileName">{{selectedFileName}}</span>
+            </label>
           </div>
           <div class="col-md-2">
             <button *ngIf="!uploadSuccess" type="button" class="btn btn-success btn-s" (click)="saveImage()" [disabled]="!uploader.getNotUploadedItems().length">
@@ -32,7 +35,7 @@
         </div>
 
         <div *ngIf="uploadSuccess" class="alert alert-success" role="alert">
-          Photo ID upload sucessful.
+          Upload of Photo ID {{selectedFileName}} was successful.
         </div>
 
         <mat-progress-bar class="space-above" *ngIf="uploading" color="primary" mode="indeterminate">
