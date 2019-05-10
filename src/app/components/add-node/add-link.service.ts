@@ -12,4 +12,8 @@ export class AddLinkService {
 	newLinkRequest(sourceData) {
 		this.newLinkRequests.next(sourceData)
 	}
+
+	clearLinkRequests() {
+		this.newLinkRequests.next(null);
+	}
 }

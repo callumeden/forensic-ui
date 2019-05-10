@@ -42,6 +42,7 @@ export class AddNodeComponent implements OnInit {
 
 	navigateToSearch() {
     this.appService.dismissInvestigationViews();
+    this.dataService.clearLinkRequests();
 		this.router.navigate(['search']);
 	}
 
