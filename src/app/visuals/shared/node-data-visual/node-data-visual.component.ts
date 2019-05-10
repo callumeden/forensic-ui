@@ -3,6 +3,7 @@ import { AppService } from '../../../app.service';
 import { MatSnackBar, MatSnackBarRef, MAT_SNACK_BAR_DATA} from '@angular/material';
 import { NodeType, CustomNodeType } from '../../../bitcoin/model';
 import { AddLinkService } from '../../../components/add-node/add-link.service';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'nodeDataVisual',
@@ -83,7 +84,13 @@ export class NodeDataVisualComponent implements OnInit {
 	styleUrls: ['./snack-bar-customisation.css']
 })
 export class AddressNodeSnackbarComponent {
-  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) { }
+  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,
+    private snackbarRef: MatSnackBarRef<AddressNodeSnackbarComponent>) { }
+  private faTimesCircle = faTimesCircle;
+
+  dismiss() {
+    this.snackbarRef.dismiss();
+  }
 }
 
 @Component({
@@ -92,7 +99,13 @@ export class AddressNodeSnackbarComponent {
 	styleUrls: ['./snack-bar-customisation.css']
 })
 export class OutputNodeSnackbarComponent {
-  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) { }
+  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,
+    private snackbarRef: MatSnackBarRef<OutputNodeSnackbarComponent>) { }
+  private faTimesCircle = faTimesCircle;
+
+  dismiss() {
+    this.snackbarRef.dismiss();
+  }
 }
 
 @Component({
@@ -101,7 +114,13 @@ export class OutputNodeSnackbarComponent {
 	styleUrls: ['./snack-bar-customisation.css']
 })
 export class TransactionNodeSnackbarComponent {
-  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) { }
+  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,
+    private snackbarRef: MatSnackBarRef<TransactionNodeSnackbarComponent>) { }
+  private faTimesCircle = faTimesCircle;
+
+  dismiss() {
+    this.snackbarRef.dismiss();
+  }
 }
 
 @Component({
@@ -110,7 +129,13 @@ export class TransactionNodeSnackbarComponent {
 	styleUrls: ['./snack-bar-customisation.css']
 })
 export class BlockNodeSnackbarComponent {
-  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) { }
+  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,
+    private snackbarRef: MatSnackBarRef<BlockNodeSnackbarComponent>) { }
+  private faTimesCircle = faTimesCircle;
+
+  dismiss() {
+    this.snackbarRef.dismiss();
+  }
 }
 
 @Component({
@@ -127,6 +152,7 @@ export class CustomNodeSnackbarComponent implements OnInit {
   public CustomNodeType = CustomNodeType;  
   readonly uploadHost : string = "http://localhost:3000/uploads/";
   private photoIdSrc: string;
+  private faTimesCircle = faTimesCircle;
   
   createCustomLink() {
     this.snackbarRef.dismiss();
@@ -139,11 +165,13 @@ export class CustomNodeSnackbarComponent implements OnInit {
     }
   }
 
-
   setPhotoIdSrc() {
     let file = this.data.photoIdModel.file;
     this.photoIdSrc = this.uploadHost + file.alias + "-" + file.file.name;
+  }
 
+  dismiss() {
+    this.snackbarRef.dismiss();
   }
 }
 

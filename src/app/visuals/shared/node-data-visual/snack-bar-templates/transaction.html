@@ -1,1 +1,7 @@
-<h3>Transaction <mat-chip color='accent' ngxClipboard [cbContent]="data.transactionId" selected>{{data.transactionId}}</mat-chip></h3>
+<h3>Transaction 
+	<mat-chip color='accent' ngxClipboard [cbContent]="data.transactionId" selected>{{data.transactionId}}</mat-chip>
+</h3>
+
+<button type="button" class="btn btn-md primary dismiss-node-info" (click)="dismiss()">
+		<fa-icon [icon]="faTimesCircle"></fa-icon>
+</button>

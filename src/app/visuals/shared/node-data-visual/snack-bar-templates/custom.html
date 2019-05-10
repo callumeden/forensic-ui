@@ -1,4 +1,7 @@
-<h3>{{data.nodeType}} <mat-chip color='accent' selected ngxClipboard [cbContent]="data.name">{{data.name}}</mat-chip></h3>
+<h3>
+	{{data.nodeType}} 
+	<mat-chip color='accent' selected ngxClipboard [cbContent]="data.name">{{data.name}}</mat-chip>
+</h3>
 <mat-chip-list></mat-chip-list>
 <mat-divider *ngIf="data.userProps != {}"></mat-divider>
 
@@ -14,3 +17,8 @@
 
 <mat-divider *ngIf="data.photoIdModel"></mat-divider>
 <button mat-raised-button color="accent" (click)="createCustomLink()">Create a link</button>
+
+
+<button type="button" class="btn btn-md primary dismiss-node-info" (click)="dismiss()">
+		<fa-icon [icon]="faTimesCircle"></fa-icon>
+</button>

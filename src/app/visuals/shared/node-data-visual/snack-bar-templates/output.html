@@ -3,3 +3,8 @@
 <mat-chip-list class="mat-chip-list-stacked" aria-orientation="vertical">
   <mat-chip ngxClipboard [cbContent]="data.value" color='primary' selected>Value (BTC) : {{data.value}}</mat-chip>
 </mat-chip-list>
+
+
+<button type="button" class="btn btn-md primary dismiss-node-info" (click)="dismiss()">
+		<fa-icon [icon]="faTimesCircle"></fa-icon>
+</button>

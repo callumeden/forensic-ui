@@ -17,3 +17,10 @@
 ::ng-deep .photo-id {
 	margin: 10px;
 }
+
+::ng-deep button.dismiss-node-info {
+	color:white;
+	position: absolute;
+	right: 0;
+	top: 0;
+}

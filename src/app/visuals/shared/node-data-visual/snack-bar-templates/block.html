@@ -9,3 +9,7 @@
   <mat-chip ngxClipboard [cbContent]="data.usd" color='primary' selected>USD: {{data.usd | currency: 'USD'}}</mat-chip>
   <mat-chip ngxClipboard [cbContent]="data.eur" color='primary' selected>EUR: {{data.eur | currency: 'EUR'}}</mat-chip>
 </mat-chip-list>
+
+<button type="button" class="btn btn-md primary dismiss-node-info" (click)="dismiss()">
+		<fa-icon [icon]="faTimesCircle"></fa-icon>
+</button>
