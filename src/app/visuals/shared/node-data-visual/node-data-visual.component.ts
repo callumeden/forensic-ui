@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { AppService } from '../../../app.service';
+import { InvestigationService } from '../../../components/investigation/investigation.service';
 import { MatSnackBar, MatSnackBarRef, MAT_SNACK_BAR_DATA} from '@angular/material';
 import { NodeType, CustomNodeType } from '../../../bitcoin/model';
 import { AddLinkService } from '../../../components/add-node/add-link.service';
@@ -147,7 +148,8 @@ export class CustomNodeSnackbarComponent implements OnInit {
   constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,  
     private snackbarRef: MatSnackBarRef<CustomNodeSnackbarComponent>,
     private dataService : AddLinkService,
-    private appService : AppService) { }
+    private appService : AppService,
+    private investigationService: InvestigationService) { }
 
   public CustomNodeType = CustomNodeType;  
   readonly uploadHost : string = "http://localhost:3000/uploads/";
@@ -172,6 +174,10 @@ export class CustomNodeSnackbarComponent implements OnInit {
 
   dismiss() {
     this.snackbarRef.dismiss();
+  }
+
+  removeNode() {
+    this.investigationService.newDeleteNodeRequest(this.data);
   }
 }
 

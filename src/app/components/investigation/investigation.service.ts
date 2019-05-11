@@ -35,6 +35,9 @@ export class InvestigationService {
 	private customLinkData = new BehaviorSubject(null);
 	currentCustomLinkData = this.customLinkData.asObservable();
 
+	private deleteNodeRequests = new BehaviorSubject(null);
+	currentDeleteNodeRequests = this.deleteNodeRequests.asObservable();
+
 	investigationActive : boolean = false;
 
 	provideAddressSearchResponse(response : Address) {
@@ -45,6 +48,10 @@ export class InvestigationService {
 	provideNewCustomNodeData(customNodeData) {
 		this.customNodeData.next(customNodeData);
 	}
+
+	newDeleteNodeRequest(nodeData) {
+		this.deleteNodeRequests.next(nodeData);
+	} 
 
 	createCustomLink(sourceNodeData, targetNodeData, linkLabel) {
 		this.customLinkData.next({
@@ -78,6 +85,7 @@ export class InvestigationService {
 		this.coinbaseData.next(null)
 		this.customNodeData.next(null);
 		this.customLinkData.next(null);
+		this.deleteNodeRequests.next(null);
 	}
 
 	expandNeighbours(node : Node) {

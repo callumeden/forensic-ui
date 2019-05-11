@@ -128,6 +128,13 @@ export class InvestigationComponent implements OnInit {
       }
     })
 
+    const removeNodeSubscription = this.investigationService.currentDeleteNodeRequests.subscribe(nodeToDelete => {
+      if (nodeToDelete) {
+        this.handleNodeDeletion(nodeToDelete);
+        this.finaliseUpdate();
+      }
+    })
+
     this.subscriptions.push(addressSubscription);
     this.subscriptions.push(outputSubscription);
     this.subscriptions.push(transactionSubscription);
@@ -327,6 +334,10 @@ export class InvestigationComponent implements OnInit {
       this.nodeLookup.set(customNodeData.name, newCustomNode);
       this.investigationService.registerId(customNodeData.name);
     }
+  }
+
+  handleNodeDeletion(node) {
+    console.info('todo : delete a node???');
   }
 
   createCustomLink(customLinkData) {
