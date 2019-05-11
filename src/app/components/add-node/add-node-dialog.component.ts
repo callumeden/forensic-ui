@@ -94,7 +94,11 @@ export class AddNodeDialog implements OnInit {
       for (let i = 0; i < this.customFieldCount; i ++) {
         let propNameField = 'prop-name-' + i;
         let propValField = 'prop-val-' + i;
-        userProperties[form.value[propNameField]] = form.value[propValField];
+        let propValue = form.value[propValField];
+
+        if (propValue) {
+          userProperties[form.value[propNameField]] = propValue;
+        }
       }
     }
 
