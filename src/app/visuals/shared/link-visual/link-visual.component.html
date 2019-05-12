@@ -22,4 +22,33 @@
         [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2) + ',' + ((link.source.y + link.target.y)/2) + ')'">
         {{link.type}}
 </svg:text>
+
+ <svg:text 
+        *ngIf="link.metadata"
+        class="link-label"
+        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2 - 75) + ',' + ((link.source.y + link.target.y)/2 + 10) + ')'">
+            BTC: {{link.metadata.btc}}
+</svg:text>
+
+ <svg:text 
+        *ngIf="link.metadata"
+        class="link-label"
+        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2 - 25) + ',' + ((link.source.y + link.target.y)/2 + 10) + ')'">
+        GBP: {{link.metadata.gbp}}
+</svg:text>
+
+ <svg:text 
+        *ngIf="link.metadata"
+        class="link-label"
+        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2 + 25) + ',' + ((link.source.y + link.target.y)/2 + 10) + ')'">
+            USD: {{link.metadata.usd}}
+</svg:text>
+
+<svg:text 
+        *ngIf="link.metadata"
+        class="link-label"
+        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2 + 75) + ',' + ((link.source.y + link.target.y)/2 + 10) + ')'">
+            EUR: {{link.metadata.eur}}
+</svg:text>
+
 </svg:g>

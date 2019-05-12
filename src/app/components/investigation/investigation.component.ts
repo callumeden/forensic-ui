@@ -3,7 +3,7 @@ import APP_CONFIG from '../../app.config';
 import { Node, Link, BlockNode, AddressNode, OutputNode, EntityNode, TransactionNode, CoinbaseNode, CustomNode } from '../../d3';
 import { BitcoinService } from '../../bitcoin/bitcoin.service'
 import { InvestigationService } from './investigation.service';
-import { Block, Address, Output, Entity, Transaction, Coinbase } from '../../bitcoin/model'
+import { Block, Address, Output, Entity, Transaction, Coinbase, InputRelation } from '../../bitcoin/model'
 import { Observable, of, forkJoin} from 'rxjs';
 
 enum LinkLabel {
@@ -68,6 +68,9 @@ export class InvestigationComponent implements OnInit {
     const outputSubscription = this.investigationService.currentOutputData.subscribe((outputData : Output) => {
       if (outputData){
 
+        this.createAddressNodes([outputData.lockedToAddress]);
+        this.createOutputNodes([outputData]);
+
         if (outputData.producedByTransaction) {
           this.investigationService.provideNewTransactionNode(outputData.producedByTransaction.transaction);
         }
@@ -75,9 +78,6 @@ export class InvestigationComponent implements OnInit {
         if (outputData.producedByTransaction.transaction){
           this.investigationService.provideNewBlockNode(outputData.producedByTransaction.transaction.minedInBlock);
         }
-
-        this.createAddressNodes([outputData.lockedToAddress]);
-        this.createOutputNodes([outputData]);
         this.finaliseUpdate();
       }
     });
@@ -87,7 +87,7 @@ export class InvestigationComponent implements OnInit {
         this.createCoinbaseNode(transactionData.coinbaseInput);
 
         if (transactionData.inputs) {
-          let outputs : Output[] = transactionData.inputs.map(relation => relation.input);
+          let outputs : Output[] = transactionData.inputs.map((relation: InputRelation) => relation.input);
           this.createOutputNodes(outputs);
         }
 
@@ -215,7 +215,12 @@ export class InvestigationComponent implements OnInit {
       }
 
       if (data.producedByTransaction && data.producedByTransaction.transaction) {
-        this.createNewLink(data.producedByTransaction.transaction.transactionId, data.outputId, LinkLabel.OUTPUTS);
+        this.createNewLink(data.producedByTransaction.transaction.transactionId, data.outputId, LinkLabel.OUTPUTS, {
+          'btc': data.value,
+          'gbp': data.producedByTransaction.gbpValue,
+          'usd': data.producedByTransaction.usdValue,
+          'eur': data.producedByTransaction.eurValue
+        });
       }
 
       if (data.lockedToAddress) {
@@ -356,11 +361,11 @@ export class InvestigationComponent implements OnInit {
     this.createNewLink(customLinkData.src, customLinkData.target, customLinkData.label);
   }
 
-  private createNewLink(sourceId : string, targetId: string, label) {
-    if (this.linksUnique.has(this.buildLinkString(sourceId, targetId, label))) {
+  private createNewLink(sourceId : string, targetId: string, label, metadata?) {
+    if (this.linksUnique.has(this.buildLinkString(sourceId, targetId, label)) || sourceId == targetId) {
       return;
     }
-    this.links.push(new Link(sourceId, targetId, label));
+    this.links.push(new Link(sourceId, targetId, label, metadata));
     this.linksUnique.add(this.buildLinkString(sourceId, targetId, label));
     this.updateLinkCounts(sourceId);
     this.updateLinkCounts(targetId);

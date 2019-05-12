@@ -8,3 +8,5 @@ export * from './coinbase';
 export * from './custom';
 export * from './nodetype';
 export * from './custom-node-type';
+export * from './inputrelation';
+export * from './outputrelation';
