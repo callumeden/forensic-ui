@@ -49,6 +49,14 @@ export class InvestigationService {
 		this.customNodeData.next(customNodeData);
 	}
 
+	provideNewBlockNode(blockData) {
+		this.blockData.next(blockData);
+	}
+
+	provideNewTransactionNode(transactionData) {
+		this.transactionData.next(transactionData);
+	}
+
 	newDeleteNodeRequest(nodeData) {
 		this.deleteNodeRequests.next(nodeData);
 	} 

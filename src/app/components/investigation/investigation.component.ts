@@ -56,7 +56,7 @@ export class InvestigationComponent implements OnInit {
   }
 
   createNewDataSubscriptions() {
-    const addressSubscription = this.investigationService.currentAddressData.subscribe(addressData => {
+    const addressSubscription = this.investigationService.currentAddressData.subscribe((addressData : Address) => {
       if (addressData) {
         this.createOutputNodes(addressData.outputs);
         this.createEntityNode(addressData.entity);
@@ -65,28 +65,39 @@ export class InvestigationComponent implements OnInit {
       }
     });
 
-    const outputSubscription = this.investigationService.currentOutputData.subscribe(outputData => {
+    const outputSubscription = this.investigationService.currentOutputData.subscribe((outputData : Output) => {
       if (outputData){
-        this.createTransactionNode(outputData.producedByTransaction);
-        this.createTransactionNode(outputData.inputsTransaction);
+
+        if (outputData.producedByTransaction) {
+          this.investigationService.provideNewTransactionNode(outputData.producedByTransaction.transaction);
+        }
+
+        if (outputData.producedByTransaction.transaction){
+          this.investigationService.provideNewBlockNode(outputData.producedByTransaction.transaction.minedInBlock);
+        }
+
         this.createAddressNodes([outputData.lockedToAddress]);
         this.createOutputNodes([outputData]);
         this.finaliseUpdate();
       }
     });
 
-
-    const transactionSubscription = this.investigationService.currentTransactionData.subscribe(transactionData => {
+    const transactionSubscription = this.investigationService.currentTransactionData.subscribe((transactionData : Transaction) => {
       if (transactionData) {
         this.createCoinbaseNode(transactionData.coinbaseInput);
-        this.createOutputNodes(transactionData.inputs);
+
+        if (transactionData.inputs) {
+          let outputs : Output[] = transactionData.inputs.map(relation => relation.input);
+          this.createOutputNodes(outputs);
+        }
+
         this.createBlockNode(transactionData.minedInBlock);
         this.createTransactionNode(transactionData);
         this.finaliseUpdate();
       }
     });
 
-    const entitySubscription = this.investigationService.currentEntityData.subscribe(entityData => {
+    const entitySubscription = this.investigationService.currentEntityData.subscribe((entityData : Entity) => {
       if (entityData) {
         this.createAddressNodes(entityData.usesAddresses);
         this.createEntityNode(entityData);
@@ -94,7 +105,7 @@ export class InvestigationComponent implements OnInit {
       }
     });
 
-    const blockSubscription = this.investigationService.currentBlockData.subscribe(blockData => {
+    const blockSubscription = this.investigationService.currentBlockData.subscribe((blockData : Block) => {
       if (blockData) {
         this.createTransactionNodes(blockData.minedTransactions);
         this.createCoinbaseNode(blockData.coinbase);
@@ -105,7 +116,7 @@ export class InvestigationComponent implements OnInit {
       }
     });
 
-    const coinbaseSubscription = this.investigationService.currentCoinbaseData.subscribe(coinbaseData => {
+    const coinbaseSubscription = this.investigationService.currentCoinbaseData.subscribe((coinbaseData : Coinbase) => {
       if (coinbaseData) {
         this.createBlockNode(coinbaseData.block);
         this.createCoinbaseNode(coinbaseData);
@@ -113,7 +124,7 @@ export class InvestigationComponent implements OnInit {
       }
     })
 
-    const customNodeSubscription = this.investigationService.currentCustomNodeData.subscribe(customNodeData => {
+    const customNodeSubscription = this.investigationService.currentCustomNodeData.subscribe((customNodeData: CustomNode) => {
       if (customNodeData) {
         this.createCustomNode(customNodeData);
         this.finaliseUpdate();
@@ -203,16 +214,16 @@ export class InvestigationComponent implements OnInit {
         this.investigationService.registerId(data.outputId);
       }
 
-      if (data.producedByTransaction) {
-        this.createNewLink(data.producedByTransaction.transactionId, data.outputId, LinkLabel.OUTPUTS);
+      if (data.producedByTransaction && data.producedByTransaction.transaction) {
+        this.createNewLink(data.producedByTransaction.transaction.transactionId, data.outputId, LinkLabel.OUTPUTS);
       }
 
       if (data.lockedToAddress) {
         this.createNewLink(data.outputId, data.lockedToAddress.address, LinkLabel.LOCKED_TO);
       }
 
-      if (data.inputsTransaction) {
-        this.createNewLink(data.outputId, data.inputsTransaction.transactionId, LinkLabel.INPUTS);
+      if (data.inputsTransaction && data.inputsTransaction.transaction) {
+        this.createNewLink(data.outputId, data.inputsTransaction.transaction.transactionId, LinkLabel.INPUTS);
       }
 
     }, this);
@@ -225,6 +236,7 @@ export class InvestigationComponent implements OnInit {
   }
 
   createTransactionNode(transactionData : Transaction) {
+
     if (!transactionData ) {
       return;
     }
@@ -242,8 +254,8 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (transactionData.inputs) {
-      transactionData.inputs.forEach(input => {
-        this.createNewLink(input.outputId, transactionData.transactionId, LinkLabel.INPUTS);
+      transactionData.inputs.forEach(relation => {
+        this.createNewLink(relation.input.outputId, transactionData.transactionId, LinkLabel.INPUTS);
       })
     }
 

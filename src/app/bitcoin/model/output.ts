@@ -1,14 +1,15 @@
-import { Transaction } from './transaction';
 import { Address } from './address';
+import { InputRelation} from './inputrelation';
+import { OutputRelation } from './outputrelation';
 
 export interface Output {
 
 	outputId: string;
 	value: number;
 	
-	producedByTransaction: Transaction;
+	producedByTransaction: OutputRelation;
 
-	inputsTransaction: Transaction;
+	inputsTransaction: InputRelation;
 
 	lockedToAddress: Address;
 }
