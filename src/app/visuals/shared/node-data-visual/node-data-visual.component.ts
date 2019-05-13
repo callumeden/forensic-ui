@@ -73,6 +73,12 @@ export class NodeDataVisualComponent implements OnInit {
           data: nodeItems,
           panelClass: 'node-snackbar'
         })
+
+      case NodeType.ENTITY:
+        this.nodeInfoSnackBar.openFromComponent(EntityNodeSnackbarComponent, {
+          data: nodeItems,
+          panelClass: 'node-snackbar'
+        })
   	}
 
   }
@@ -87,6 +93,21 @@ export class NodeDataVisualComponent implements OnInit {
 export class AddressNodeSnackbarComponent {
   constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,
     private snackbarRef: MatSnackBarRef<AddressNodeSnackbarComponent>) { }
+  private faTimesCircle = faTimesCircle;
+
+  dismiss() {
+    this.snackbarRef.dismiss();
+  }
+}
+
+@Component({
+  selector: 'entity-node-snack-bar',
+  templateUrl: './snack-bar-templates/entity.html',
+  styleUrls: ['./snack-bar-customisation.css']
+})
+export class EntityNodeSnackbarComponent {
+  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,
+    private snackbarRef: MatSnackBarRef<EntityNodeSnackbarComponent>) {}
   private faTimesCircle = faTimesCircle;
 
   dismiss() {

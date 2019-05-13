@@ -64,10 +64,6 @@ export class NodeVisualComponent implements AfterViewInit {
     let that = this;
     this.d3Element.transition().duration(750).attr("r", this.node.r);
 
-    this.hoverTimeout = setTimeout(function () {
-      // that.dataService.changeMessage("", {})
-    }, 500)
-
 	}
 }
 

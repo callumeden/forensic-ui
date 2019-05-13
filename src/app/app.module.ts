@@ -15,7 +15,7 @@ import { GraphComponent } from './visuals/graph/graph.component';
 import { SearchComponent } from './components/search/search.component';
 import { SHARED_VISUALS } from './visuals/shared';
 import { InvestigationGuard } from './components/investigation/investigaiton-guard.service';
-import { NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, CustomNodeSnackbarComponent} from './visuals/shared/node-data-visual/node-data-visual.component';
+import { NodeDataVisualComponent, AddressNodeSnackbarComponent, EntityNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, CustomNodeSnackbarComponent} from './visuals/shared/node-data-visual/node-data-visual.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import { FileSelectDirective } from 'ng2-file-upload';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -31,6 +31,7 @@ const appRoutes: Routes = [
     NodeDataVisualComponent,
     AddressNodeSnackbarComponent,
     OutputNodeSnackbarComponent,
+    EntityNodeSnackbarComponent,
     TransactionNodeSnackbarComponent,
     BlockNodeSnackbarComponent,
     CustomNodeSnackbarComponent,
@@ -68,7 +69,7 @@ const appRoutes: Routes = [
       appRoutes
     )
   ],
-  entryComponents: [NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, AddNodeDialog, AddLinkDialog, CustomNodeSnackbarComponent],
+  entryComponents: [NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, EntityNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, AddNodeDialog, AddLinkDialog, CustomNodeSnackbarComponent],
   providers: [D3Service, 
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 500000}}
   ],
