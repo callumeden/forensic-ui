@@ -3,7 +3,7 @@ import APP_CONFIG from '../../app.config';
 import { Node, Link, BlockNode, AddressNode, OutputNode, EntityNode, TransactionNode, CoinbaseNode, CustomNode } from '../../d3';
 import { BitcoinService } from '../../bitcoin/bitcoin.service'
 import { InvestigationService } from './investigation.service';
-import { Block, Address, Output, Entity, Transaction, Coinbase, InputRelation } from '../../bitcoin/model'
+import { Block, Address, Output, Entity, Transaction, Coinbase, InputRelation, OutputRelation } from '../../bitcoin/model'
 import { Observable, of, forkJoin} from 'rxjs';
 
 enum LinkLabel {
@@ -58,7 +58,7 @@ export class InvestigationComponent implements OnInit {
   createNewDataSubscriptions() {
     const addressSubscription = this.investigationService.currentAddressData.subscribe((addressData : Address) => {
       if (addressData) {
-        this.createOutputNodes(addressData.outputs);
+        addressData.outputs.forEach((outputData : Output) => this.createOutputNode(outputData));
         this.createEntityNode(addressData.entity);
         this.createAddressNodes([addressData]);
         this.finaliseUpdate();
@@ -67,32 +67,23 @@ export class InvestigationComponent implements OnInit {
 
     const outputSubscription = this.investigationService.currentOutputData.subscribe((outputData : Output) => {
       if (outputData){
-
         this.createAddressNodes([outputData.lockedToAddress]);
-        this.createOutputNodes([outputData]);
+        this.createOutputNode(outputData);
 
         if (outputData.producedByTransaction) {
-          this.investigationService.provideNewTransactionNode(outputData.producedByTransaction.transaction);
+          this.createTransactionNodeOnly(outputData.producedByTransaction.transaction);
+        }
+        if (outputData.inputsTransaction) {
+          this.createTransactionNodeOnly(outputData.inputsTransaction.transaction);
         }
 
-        if (outputData.producedByTransaction.transaction){
-          this.investigationService.provideNewBlockNode(outputData.producedByTransaction.transaction.minedInBlock);
-        }
         this.finaliseUpdate();
       }
     });
 
     const transactionSubscription = this.investigationService.currentTransactionData.subscribe((transactionData : Transaction) => {
       if (transactionData) {
-        this.createCoinbaseNode(transactionData.coinbaseInput);
-
-        if (transactionData.inputs) {
-          let outputs : Output[] = transactionData.inputs.map((relation: InputRelation) => relation.input);
-          this.createOutputNodes(outputs);
-        }
-
-        this.createBlockNode(transactionData.minedInBlock);
-        this.createTransactionNode(transactionData);
+        this.handleNewTransactionMessage(transactionData);
         this.finaliseUpdate();
       }
     });
@@ -107,11 +98,7 @@ export class InvestigationComponent implements OnInit {
 
     const blockSubscription = this.investigationService.currentBlockData.subscribe((blockData : Block) => {
       if (blockData) {
-        this.createTransactionNodes(blockData.minedTransactions);
-        this.createCoinbaseNode(blockData.coinbase);
-        this.createBlockNode(blockData.parent);
-        this.createBlockNode(blockData.child);
-        this.createBlockNode(blockData);
+        this.handleNewBlockMessage(blockData);
         this.finaliseUpdate();
       }
     });
@@ -175,6 +162,29 @@ export class InvestigationComponent implements OnInit {
     this.changes++;
   }
 
+  private handleNewTransactionMessage(transactionData : Transaction) {
+    this.createCoinbaseNode(transactionData.coinbaseInput);
+
+    if (transactionData.inputs) {
+      transactionData.inputs.forEach((inputRelation : InputRelation) => this.createOutputNode(inputRelation.input));
+    }
+
+    if (transactionData.outputs) {
+      transactionData.outputs.forEach((outputRelation : OutputRelation) => this.createOutputNode(outputRelation.output));
+    }
+
+    this.createBlockNode(transactionData.minedInBlock);
+    this.createTransactionNode(transactionData);
+  }
+
+  private handleNewBlockMessage(blockData : Block) {
+    this.createTransactionNodes(blockData.minedTransactions);
+    this.createCoinbaseNode(blockData.coinbase);
+    this.createBlockNode(blockData.parent);
+    this.createBlockNode(blockData.child);
+    this.createBlockNode(blockData);
+  }
+
   createAddressNodes(allAddressData : Address[]) {
 
     allAddressData.forEach(data => {
@@ -201,12 +211,12 @@ export class InvestigationComponent implements OnInit {
     }, this);
   }
 
-  createOutputNodes(outputData : Output[]) {
-    if (!outputData) {
+  createOutputNode(data : Output) {
+    if (!data) {
       return;
     }
-    outputData.forEach(data => {
-      if (!this.outputIds.has(data.outputId)){
+
+    if (!this.outputIds.has(data.outputId)){
         this.outputIds.add(data.outputId);
         let newOutputNode = new OutputNode(data)
         this.nodes.push(newOutputNode)
@@ -228,10 +238,13 @@ export class InvestigationComponent implements OnInit {
       }
 
       if (data.inputsTransaction && data.inputsTransaction.transaction) {
-        this.createNewLink(data.outputId, data.inputsTransaction.transaction.transactionId, LinkLabel.INPUTS);
+        this.createNewLink(data.outputId, data.inputsTransaction.transaction.transactionId, LinkLabel.INPUTS, {
+          'btc': data.value,
+          'gbp': data.inputsTransaction.gbpValue,
+          'usd': data.inputsTransaction.usdValue,
+          'eur': data.inputsTransaction.eurValue
+        });
       }
-
-    }, this);
   }
 
   createTransactionNodes(transactionDataArray : Transaction[]) {
@@ -240,9 +253,8 @@ export class InvestigationComponent implements OnInit {
     }
   }
 
-  createTransactionNode(transactionData : Transaction) {
-
-    if (!transactionData ) {
+  createTransactionNodeOnly(transactionData : Transaction) {
+     if (!transactionData ) {
       return;
     }
 
@@ -254,14 +266,40 @@ export class InvestigationComponent implements OnInit {
       this.investigationService.registerId(transactionData.transactionId);
     }
 
+  }
+
+  createTransactionNode(transactionData : Transaction) {
+
+    if (!transactionData ) {
+      return;
+    }
+
+    this.createTransactionNodeOnly(transactionData);
+
     if (transactionData.minedInBlock) {
       this.createNewLink(transactionData.transactionId, transactionData.minedInBlock.hash, LinkLabel.MINED_IN);
     }
 
     if (transactionData.inputs) {
-      transactionData.inputs.forEach(relation => {
-        this.createNewLink(relation.input.outputId, transactionData.transactionId, LinkLabel.INPUTS);
+      transactionData.inputs.forEach((relation: InputRelation) => {
+        this.createNewLink(relation.input.outputId, transactionData.transactionId, LinkLabel.INPUTS, {
+          'btc': relation.input.value,
+          'gbp': relation.gbpValue,
+          'usd': relation.usdValue,
+          'eur': relation.eurValue
+        });
       })
+    }
+
+    if (transactionData.outputs) {
+      transactionData.outputs.forEach((relation : OutputRelation) => {
+        this.createNewLink(transactionData.transactionId, relation.output.outputId, LinkLabel.OUTPUTS, {
+          'btc': relation.output.value,
+          'gbp': relation.gbpValue,
+          'usd': relation.usdValue,
+          'eur': relation.eurValue
+        });
+      });
     }
 
     if (transactionData.coinbaseInput) {
