@@ -18,9 +18,10 @@ export class SearchComponent {
 
 	}
 
-	private waitingOnResponse : Boolean;
+	private waitingOnResponse : Boolean = false;
 	invalidAddress : boolean = false;
 	errorMessage : string;
+	 
 	onAddressSearch(form : NgForm) {
 		if (form.valid) {
 			this.waitingOnResponse = true;

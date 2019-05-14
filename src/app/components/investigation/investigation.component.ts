@@ -67,7 +67,7 @@ export class InvestigationComponent implements OnInit {
         if (addressData.inputHeuristicLinkedAddresses){
           addressData.inputHeuristicLinkedAddresses.forEach((address: Address) => this.createAddressNode(address));
         } 
-         
+
         this.createEntityNode(addressData.entity);
         this.createAddressNode(addressData, true);
         this.finaliseUpdate();
@@ -99,7 +99,11 @@ export class InvestigationComponent implements OnInit {
 
     const entitySubscription = this.investigationService.currentEntityData.subscribe((entityData : Entity) => {
       if (entityData) {
-        entityData.usesAddresses.forEach((address : Address) => this.createAddressNode(address));
+
+        if (entityData.usesAddresses) {
+          entityData.usesAddresses.forEach((address : Address) => this.createAddressNode(address));
+        }
+        
         this.createEntityNode(entityData);
         this.finaliseUpdate();
       }
