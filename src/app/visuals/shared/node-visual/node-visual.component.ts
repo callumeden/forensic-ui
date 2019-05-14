@@ -31,17 +31,18 @@ export class NodeVisualComponent implements AfterViewInit {
     this.mouseDown = true;
   }
 
-  @HostListener("dblclick") onDoubleClick(){
+  @HostListener("dblclick") onDoubleClick(d){
     this.isSingleClick = false;
-    this.handleDoubleClick();
+    this.handleDoubleClick(d);
   }
 
   handleSingleClick() {
     console.log("Single click on node");
   }
 
-  handleDoubleClick() {
+  handleDoubleClick(d) {
     this.investigationService.expandNeighbours(this.node);
+    this.node.expanded = true;
   }
 
   @HostListener('mouseover') onMouseOver(d) {

@@ -2,6 +2,8 @@
       <svg:circle #myNode
           class="node"
           [attr.fill]="node.color"
+          [ngClass]="{expanded: node.expanded}"
+          stroke="red"
           cx="0"
           cy="0"
           [attr.r]="node.r">

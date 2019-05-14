@@ -9,6 +9,7 @@ export class OutputNode implements Node {
   displayText: string = "Output"
   type: NodeType = NodeType.OUTPUT;
   totalLinksInGraph : number = 1;
+  _expanded: boolean = false;
 
   constructor(modelData: Output) {
   	this.id = modelData.outputId;
@@ -30,6 +31,14 @@ export class OutputNode implements Node {
   get color() {
     let index = Math.floor((APP_CONFIG.OUTPUT_SPECTRUM.length - 1) * this.normal());
     return APP_CONFIG.OUTPUT_SPECTRUM[index];
+  }
+
+  get expanded() : boolean {
+    return this._expanded;
+  }
+
+  set expanded(expanded : boolean) {
+    this._expanded = expanded;
   }
 
 }

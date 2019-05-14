@@ -10,6 +10,7 @@ export class CustomNode implements Node {
   modelData: Custom;
   type: NodeType = NodeType.CUSTOM;
   totalLinksInGraph : number = 1;
+  _expanded: boolean = false;
 
 	constructor(modelData : Custom) {
     this.id = modelData.name;
@@ -32,6 +33,14 @@ export class CustomNode implements Node {
   get color() {
     let index = Math.floor((APP_CONFIG.COINBASE_SPECTRUM.length - 1) * this.normal());
     return "rgb(0, 0, 0)"
+  }
+
+  get expanded() : boolean {
+    return this._expanded;
+  }
+
+  set expanded(expanded : boolean) {
+    this._expanded = expanded;
   }
   
 }

@@ -10,6 +10,7 @@ export class EntityNode implements Node {
   displayText: string = "Entity"
   type: NodeType = NodeType.ENTITY;
   totalLinksInGraph : number = 1;
+  _expanded: boolean = false;
 
 	constructor(modelData: Entity) {
     this.id = modelData.name;
@@ -31,6 +32,14 @@ export class EntityNode implements Node {
   get color() {
     let index = Math.floor((APP_CONFIG.ENTITY_SPECTRUM.length - 1) * this.normal());
     return APP_CONFIG.ENTITY_SPECTRUM[index];
+  }
+
+  get expanded() : boolean {
+    return this._expanded;
+  }
+
+  set expanded(expanded : boolean) {
+    this._expanded = expanded;
   }
 
 }

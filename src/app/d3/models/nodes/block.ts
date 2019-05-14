@@ -10,6 +10,7 @@ export class BlockNode implements Node {
   displayText: string = "Block"
   type: NodeType = NodeType.BLOCK;
   totalLinksInGraph : number = 1;
+  _expanded: boolean = false;
 
 	constructor(modelData : Block) {
     this.id = modelData.hash;
@@ -31,5 +32,13 @@ export class BlockNode implements Node {
   get color() {
     let index = Math.floor((APP_CONFIG.BLOCK_SPECTRUM.length - 1) * this.normal());
     return APP_CONFIG.BLOCK_SPECTRUM[index];
+  }
+
+  get expanded() : boolean {
+    return this._expanded;
+  }
+
+  set expanded(expanded : boolean) {
+    this._expanded = expanded;
   }
 }

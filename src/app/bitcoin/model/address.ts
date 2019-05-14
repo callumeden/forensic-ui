@@ -7,4 +7,6 @@ export interface Address {
   outputs: Output[];
 
   entity: Entity;
+
+  inputHeuristicLinkedAddresses: Address[];
 }

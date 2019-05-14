@@ -10,6 +10,7 @@ export class CoinbaseNode implements Node {
   displayText: string = "Coinbase"
   type: NodeType = NodeType.COINBASE;
   totalLinksInGraph : number = 1;
+  _expanded: boolean = false;
 
 	constructor(modelData: Coinbase) {
     this.id = modelData.coinbaseId;
@@ -32,5 +33,14 @@ export class CoinbaseNode implements Node {
     let index = Math.floor((APP_CONFIG.COINBASE_SPECTRUM.length - 1) * this.normal());
     return APP_CONFIG.COINBASE_SPECTRUM[index];
   }
+
+  get expanded() : boolean {
+    return this._expanded;
+  }
+
+  set expanded(expanded : boolean) {
+    this._expanded = expanded;
+  }
+
   
 }

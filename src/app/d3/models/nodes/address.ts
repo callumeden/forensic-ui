@@ -10,10 +10,14 @@ export class AddressNode implements Node {
   displayText: string = "Address";
   type: NodeType = NodeType.ADDRESS;
   totalLinksInGraph : number = 1;
+  _expanded: boolean = false;
 
-	constructor(address : string, modelData: Address) {
+	constructor(address : string, modelData: Address, expanded? : boolean) {
     this.id = address;
     this.modelData = modelData
+    if (expanded) {
+      this._expanded = true;
+    }
   }
 
   normal = () => {
@@ -31,6 +35,14 @@ export class AddressNode implements Node {
   get color() {
     let index = Math.floor((APP_CONFIG.ADDRESS_SPECTRUM.length - 1) * this.normal());
     return APP_CONFIG.ADDRESS_SPECTRUM[index];
+  }
+
+  get expanded() : boolean {
+    return this._expanded;
+  }
+
+  set expanded(expanded : boolean) {
+    this._expanded = expanded;
   }
   
 }

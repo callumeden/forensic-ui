@@ -14,7 +14,8 @@ enum LinkLabel {
   LOCKED_TO="LOCKED_TO",
   MINED_IN="MINED_IN",
   OUTPUTS="OUTPUTS",
-  CUSTOM="CUSTOM"
+  CUSTOM="CUSTOM",
+  INPUT_HEURISTIC_LINKED_ADDRESS="INPUT_HEURISTIC_LINKED_ADDRESS"
 }
 
 
@@ -59,15 +60,17 @@ export class InvestigationComponent implements OnInit {
     const addressSubscription = this.investigationService.currentAddressData.subscribe((addressData : Address) => {
       if (addressData) {
         addressData.outputs.forEach((outputData : Output) => this.createOutputNode(outputData));
+        addressData.inputHeuristicLinkedAddresses.forEach((address: Address) => this.createAddressNode(address));
+
         this.createEntityNode(addressData.entity);
-        this.createAddressNodes([addressData]);
+        this.createAddressNode(addressData, true);
         this.finaliseUpdate();
       }
     });
 
     const outputSubscription = this.investigationService.currentOutputData.subscribe((outputData : Output) => {
       if (outputData){
-        this.createAddressNodes([outputData.lockedToAddress]);
+        this.createAddressNode(outputData.lockedToAddress);
         this.createOutputNode(outputData);
 
         if (outputData.producedByTransaction) {
@@ -90,7 +93,7 @@ export class InvestigationComponent implements OnInit {
 
     const entitySubscription = this.investigationService.currentEntityData.subscribe((entityData : Entity) => {
       if (entityData) {
-        this.createAddressNodes(entityData.usesAddresses);
+        entityData.usesAddresses.forEach((address : Address) => this.createAddressNode(address));
         this.createEntityNode(entityData);
         this.finaliseUpdate();
       }
@@ -185,30 +188,34 @@ export class InvestigationComponent implements OnInit {
     this.createBlockNode(blockData);
   }
 
-  createAddressNodes(allAddressData : Address[]) {
+  createAddressNode(data : Address, isExpanded? : boolean) {
 
-    allAddressData.forEach(data => {
-      if (!this.addressIds.has(data.address)) {
-        this.addressIds.add(data.address);
-        console.info('pushing address', data);
-        let newAddressNode = new AddressNode(data.address, data)
-        this.nodes.push(newAddressNode);
-        this.nodeLookup.set(data.address, newAddressNode);
-        this.investigationService.registerId(data.address);
-      }
+    if (!this.addressIds.has(data.address)) {
+      this.addressIds.add(data.address);
+      console.info('pushing address', data);
+      let newAddressNode = new AddressNode(data.address, data, isExpanded)
+      this.nodes.push(newAddressNode);
+      this.nodeLookup.set(data.address, newAddressNode);
+      this.investigationService.registerId(data.address);
+    }
 
-      if (data.outputs) {
-        data.outputs.forEach(output => {
-          this.createNewLink(output.outputId, data.address, LinkLabel.LOCKED_TO);
-        }, this)
+    if (data.outputs) {
+      data.outputs.forEach(output => {
+        this.createNewLink(output.outputId, data.address, LinkLabel.LOCKED_TO);
+      }, this)
 
-      }
+    }
 
-      if (data.entity) {
-        this.createNewLink(data.address, data.entity.name, LinkLabel.HAS_ENTITY);
-      }
+    if (data.entity) {
+      this.createNewLink(data.address, data.entity.name, LinkLabel.HAS_ENTITY);
+    }
 
-    }, this);
+    if (data.inputHeuristicLinkedAddresses) {
+      data.inputHeuristicLinkedAddresses.forEach((linkedAddress : Address) => {
+        this.createNewLink(data.address, linkedAddress.address, LinkLabel.INPUT_HEURISTIC_LINKED_ADDRESS)
+      });
+    }
+
   }
 
   createOutputNode(data : Output) {

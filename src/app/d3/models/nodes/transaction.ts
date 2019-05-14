@@ -10,7 +10,8 @@ export class TransactionNode implements Node {
   displayText: string = "Transaction";
   type: NodeType = NodeType.TRANSACTION;
   totalLinksInGraph : number = 1;
-
+  _expanded: boolean = false;
+  
 	constructor(modelData : Transaction) {
     this.id = modelData.transactionId;
     this.modelData = modelData;
@@ -31,5 +32,13 @@ export class TransactionNode implements Node {
   get color() {
     let index = Math.floor((APP_CONFIG.ADDRESS_SPECTRUM.length - 1) * this.normal());
     return APP_CONFIG.TRANSACTION_SPECTRUM[index];
+  }
+
+  get expanded() : boolean {
+    return this._expanded;
+  }
+
+  set expanded(expanded : boolean) {
+    this._expanded = expanded;
   }
 }
