@@ -59,9 +59,15 @@ export class InvestigationComponent implements OnInit {
   createNewDataSubscriptions() {
     const addressSubscription = this.investigationService.currentAddressData.subscribe((addressData : Address) => {
       if (addressData) {
-        addressData.outputs.forEach((outputData : Output) => this.createOutputNode(outputData));
-        addressData.inputHeuristicLinkedAddresses.forEach((address: Address) => this.createAddressNode(address));
 
+        if (addressData.outputs) {
+          addressData.outputs.forEach((outputData : Output) => this.createOutputNode(outputData));
+        }
+
+        if (addressData.inputHeuristicLinkedAddresses){
+          addressData.inputHeuristicLinkedAddresses.forEach((address: Address) => this.createAddressNode(address));
+        } 
+         
         this.createEntityNode(addressData.entity);
         this.createAddressNode(addressData, true);
         this.finaliseUpdate();
