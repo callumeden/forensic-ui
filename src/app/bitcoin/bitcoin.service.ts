@@ -9,7 +9,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 })
 export class BitcoinService {
 
-	readonly serviceDomain : string = 'http://localhost:8080';
+	readonly serviceDomain : string = 'http://localhost:8090';
 
   constructor(private http: HttpClient) { }
 
