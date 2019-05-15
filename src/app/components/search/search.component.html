@@ -11,23 +11,33 @@
         </mat-form-field>
 
 
+        <section class="btc-conversion-currency-section">
+          <label id="example-radio-group-label">Select the currency to display BTC conversions in.</label>
+          <mat-radio-group name="btcConversionCurrency"
+            [(ngModel)]="btcConversionCurrency"
+            class="radio-buttons">
+            <mat-radio-button class="radio-button" value="gbp">GBP</mat-radio-button>
+            <mat-radio-button class="radio-button" value="usd">USD</mat-radio-button>
+            <mat-radio-button class="radio-button" value="eur">EUR</mat-radio-button>
+
+          </mat-radio-group>
+        </section>
+
         <section class="heuristic-toggle-section">
           <mat-slide-toggle class="heuristic-toggle" name="inputHeuristicEnabled" [(ngModel)]="inputHeuristicEnabled">
             Input Address Clustering
           </mat-slide-toggle>
         </section>
 
-        <div>
-          <mat-slide-toggle name="neighbourTruncationEnabled" [(ngModel)]="neighbourTruncationEnabled">
-            Limit number of neighbours rendered for each node (per relationship) <h5>
-              <span class="badge badge-warning" *ngIf="!neighbourTruncationEnabled">UI Performance may seriously deterioate for nodes with many neighbours</span>
-              <span *ngIf="neighbourTruncationEnabled"class="badge badge-secondary">{{truncateNeighboursCount}} Neighbours per node</span>
-            </h5>
-          </mat-slide-toggle>
-        </div>
-          
         <section class="neighbour-truncate-section">
-            <mat-slider [disabled]="!neighbourTruncationEnabled" name="truncate-neighbour-slider" class="neighbour-truncate-slider" thumbLabel [thumbLabel]="thumbLabel" [(ngModel)]="truncateNeighboursCount" tickInterval="1" min="0" max="100"></mat-slider>
+
+          <mat-slide-toggle name="neighbourTruncationEnabled" [(ngModel)]="neighbourTruncationEnabled">
+            Limit number of neighbours rendered for each node (per relationship type)
+              <span class="badge badge-warning" *ngIf="!neighbourTruncationEnabled">UI Performance may seriously deterioate for nodes with many neighbours</span>
+              <h5><span *ngIf="neighbourTruncationEnabled" class="badge badge-secondary">Limit: {{truncateNeighboursCount}}</span></h5>
+          </mat-slide-toggle>
+
+          <mat-slider [disabled]="!neighbourTruncationEnabled" name="truncate-neighbour-slider" class="neighbour-truncate-slider" thumbLabel [thumbLabel]="thumbLabel" [(ngModel)]="truncateNeighboursCount" tickInterval="1" min="0" max="100"></mat-slider>
         </section>
 
 

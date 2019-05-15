@@ -45,12 +45,14 @@ export class InvestigationService {
 
 	private inputClusteringEnabled : boolean = false;
 	private neighbourLimit: number = 25;
+	private btcConversionCurrency : string = 'gbp';
 
-	provideAddressSearchResponse(response : Address, inputClustering : boolean, neighbourLimit: number) {
+	provideAddressSearchResponse(response : Address, inputClustering : boolean, neighbourLimit: number, btcConversionCurrency : string) {
 		this.investigationActive = true;
 		this.neighbourLimit = neighbourLimit;
 		this.inputClusteringEnabled = inputClustering;
-		this.addressData.next({'response': response, 'inputClustering': inputClustering, 'neighbourLimit': neighbourLimit});
+		this.btcConversionCurrency = btcConversionCurrency;
+		this.addressData.next({'response': response, 'inputClustering': inputClustering, 'neighbourLimit': neighbourLimit, 'btcConversionCurrency': btcConversionCurrency});
 	} 
 
 	provideNewCustomNodeData(customNodeData) {
@@ -177,7 +179,7 @@ export class InvestigationService {
 		
 		observable.subscribe(address => {
 			if (address) {
-				this.addressData.next({'response': address, 'inputClustering' : this.inputClusteringEnabled, 'neighbourLimit': this.neighbourLimit});
+				this.addressData.next({'response': address, 'inputClustering' : this.inputClusteringEnabled, 'neighbourLimit': this.neighbourLimit, 'btcConversionCurrency': this.btcConversionCurrency});
 			}
 		})
 

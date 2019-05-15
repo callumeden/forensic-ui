@@ -24,6 +24,7 @@ export class SearchComponent {
 	inputHeuristicEnabled : boolean = false;
 	truncateNeighboursCount: number = 25;
 	neighbourTruncationEnabled: boolean = true;
+	btcConversionCurrency: string = 'gbp';
 
 	onAddressSearch(form : NgForm) {
 		if (form.valid) {
@@ -32,7 +33,11 @@ export class SearchComponent {
 			this.bitcoinService.searchForAddress(form.value.address).subscribe(
 
 				(response : Address) => {
-					this.investigationService.provideAddressSearchResponse(response, this.inputHeuristicEnabled, this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1);
+					this.investigationService.provideAddressSearchResponse(
+						response, 
+						this.inputHeuristicEnabled, 
+						this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1,
+						this.btcConversionCurrency);
 					this.router.navigateByUrl('/investigation');
 					this.waitingOnResponse = false;
 				},

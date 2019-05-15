@@ -26,28 +26,28 @@
  <svg:text 
         *ngIf="link.metadata"
         class="link-label"
-        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2 - 75) + ',' + ((link.source.y + link.target.y)/2 + 10) + ')'">
+        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2) + ',' + ((link.source.y + link.target.y)/2 + 15) + ')'">
             BTC: {{link.metadata.btc}}
 </svg:text>
 
  <svg:text 
-        *ngIf="link.metadata"
+        *ngIf="link.metadata && link.metadata.currency=='gbp'"
         class="link-label"
-        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2 - 25) + ',' + ((link.source.y + link.target.y)/2 + 10) + ')'">
+        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2) + ',' + ((link.source.y + link.target.y)/2 + 30) + ')'">
         GBP: {{link.metadata.gbp}}
 </svg:text>
 
  <svg:text 
-        *ngIf="link.metadata"
+        *ngIf="link.metadata && link.metadata.currency=='usd'"
         class="link-label"
-        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2 + 25) + ',' + ((link.source.y + link.target.y)/2 + 10) + ')'">
+        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2) + ',' + ((link.source.y + link.target.y)/2 + 30) + ')'">
             USD: {{link.metadata.usd}}
 </svg:text>
 
 <svg:text 
-        *ngIf="link.metadata"
+        *ngIf="link.metadata && link.metadata.currency=='eur'"
         class="link-label"
-        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2 + 75) + ',' + ((link.source.y + link.target.y)/2 + 10) + ')'">
+        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2) + ',' + ((link.source.y + link.target.y)/2 + 30) + ')'">
             EUR: {{link.metadata.eur}}
 </svg:text>
 

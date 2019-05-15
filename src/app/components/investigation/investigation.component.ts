@@ -45,6 +45,7 @@ export class InvestigationComponent implements OnInit {
   neighbourLimit: number = 25;
 
   inputClusteringEnabled: boolean = false;
+  btcConversionCurrency: string = 'gbp';
 
   constructor(private bitcoinService : BitcoinService, 
               private investigationService: InvestigationService) {
@@ -74,6 +75,7 @@ export class InvestigationComponent implements OnInit {
     const addressSubscription = this.investigationService.currentAddressData.subscribe(data => {
       this.inputClusteringEnabled = data.inputClustering;
       this.neighbourLimit = data.neighbourLimit;
+      this.btcConversionCurrency = data.btcConversionCurrency;
       let addressData : Address = data.response;
 
       if (addressData) {
@@ -271,7 +273,8 @@ export class InvestigationComponent implements OnInit {
           'btc': data.value,
           'gbp': data.producedByTransaction.gbpValue,
           'usd': data.producedByTransaction.usdValue,
-          'eur': data.producedByTransaction.eurValue
+          'eur': data.producedByTransaction.eurValue,
+          'currency': this.btcConversionCurrency
         });
       }
 
@@ -284,7 +287,8 @@ export class InvestigationComponent implements OnInit {
           'btc': data.value,
           'gbp': data.inputsTransaction.gbpValue,
           'usd': data.inputsTransaction.usdValue,
-          'eur': data.inputsTransaction.eurValue
+          'eur': data.inputsTransaction.eurValue,
+          'currency': this.btcConversionCurrency
         });
       }
   }
@@ -325,7 +329,8 @@ export class InvestigationComponent implements OnInit {
           'btc': relation.input.value,
           'gbp': relation.gbpValue,
           'usd': relation.usdValue,
-          'eur': relation.eurValue
+          'eur': relation.eurValue,
+          'currency': this.btcConversionCurrency
         });
       })
     }
@@ -337,7 +342,8 @@ export class InvestigationComponent implements OnInit {
           'btc': relation.output.value,
           'gbp': relation.gbpValue,
           'usd': relation.usdValue,
-          'eur': relation.eurValue
+          'eur': relation.eurValue,
+          'currency': this.btcConversionCurrency
         });
       });
     }
