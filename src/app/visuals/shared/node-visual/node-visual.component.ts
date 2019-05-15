@@ -41,14 +41,15 @@ export class NodeVisualComponent implements AfterViewInit {
   }
 
   handleDoubleClick(d) {
-
     if (this.node.expanded) {
       return;
     }
-    
+
     this.requesting = true;
     this.d3Element.transition().duration(750).attr("r", this.node.r);
+
     this.pulsate(this.d3Element);
+    
     this.investigationService.expandNeighbours(this.node).subscribe(response => {
       if (response) {
         this.node.expanded = true;

@@ -18,6 +18,7 @@ enum LinkLabel {
   INPUT_HEURISTIC_LINKED_ADDRESS="INPUT_HEURISTIC_LINKED_ADDRESS"
 }
 
+const NEIGHBOURS_LIMIT : number = 25;
 
 @Component({
   selector: 'investigation',
@@ -43,6 +44,7 @@ export class InvestigationComponent implements OnInit {
   subscriptions = [];
   totalLinkCount: number = 0;
 
+
   inputClusteringEnabled: boolean = false;
 
   constructor(private bitcoinService : BitcoinService, 
@@ -58,6 +60,14 @@ export class InvestigationComponent implements OnInit {
     this.createNewDataSubscriptions();
   }
 
+  truncateNeighbours<T>(list : T[]) : T[] {
+    if (list) {
+      return list.slice(0, NEIGHBOURS_LIMIT);
+    }
+
+    return [];
+  }
+
   createNewDataSubscriptions() {
     const addressSubscription = this.investigationService.currentAddressData.subscribe(data => {
       this.inputClusteringEnabled = data.inputClustering;
@@ -65,10 +75,12 @@ export class InvestigationComponent implements OnInit {
       if (addressData) {
 
         if (addressData.outputs) {
+          addressData.outputs = this.truncateNeighbours(addressData.outputs);
           addressData.outputs.forEach((outputData : Output) => this.createOutputNode(outputData));
         }
 
         if (this.inputClusteringEnabled && addressData.inputHeuristicLinkedAddresses){
+          addressData.inputHeuristicLinkedAddresses = this.truncateNeighbours(addressData.inputHeuristicLinkedAddresses);
           addressData.inputHeuristicLinkedAddresses.forEach((address: Address) => this.createAddressNode(address));
         } 
 
@@ -105,6 +117,7 @@ export class InvestigationComponent implements OnInit {
       if (entityData) {
 
         if (entityData.usesAddresses) {
+          entityData.usesAddresses = this.truncateNeighbours(entityData.usesAddresses);
           entityData.usesAddresses.forEach((address : Address) => this.createAddressNode(address));
         }
         
@@ -133,28 +146,27 @@ export class InvestigationComponent implements OnInit {
         this.createCustomNode(customNodeData);
         this.finaliseUpdate();
       }
-    })
-
+    });
 
     const customLinkSubscription = this.investigationService.currentCustomLinkData.subscribe(customLinkData => {
       if (customLinkData) {
         this.createCustomLink(customLinkData);
         this.finaliseUpdate();
       }
-    })
+    });
 
     const removeNodeSubscription = this.investigationService.currentDeleteNodeRequests.subscribe(nodeToDelete => {
       if (nodeToDelete) {
         this.handleNodeDeletion(nodeToDelete);
         this.finaliseUpdate();
       }
-    })
+    });
 
     const inputClusteringSubscription = this.investigationService.currentInputClusteringRequest.subscribe(inputClusteringEnabled => {
       if (inputClusteringEnabled) {
         this.inputClusteringEnabled = inputClusteringEnabled;
       }
-    })
+    });
 
     this.subscriptions.push(addressSubscription);
     this.subscriptions.push(outputSubscription);
@@ -190,10 +202,12 @@ export class InvestigationComponent implements OnInit {
     this.createCoinbaseNode(transactionData.coinbaseInput);
 
     if (transactionData.inputs) {
+      transactionData.inputs = this.truncateNeighbours(transactionData.inputs);
       transactionData.inputs.forEach((inputRelation : InputRelation) => this.createOutputNode(inputRelation.input));
     }
 
     if (transactionData.outputs) {
+      transactionData.outputs = this.truncateNeighbours(transactionData.outputs);
       transactionData.outputs.forEach((outputRelation : OutputRelation) => this.createOutputNode(outputRelation.output));
     }
 
@@ -202,7 +216,8 @@ export class InvestigationComponent implements OnInit {
   }
 
   private handleNewBlockMessage(blockData : Block) {
-    this.createTransactionNodes(blockData.minedTransactions);
+    blockData.minedTransactions = this.truncateNeighbours(blockData.minedTransactions);
+    blockData.minedTransactions.forEach(tx => this.createTransactionNode(tx));
     this.createCoinbaseNode(blockData.coinbase);
     this.createBlockNode(blockData.parent);
     this.createBlockNode(blockData.child);
@@ -221,6 +236,7 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (data.outputs) {
+      data.outputs = this.truncateNeighbours(data.outputs);
       data.outputs.forEach(output => {
         this.createNewLink(output.outputId, data.address, LinkLabel.LOCKED_TO);
       }, this)
@@ -232,6 +248,7 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (this.inputClusteringEnabled && data.inputHeuristicLinkedAddresses) {
+      data.inputHeuristicLinkedAddresses = this.truncateNeighbours(data.inputHeuristicLinkedAddresses);
       data.inputHeuristicLinkedAddresses.forEach((linkedAddress : Address) => {
         this.createNewLink(data.address, linkedAddress.address, LinkLabel.INPUT_HEURISTIC_LINKED_ADDRESS)
       });
@@ -275,11 +292,7 @@ export class InvestigationComponent implements OnInit {
       }
   }
 
-  createTransactionNodes(transactionDataArray : Transaction[]) {
-    if (transactionDataArray) {
-      transactionDataArray.forEach(transaction => this.createTransactionNode(transaction));
-    }
-  }
+
 
   createTransactionNodeOnly(transactionData : Transaction) {
      if (!transactionData ) {
@@ -309,6 +322,7 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (transactionData.inputs) {
+      transactionData.inputs = this.truncateNeighbours(transactionData.inputs);
       transactionData.inputs.forEach((relation: InputRelation) => {
         this.createNewLink(relation.input.outputId, transactionData.transactionId, LinkLabel.INPUTS, {
           'btc': relation.input.value,
@@ -320,6 +334,7 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (transactionData.outputs) {
+      transactionData.outputs = this.truncateNeighbours(transactionData.outputs);
       transactionData.outputs.forEach((relation : OutputRelation) => {
         this.createNewLink(transactionData.transactionId, relation.output.outputId, LinkLabel.OUTPUTS, {
           'btc': relation.output.value,
@@ -349,6 +364,7 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (entityData.usesAddresses) {
+      entityData.usesAddresses = this.truncateNeighbours(entityData.usesAddresses);
       entityData.usesAddresses.forEach(address => {
         this.createNewLink(address.address, entityData.name, LinkLabel.HAS_ENTITY);
       });
@@ -377,6 +393,7 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (blockData.minedTransactions) {
+      blockData.minedTransactions = this.truncateNeighbours(blockData.minedTransactions);
       blockData.minedTransactions.forEach(transaction => {
         this.createNewLink(transaction.transactionId, blockData.hash, LinkLabel.MINED_IN);
       })
