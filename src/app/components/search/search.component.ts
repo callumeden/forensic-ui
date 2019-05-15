@@ -21,7 +21,8 @@ export class SearchComponent {
 	private waitingOnResponse : Boolean = false;
 	invalidAddress : boolean = false;
 	errorMessage : string;
-	 
+	inputHeuristicEnabled : boolean = false;
+
 	onAddressSearch(form : NgForm) {
 		if (form.valid) {
 			this.waitingOnResponse = true;
@@ -29,7 +30,7 @@ export class SearchComponent {
 			this.bitcoinService.searchForAddress(form.value.address).subscribe(
 
 				(response : Address) => {
-					this.investigationService.provideAddressSearchResponse(response);
+					this.investigationService.provideAddressSearchResponse(response, this.inputHeuristicEnabled);
 					this.router.navigateByUrl('/investigation');
 					this.waitingOnResponse = false;
 				},

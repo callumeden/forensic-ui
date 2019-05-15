@@ -38,11 +38,17 @@ export class InvestigationService {
 	private deleteNodeRequests = new BehaviorSubject(null);
 	currentDeleteNodeRequests = this.deleteNodeRequests.asObservable();
 
+	private inputClusteringRequests = new BehaviorSubject(null);
+	currentInputClusteringRequest = this.inputClusteringRequests.asObservable();
+
 	investigationActive : boolean = false;
 
-	provideAddressSearchResponse(response : Address) {
+	private inputClusteringEnabled : boolean = false;
+
+	provideAddressSearchResponse(response : Address, inputClustering : boolean) {
 		this.investigationActive = true;
-		this.addressData.next(response)
+		this.inputClusteringEnabled = inputClustering;
+		this.addressData.next({'response': response, 'inputClustering': inputClustering});
 	} 
 
 	provideNewCustomNodeData(customNodeData) {
@@ -94,6 +100,7 @@ export class InvestigationService {
 		this.customNodeData.next(null);
 		this.customLinkData.next(null);
 		this.deleteNodeRequests.next(null);
+		this.inputClusteringRequests.next(null);
 	}
 
 	expandNeighbours(node : Node) {
@@ -149,7 +156,7 @@ export class InvestigationService {
 	private expandAddressNodeNeighbours(node : AddressNode) {
 		this.bitcoinService.getAddress(node.modelData.address).subscribe(address => {
 			if (address) {
-				this.addressData.next(address);
+				this.addressData.next({'response': address, 'inputClustering' : this.inputClusteringEnabled});
 			}
 		})
 	}

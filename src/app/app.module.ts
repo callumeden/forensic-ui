@@ -19,6 +19,7 @@ import { NodeDataVisualComponent, AddressNodeSnackbarComponent, EntityNodeSnackb
 import { ClipboardModule } from 'ngx-clipboard';
 import { FileSelectDirective } from 'ng2-file-upload';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 const appRoutes: Routes = [
 {path: 'investigation', component: InvestigationComponent, canActivate: [InvestigationGuard]},
 {path: '**', redirectTo: '/search', pathMatch: 'full'},
@@ -61,6 +62,7 @@ const appRoutes: Routes = [
     MatButtonModule,
     MatDividerModule,
     MatSnackBarModule,
+    MatSlideToggleModule,
     MatProgressBarModule,
     BrowserAnimationsModule,
     MatDialogModule,

@@ -43,6 +43,8 @@ export class InvestigationComponent implements OnInit {
   subscriptions = [];
   totalLinkCount: number = 0;
 
+  inputClusteringEnabled: boolean = false;
+
   constructor(private bitcoinService : BitcoinService, 
               private investigationService: InvestigationService) {
   }
@@ -57,14 +59,16 @@ export class InvestigationComponent implements OnInit {
   }
 
   createNewDataSubscriptions() {
-    const addressSubscription = this.investigationService.currentAddressData.subscribe((addressData : Address) => {
+    const addressSubscription = this.investigationService.currentAddressData.subscribe(data => {
+      this.inputClusteringEnabled = data.inputClustering;
+      let addressData : Address = data.response;
       if (addressData) {
 
         if (addressData.outputs) {
           addressData.outputs.forEach((outputData : Output) => this.createOutputNode(outputData));
         }
 
-        if (addressData.inputHeuristicLinkedAddresses){
+        if (this.inputClusteringEnabled && addressData.inputHeuristicLinkedAddresses){
           addressData.inputHeuristicLinkedAddresses.forEach((address: Address) => this.createAddressNode(address));
         } 
 
@@ -146,6 +150,12 @@ export class InvestigationComponent implements OnInit {
       }
     })
 
+    const inputClusteringSubscription = this.investigationService.currentInputClusteringRequest.subscribe(inputClusteringEnabled => {
+      if (inputClusteringEnabled) {
+        this.inputClusteringEnabled = inputClusteringEnabled;
+      }
+    })
+
     this.subscriptions.push(addressSubscription);
     this.subscriptions.push(outputSubscription);
     this.subscriptions.push(transactionSubscription);
@@ -154,6 +164,7 @@ export class InvestigationComponent implements OnInit {
     this.subscriptions.push(coinbaseSubscription);
     this.subscriptions.push(customNodeSubscription);
     this.subscriptions.push(customLinkSubscription);
+    this.subscriptions.push(inputClusteringSubscription);
   }
 
   private finaliseUpdate() {
@@ -220,7 +231,7 @@ export class InvestigationComponent implements OnInit {
       this.createNewLink(data.address, data.entity.name, LinkLabel.HAS_ENTITY);
     }
 
-    if (data.inputHeuristicLinkedAddresses) {
+    if (this.inputClusteringEnabled && data.inputHeuristicLinkedAddresses) {
       data.inputHeuristicLinkedAddresses.forEach((linkedAddress : Address) => {
         this.createNewLink(data.address, linkedAddress.address, LinkLabel.INPUT_HEURISTIC_LINKED_ADDRESS)
       });

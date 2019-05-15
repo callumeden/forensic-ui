@@ -6,25 +6,26 @@
     <form #f="ngForm" (ngSubmit)="onAddressSearch(f)" layout-align="center center">
       <mat-card-content>
         <mat-form-field>
-          <input required [(ngModel)]="address"  name="address" class="full-width" matInput #message maxlength="35" placeholder="Address">
+          <input required [(ngModel)]="address" name="address" class="full-width" matInput #message maxlength="35" placeholder="Address">
           <mat-hint align="start"><strong>Search for a particular Bitcoin Address</strong> </mat-hint>
         </mat-form-field>
+
+
+        <section class="heuristic-toggle-section">
+          <mat-slide-toggle class="heuristic-toggle" name="inputHeuristicEnabled" [(ngModel)]="inputHeuristicEnabled">
+            Input Address Clustering
+          </mat-slide-toggle>
+        </section>
+
       </mat-card-content>
       <mat-card-actions>
         <button type="submit" [disabled]="waitingOnResponse" mat-raised-button color="primary">Search</button>
       </mat-card-actions>
       <mat-error *ngIf="invalidAddress">{{errorMessage}}</mat-error>
-
-
       <section class="loading-section">
-      <mat-progress-bar
-          *ngIf="waitingOnResponse"
-          color="primary"
-          mode="indeterminate">
-      </mat-progress-bar>
-    </section>
-
+        <mat-progress-bar *ngIf="waitingOnResponse" color="primary" mode="indeterminate">
+        </mat-progress-bar>
+      </section>
     </form>
   </mat-card>
 </div>
-
