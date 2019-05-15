@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Address, Output } from '../../bitcoin/model';
-import { BehaviorSubject } from 'rxjs';
+import { Block, Address, Output, Transaction, Entity, Coinbase } from '../../bitcoin/model';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Node, TransactionNode, OutputNode, EntityNode, AddressNode, BlockNode, CoinbaseNode } from '../../d3/models';
 import { BitcoinService } from '../../bitcoin/bitcoin.service';
 
@@ -103,78 +103,107 @@ export class InvestigationService {
 		this.inputClusteringRequests.next(null);
 	}
 
-	expandNeighbours(node : Node) {
+	expandNeighbours(node : Node) : Observable<any> {
+
 		if (node instanceof TransactionNode) {
-			this.expandTransactionNodeNeighbours(node);
+			return this.expandTransactionNodeNeighbours(node);
 		}
 
 		if (node instanceof OutputNode) {
-			this.expandOutputNodeNeighbours(node);
+			return this.expandOutputNodeNeighbours(node);
 		}
 
 		if (node instanceof EntityNode) {
-			this.expandEntityNodeNeighbours(node);
+			return this.expandEntityNodeNeighbours(node);
 		}
 
 		if (node instanceof AddressNode) {
-			this.expandAddressNodeNeighbours(node);
+			return this.expandAddressNodeNeighbours(node);
 		}
 
 		if (node instanceof BlockNode) {
-			this.expandBlockNodeNeighbours(node);
+			return this.expandBlockNodeNeighbours(node);
 		}
 
 		if (node instanceof CoinbaseNode) {
-			this.expandCoinbaseNodeNeighbours(node);
+			return this.expandCoinbaseNodeNeighbours(node);
 		}
+
+		return null;
+
 	}
 
-	private expandTransactionNodeNeighbours(node : TransactionNode) {
-		this.bitcoinService.getTransaction(node.modelData.transactionId).subscribe(transaction => {
+	private expandTransactionNodeNeighbours(node : TransactionNode) : Observable<Transaction> {
+		let observable : Observable<Transaction> = this.bitcoinService.getTransaction(node.modelData.transactionId);
+		
+		observable.subscribe(transaction => {
 			if (transaction) {
 				this.transactionData.next(transaction);
 			}
 		})
+
+		return observable;
+
 	}
 
-	private expandOutputNodeNeighbours(node : OutputNode) {
-		this.bitcoinService.getOutput(node.modelData.outputId).subscribe(output => {
+	private expandOutputNodeNeighbours(node : OutputNode) : Observable<Output> {
+		let observable : Observable<Output> = this.bitcoinService.getOutput(node.modelData.outputId);
+
+		observable.subscribe(output => {
 			if (output) {
 				this.outputData.next(output);
 			}
 		});
+
+		return observable;
 	}
 
-	private expandEntityNodeNeighbours(node : EntityNode) {
-		this.bitcoinService.getEntity(node.modelData.name).subscribe(entity => {
+	private expandEntityNodeNeighbours(node : EntityNode) : Observable<Entity> {
+		let observable : Observable<Entity> = this.bitcoinService.getEntity(node.modelData.name);
+		
+		observable.subscribe(entity => {
 			if (entity) {
 				this.entityData.next(entity);
 			}
 		})
+
+		return observable;
 	}
 
-	private expandAddressNodeNeighbours(node : AddressNode) {
-		this.bitcoinService.getAddress(node.modelData.address).subscribe(address => {
+	private expandAddressNodeNeighbours(node : AddressNode) : Observable<Address> {
+		let observable : Observable<Address> = this.bitcoinService.getAddress(node.modelData.address);
+		
+		observable.subscribe(address => {
 			if (address) {
 				this.addressData.next({'response': address, 'inputClustering' : this.inputClusteringEnabled});
 			}
 		})
+
+		return observable;
 	}
 
-	private expandBlockNodeNeighbours(node : BlockNode) {
-		this.bitcoinService.getBlock(node.modelData.hash).subscribe(block => {
+	private expandBlockNodeNeighbours(node : BlockNode) : Observable<Block> {
+		let observable  : Observable<Block> = this.bitcoinService.getBlock(node.modelData.hash);
+		
+		observable.subscribe(block => {
 			if (block) {
 				this.blockData.next(block);
 			}
 		})
+
+		return observable;
 	}
 
-	private expandCoinbaseNodeNeighbours(node : CoinbaseNode) {
-		this.bitcoinService.getCoinbase(node.modelData.coinbaseId).subscribe(coinbase => {
+	private expandCoinbaseNodeNeighbours(node : CoinbaseNode) : Observable<Coinbase> {
+		let observable : Observable<Coinbase> = this.bitcoinService.getCoinbase(node.modelData.coinbaseId);
+		
+		observable.subscribe(coinbase => {
 			if (coinbase) {
 				this.coinbaseData.next(coinbase);
 			}
 		})
+
+		return observable;
 	}
 
 }

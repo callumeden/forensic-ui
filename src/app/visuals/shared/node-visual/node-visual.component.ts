@@ -2,7 +2,6 @@ import { Component, Input, HostListener, ViewChild, AfterViewInit, EventEmitter 
 import { Node} from '../../../d3';
 import { AppService } from '../../../app.service'
 import { InvestigationService} from '../../../components/investigation/investigation.service';
-
 import * as d3 from 'd3';
 
 @Component({
@@ -19,6 +18,7 @@ export class NodeVisualComponent implements AfterViewInit {
 
   private lastEvent : MouseEvent;
   private mouseDown : boolean = false;
+  private requesting: boolean = false;
 
   constructor(private dataService : AppService, private investigationService: InvestigationService) {}
 
@@ -41,13 +41,29 @@ export class NodeVisualComponent implements AfterViewInit {
   }
 
   handleDoubleClick(d) {
-    this.investigationService.expandNeighbours(this.node);
-    this.node.expanded = true;
+
+    if (this.node.expanded) {
+      return;
+    }
+    
+    this.requesting = true;
+    this.d3Element.transition().duration(750).attr("r", this.node.r);
+    this.pulsate(this.d3Element);
+    this.investigationService.expandNeighbours(this.node).subscribe(response => {
+      if (response) {
+        this.node.expanded = true;
+        this.requesting = false;
+      }
+    })
   }
 
   @HostListener('mouseover') onMouseOver(d) {
     clearTimeout(this.hoverTimeout)
-    this.d3Element.transition().duration(750).attr("r", this.node.r * 2)
+
+    if (!this.requesting) {
+      this.d3Element.transition().duration(750).attr("r", this.node.r * 2)
+    }
+
     let that = this;
 
     this.hoverTimeout = setTimeout(function () {
@@ -59,12 +75,37 @@ export class NodeVisualComponent implements AfterViewInit {
     }, 500)
 	}
 
+  pulsate(selection) {
+    recursive_transitions(this);
+
+    function recursive_transitions(that) {
+      if (that.requesting) {
+        selection.transition()
+            .duration(400)
+            .attr("r", that.node.r)
+            .ease(d3.easeSinIn)
+            .transition()
+            .duration(800)
+            .attr("r", that.node.r * 1.2)
+            .ease(d3.easeBounceOut)
+            .on("end", () => recursive_transitions(that));
+      } else {
+        // transition back to normal
+        selection.transition()
+            .duration(200)
+            .attr("r", that.node.r)
+            .attr("stroke", "white")
+      }
+  }
+}
+
+
+
 	@HostListener('mouseout') onMouseOut() {
     clearTimeout(this.hoverTimeout)
-
-    let that = this;
-    this.d3Element.transition().duration(750).attr("r", this.node.r);
-
+    if (!this.requesting) {
+      this.d3Element.transition().duration(750).attr("r", this.node.r);
+    }
 	}
 }
 
