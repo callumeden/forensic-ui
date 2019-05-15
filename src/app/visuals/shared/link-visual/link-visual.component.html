@@ -34,21 +34,21 @@
         *ngIf="link.metadata && link.metadata.currency=='gbp'"
         class="link-label"
         [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2) + ',' + ((link.source.y + link.target.y)/2 + 30) + ')'">
-        GBP: {{link.metadata.gbp}}
+        GBP: {{link.metadata.gbp | currency:'GBP'}}
 </svg:text>
 
  <svg:text 
         *ngIf="link.metadata && link.metadata.currency=='usd'"
         class="link-label"
         [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2) + ',' + ((link.source.y + link.target.y)/2 + 30) + ')'">
-            USD: {{link.metadata.usd}}
+            USD: {{link.metadata.usd | currency:'USD'}}
 </svg:text>
 
 <svg:text 
         *ngIf="link.metadata && link.metadata.currency=='eur'"
         class="link-label"
         [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2) + ',' + ((link.source.y + link.target.y)/2 + 30) + ')'">
-            EUR: {{link.metadata.eur}}
+            EUR: {{link.metadata.eur | currency:'EUR'}}
 </svg:text>
 
 </svg:g>
