@@ -17,6 +17,20 @@
           </mat-slide-toggle>
         </section>
 
+        <div>
+          <mat-slide-toggle name="neighbourTruncationEnabled" [(ngModel)]="neighbourTruncationEnabled">
+            Limit number of neighbours rendered for each node (per relationship) <h5>
+              <span class="badge badge-warning" *ngIf="!neighbourTruncationEnabled">UI Performance may seriously deterioate for nodes with many neighbours</span>
+              <span *ngIf="neighbourTruncationEnabled"class="badge badge-secondary">{{truncateNeighboursCount}} Neighbours per node</span>
+            </h5>
+          </mat-slide-toggle>
+        </div>
+          
+        <section class="neighbour-truncate-section">
+            <mat-slider [disabled]="!neighbourTruncationEnabled" name="truncate-neighbour-slider" class="neighbour-truncate-slider" thumbLabel [thumbLabel]="thumbLabel" [(ngModel)]="truncateNeighboursCount" tickInterval="1" min="0" max="100"></mat-slider>
+        </section>
+
+
       </mat-card-content>
       <mat-card-actions>
         <button type="submit" [disabled]="waitingOnResponse" mat-raised-button color="primary">Search</button>

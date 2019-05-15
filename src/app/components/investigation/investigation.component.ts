@@ -18,7 +18,6 @@ enum LinkLabel {
   INPUT_HEURISTIC_LINKED_ADDRESS="INPUT_HEURISTIC_LINKED_ADDRESS"
 }
 
-const NEIGHBOURS_LIMIT : number = 25;
 
 @Component({
   selector: 'investigation',
@@ -43,7 +42,7 @@ export class InvestigationComponent implements OnInit {
   pendingLinkUpdates: Map<string, number> = new Map();
   subscriptions = [];
   totalLinkCount: number = 0;
-
+  neighbourLimit: number = 25;
 
   inputClusteringEnabled: boolean = false;
 
@@ -62,7 +61,10 @@ export class InvestigationComponent implements OnInit {
 
   truncateNeighbours<T>(list : T[]) : T[] {
     if (list) {
-      return list.slice(0, NEIGHBOURS_LIMIT);
+      if (this.neighbourLimit <0) {
+        return list;
+      }
+      return list.slice(0, this.neighbourLimit);
     }
 
     return [];
@@ -71,7 +73,9 @@ export class InvestigationComponent implements OnInit {
   createNewDataSubscriptions() {
     const addressSubscription = this.investigationService.currentAddressData.subscribe(data => {
       this.inputClusteringEnabled = data.inputClustering;
+      this.neighbourLimit = data.neighbourLimit;
       let addressData : Address = data.response;
+
       if (addressData) {
 
         if (addressData.outputs) {
@@ -162,12 +166,6 @@ export class InvestigationComponent implements OnInit {
       }
     });
 
-    const inputClusteringSubscription = this.investigationService.currentInputClusteringRequest.subscribe(inputClusteringEnabled => {
-      if (inputClusteringEnabled) {
-        this.inputClusteringEnabled = inputClusteringEnabled;
-      }
-    });
-
     this.subscriptions.push(addressSubscription);
     this.subscriptions.push(outputSubscription);
     this.subscriptions.push(transactionSubscription);
@@ -176,7 +174,6 @@ export class InvestigationComponent implements OnInit {
     this.subscriptions.push(coinbaseSubscription);
     this.subscriptions.push(customNodeSubscription);
     this.subscriptions.push(customLinkSubscription);
-    this.subscriptions.push(inputClusteringSubscription);
   }
 
   private finaliseUpdate() {
@@ -192,8 +189,8 @@ export class InvestigationComponent implements OnInit {
     this.nodeLookup.forEach((node: Node, id: string) => {
       //the total link count is always double the real link count as its the sum of link 
       //counts for src and dest node, but too much work to keep track, so div 2 will do it. 
-      node.totalLinksInGraph = this.totalLinkCount / 2;
-    });
+      node.totalLinksInGraph = this.totalLinkCount > 1 ? this.totalLinkCount / 2 : 1;
+    }, this);
 
     this.changes++;
   }

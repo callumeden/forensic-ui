@@ -44,11 +44,13 @@ export class InvestigationService {
 	investigationActive : boolean = false;
 
 	private inputClusteringEnabled : boolean = false;
+	private neighbourLimit: number = 25;
 
-	provideAddressSearchResponse(response : Address, inputClustering : boolean) {
+	provideAddressSearchResponse(response : Address, inputClustering : boolean, neighbourLimit: number) {
 		this.investigationActive = true;
+		this.neighbourLimit = neighbourLimit;
 		this.inputClusteringEnabled = inputClustering;
-		this.addressData.next({'response': response, 'inputClustering': inputClustering});
+		this.addressData.next({'response': response, 'inputClustering': inputClustering, 'neighbourLimit': neighbourLimit});
 	} 
 
 	provideNewCustomNodeData(customNodeData) {
@@ -175,7 +177,7 @@ export class InvestigationService {
 		
 		observable.subscribe(address => {
 			if (address) {
-				this.addressData.next({'response': address, 'inputClustering' : this.inputClusteringEnabled});
+				this.addressData.next({'response': address, 'inputClustering' : this.inputClusteringEnabled, 'neighbourLimit': this.neighbourLimit});
 			}
 		})
 

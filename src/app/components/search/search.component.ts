@@ -22,6 +22,8 @@ export class SearchComponent {
 	invalidAddress : boolean = false;
 	errorMessage : string;
 	inputHeuristicEnabled : boolean = false;
+	truncateNeighboursCount: number = 25;
+	neighbourTruncationEnabled: boolean = true;
 
 	onAddressSearch(form : NgForm) {
 		if (form.valid) {
@@ -30,7 +32,7 @@ export class SearchComponent {
 			this.bitcoinService.searchForAddress(form.value.address).subscribe(
 
 				(response : Address) => {
-					this.investigationService.provideAddressSearchResponse(response, this.inputHeuristicEnabled);
+					this.investigationService.provideAddressSearchResponse(response, this.inputHeuristicEnabled, this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1);
 					this.router.navigateByUrl('/investigation');
 					this.waitingOnResponse = false;
 				},
@@ -50,5 +52,17 @@ export class SearchComponent {
 		console.error('bad form input')
 		
 	}	
+
+	formatLabel(value : number | null) {
+		if (!value) {
+      return 0;
+    }
+
+    if (value >= 100) {
+      return "No Limit";
+    }
+
+    return value;
+	}
 
 }

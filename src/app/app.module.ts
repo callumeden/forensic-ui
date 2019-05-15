@@ -5,8 +5,8 @@ import { HttpClientModule }    from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { D3Service, D3_DIRECTIVES } from './d3';
-import { MatListModule , MatCardModule, MatBottomSheetModule, MatDialogModule, MatSelectModule, MatAutocompleteModule, MatDividerModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { MatListModule , MatCardModule, MatSlideToggleModule, MatSliderModule, MatBottomSheetModule, MatDialogModule, MatSelectModule, MatAutocompleteModule, MatDividerModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
+import  {BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InvestigationComponent } from './components/investigation/investigation.component';
 import { AddNodeComponent, AddLinkDialog } from './components/add-node/add-node.component';
 import { AddNodeDialog } from './components/add-node/add-node-dialog.component';
@@ -19,7 +19,7 @@ import { NodeDataVisualComponent, AddressNodeSnackbarComponent, EntityNodeSnackb
 import { ClipboardModule } from 'ngx-clipboard';
 import { FileSelectDirective } from 'ng2-file-upload';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+
 const appRoutes: Routes = [
 {path: 'investigation', component: InvestigationComponent, canActivate: [InvestigationGuard]},
 {path: '**', redirectTo: '/search', pathMatch: 'full'},
@@ -58,6 +58,7 @@ const appRoutes: Routes = [
     MatAutocompleteModule,
     MatInputModule,
     MatSelectModule,
+    MatSliderModule,
     FontAwesomeModule,
     MatButtonModule,
     MatDividerModule,

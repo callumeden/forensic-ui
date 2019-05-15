@@ -15,10 +15,14 @@
 	text-align: center;
 }
 
-.loading-section, .heuristic-toggle-section {
+.loading-section, .heuristic-toggle-section, .neighbour-truncate-section {
 	display: flex;
   align-content: center;
   align-items: center;
   height: 60px;
 }
 
+.neighbour-truncate-slider {
+	width: 100%;
+	display: block;
+}
