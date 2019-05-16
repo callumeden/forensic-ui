@@ -7,7 +7,7 @@ export class TransactionNode implements Node {
 	id: string; 
 	linkCount: number = 0; 
   modelData : Transaction;
-  displayText: string = "Transaction";
+  displayText: string;
   type: NodeType = NodeType.TRANSACTION;
   totalLinksInGraph : number = 1;
   _expanded: boolean = false;
@@ -15,6 +15,7 @@ export class TransactionNode implements Node {
 	constructor(modelData : Transaction) {
     this.id = modelData.transactionId;
     this.modelData = modelData;
+    this.displayText = this.truncateDisplayText(modelData.transactionId);
   }
 
   normal = () => {
@@ -40,5 +41,9 @@ export class TransactionNode implements Node {
 
   set expanded(expanded : boolean) {
     this._expanded = expanded;
+  }
+
+   private truncateDisplayText(text: string) {
+    return text.slice(0, 6) + '...';
   }
 }

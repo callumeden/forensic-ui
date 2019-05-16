@@ -18,6 +18,8 @@ export class AddressNode implements Node {
     if (expanded) {
       this._expanded = true;
     }
+
+    this.displayText = this.truncateDisplayText(address);
   }
 
   normal = () => {
@@ -43,6 +45,10 @@ export class AddressNode implements Node {
 
   set expanded(expanded : boolean) {
     this._expanded = expanded;
+  }
+
+  private truncateDisplayText(text: string) {
+    return text.slice(0, 6) + '...';
   }
   
 }

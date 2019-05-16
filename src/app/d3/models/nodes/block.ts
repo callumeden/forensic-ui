@@ -15,6 +15,7 @@ export class BlockNode implements Node {
 	constructor(modelData : Block) {
     this.id = modelData.hash;
     this.modelData = modelData;
+    this.displayText = this.truncateDisplayText(modelData.hash);
   }
 
   normal = () => {
@@ -40,5 +41,9 @@ export class BlockNode implements Node {
 
   set expanded(expanded : boolean) {
     this._expanded = expanded;
+  }
+
+   private truncateDisplayText(text: string) {
+    return '...' + text.slice(-6);
   }
 }

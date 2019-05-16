@@ -16,6 +16,7 @@ export class CustomNode implements Node {
     this.id = modelData.name;
     this.displayText = modelData.nodeType.toString();
     this.modelData = modelData
+    this.displayText = this.truncateDisplayText(modelData.name);
   }
 
   normal = () => {
@@ -41,6 +42,10 @@ export class CustomNode implements Node {
 
   set expanded(expanded : boolean) {
     this._expanded = expanded;
+  }
+
+   private truncateDisplayText(text: string) {
+    return text.slice(0, 6) + '...';
   }
   
 }

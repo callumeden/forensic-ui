@@ -41,6 +41,5 @@ export class CoinbaseNode implements Node {
   set expanded(expanded : boolean) {
     this._expanded = expanded;
   }
-
   
 }

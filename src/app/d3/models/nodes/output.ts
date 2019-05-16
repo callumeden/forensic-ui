@@ -6,7 +6,7 @@ export class OutputNode implements Node {
 	id: string; 
 	linkCount: number = 0; 
   modelData : Output
-  displayText: string = "Output"
+  displayText: string;
   type: NodeType = NodeType.OUTPUT;
   totalLinksInGraph : number = 1;
   _expanded: boolean = false;
@@ -14,6 +14,7 @@ export class OutputNode implements Node {
   constructor(modelData: Output) {
   	this.id = modelData.outputId;
   	this.modelData = modelData;
+    this.displayText = this.truncateDisplayText(modelData.outputId);
   }
 
 	normal = () => {
@@ -39,6 +40,10 @@ export class OutputNode implements Node {
 
   set expanded(expanded : boolean) {
     this._expanded = expanded;
+  }
+
+  private truncateDisplayText(text: string) {
+    return text.slice(0, 4) + '...-' + text.split('-')[1]
   }
 
 }
