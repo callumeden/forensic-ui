@@ -73,6 +73,7 @@ export class NodeDataVisualComponent implements OnInit {
           data: nodeItems,
           panelClass: 'node-snackbar'
         })
+        break;
 
       case NodeType.ENTITY:
         this.nodeInfoSnackBar.openFromComponent(EntityNodeSnackbarComponent, {

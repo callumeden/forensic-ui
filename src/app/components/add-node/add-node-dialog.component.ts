@@ -56,7 +56,6 @@ export class AddNodeDialog implements OnInit {
     if (!form.valid) {
       return;
     }
-    
     switch (selected.value) {
       case CustomNodeType.PHOTO_ID:
         this.addPhotoIdNode(selected, form);
