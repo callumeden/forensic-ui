@@ -274,7 +274,8 @@ export class InvestigationComponent implements OnInit {
           'gbp': data.producedByTransaction.gbpValue,
           'usd': data.producedByTransaction.usdValue,
           'eur': data.producedByTransaction.eurValue,
-          'currency': this.btcConversionCurrency
+          'currency': this.btcConversionCurrency,
+          'timestamp': data.producedByTransaction.timestamp
         });
       }
 
@@ -288,7 +289,8 @@ export class InvestigationComponent implements OnInit {
           'gbp': data.inputsTransaction.gbpValue,
           'usd': data.inputsTransaction.usdValue,
           'eur': data.inputsTransaction.eurValue,
-          'currency': this.btcConversionCurrency
+          'currency': this.btcConversionCurrency,
+          'timestamp': data.inputsTransaction.timestamp
         });
       }
   }
@@ -330,7 +332,8 @@ export class InvestigationComponent implements OnInit {
           'gbp': relation.gbpValue,
           'usd': relation.usdValue,
           'eur': relation.eurValue,
-          'currency': this.btcConversionCurrency
+          'currency': this.btcConversionCurrency,
+          'timestamp': relation.timestamp
         });
       })
     }
@@ -343,7 +346,8 @@ export class InvestigationComponent implements OnInit {
           'gbp': relation.gbpValue,
           'usd': relation.usdValue,
           'eur': relation.eurValue,
-          'currency': this.btcConversionCurrency
+          'currency': this.btcConversionCurrency,
+          'timestamp': relation.timestamp
         });
       });
     }

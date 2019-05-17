@@ -1,7 +1,7 @@
 <h3>Block <mat-chip color='accent' selected ngxClipboard [cbContent]="data.hash">{{data.hash}}</mat-chip> </h3>
 <mat-divider></mat-divider>
 <mat-chip-list class="mat-chip-list-stacked" aria-orientation="vertical">
-  <mat-chip ngxClipboard [cbContent]="data.timestamp" color='primary' selected>Timestamp: {{data.timestamp}}</mat-chip>
+  <mat-chip ngxClipboard [cbContent]="data.timestamp" color='primary' selected>Mined Date/Time: {{data.timestamp * 1000 | date: 'medium'}}</mat-chip>
   <mat-chip ngxClipboard [cbContent]="data.prevBlockHash" color='primary' selected>Parent Block Hash: {{data.prevBlockHash}}</mat-chip>
 </mat-chip-list>
 <mat-chip-list>

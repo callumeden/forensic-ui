@@ -10,4 +10,5 @@ export interface InputRelation {
 	gbpValue: number;
 	usdValue: number;
 	eurValue: number;
+	timestamp: number;
 }

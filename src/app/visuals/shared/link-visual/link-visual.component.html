@@ -51,4 +51,11 @@
             EUR: {{link.metadata.eur | currency:'EUR'}}
 </svg:text>
 
+<svg:text 
+        *ngIf="link.metadata"
+        class="link-label"
+        [attr.transform]="'translate(' + ((link.source.x + link.target.x)/2) + ',' + ((link.source.y + link.target.y)/2 + 45) + ')'">
+            Mined: {{link.metadata.timestamp * 1000 | date : 'medium'}}
+</svg:text>
+
 </svg:g>
