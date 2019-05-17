@@ -26,13 +26,17 @@ export class SearchComponent {
 	neighbourTruncationEnabled: boolean = true;
 	btcConversionCurrency: string = 'gbp';
 
+	minDate = new Date(2000, 0, 1);
+  maxDate = new Date(2020, 0, 1);
+
 	onAddressSearch(form : NgForm) {
 		if (form.valid) {
+
 			this.waitingOnResponse = true;
 			console.info('fetching address data', form.value.address)
 			this.bitcoinService.searchForAddress(form.value.address).subscribe(
-
 				(response : Address) => {
+					console.info(response)
 					this.investigationService.provideAddressSearchResponse(
 						response, 
 						this.inputHeuristicEnabled, 
@@ -52,6 +56,7 @@ export class SearchComponent {
 
 
 			)
+
 			return;
 		}
 		console.error('bad form input')

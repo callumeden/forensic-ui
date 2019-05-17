@@ -15,19 +15,16 @@
 	text-align: center;
 }
 
-.loading-section, .heuristic-toggle-section, .btc-conversion-currency-section {
-	display: flex;
-  align-content: center;
-  align-items: center;
-  height: 60px;
-  margin-bottom: 20px;
+mat-accordion h4 {
+	margin-bottom: 20px;
+	margin-top: 20px;
 }
 
-.btc-conversion-currency-section .radio-buttons {
+.radio-buttons {
 	margin-left: 20px;
 }
 
-.btc-conversion-currency-section .radio-button {
+.radio-button {
 	margin: 10px;
 }
 
@@ -41,4 +38,8 @@
 .neighbour-truncate-slider {
 	width: 100%;
 	display: block;
+}
+
+.filter-status{ 
+margin-left: 5px; 
 }

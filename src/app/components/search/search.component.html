@@ -10,35 +10,107 @@
           <mat-hint align="start"><strong>Search for a particular Bitcoin Address</strong> </mat-hint>
         </mat-form-field>
 
+        <mat-accordion>
+          <h4>Additional search options</h4>
 
-        <section class="btc-conversion-currency-section">
-          <label id="example-radio-group-label">Select the currency to display BTC conversions in.</label>
-          <mat-radio-group name="btcConversionCurrency"
-            [(ngModel)]="btcConversionCurrency"
-            class="radio-buttons">
-            <mat-radio-button class="radio-button" value="gbp">GBP</mat-radio-button>
-            <mat-radio-button class="radio-button" value="usd">USD</mat-radio-button>
-            <mat-radio-button class="radio-button" value="eur">EUR</mat-radio-button>
+          <mat-expansion-panel>
 
-          </mat-radio-group>
-        </section>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Select a fiat currency.
+                <span class="badge badge-success filter-status">{{btcConversionCurrency | uppercase}}</span>
+              </mat-panel-title>
+              <mat-panel-description>
+                The value of transaction outputs will be shown in this currency.
+              </mat-panel-description>
 
-        <section class="heuristic-toggle-section">
-          <mat-slide-toggle class="heuristic-toggle" name="inputHeuristicEnabled" [(ngModel)]="inputHeuristicEnabled">
-            Input Address Clustering
-          </mat-slide-toggle>
-        </section>
+            </mat-expansion-panel-header>
+            <mat-radio-group name="btcConversionCurrency" [(ngModel)]="btcConversionCurrency" class="radio-buttons">
+              <mat-radio-button class="radio-button" value="gbp">GBP</mat-radio-button>
+              <mat-radio-button class="radio-button" value="usd">USD</mat-radio-button>
+              <mat-radio-button class="radio-button" value="eur">EUR</mat-radio-button>
+            </mat-radio-group>
+          </mat-expansion-panel>
+          
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Filter by date/time
+                <span *ngIf="dateFilterEnabled" class="badge badge-success filter-status">Enabled</span>
+                <span *ngIf="!dateFilterEnabled" class="badge badge-secondary filter-status">Disabled</span>
+              </mat-panel-title>
+              <mat-panel-description>
+                Only show transactions that occured within a time range.
+              </mat-panel-description>
+            </mat-expansion-panel-header>
 
-        <section class="neighbour-truncate-section">
+            <mat-slide-toggle name="dateFilterEnabled" [(ngModel)]="dateFilterEnabled">
+                <span *ngIf="dateFilterEnabled">Enabled</span>
+                <span *ngIf="!dateFilterEnabled">Disabled</span>
+            </mat-slide-toggle>
 
-          <mat-slide-toggle name="neighbourTruncationEnabled" [(ngModel)]="neighbourTruncationEnabled">
-            Limit number of neighbours rendered for each node (per relationship type)
-              <span class="badge badge-warning" *ngIf="!neighbourTruncationEnabled">UI Performance may seriously deterioate for nodes with many neighbours</span>
-              <h5><span *ngIf="neighbourTruncationEnabled" class="badge badge-secondary">Limit: {{truncateNeighboursCount}}</span></h5>
-          </mat-slide-toggle>
+            <table>
+              <td>
+                <mat-form-field class="example-full-width">
+                  <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="pickerFrom" placeholder="Choose a date">
+                  <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerFrom></mat-datepicker>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field class="example-full-width">
+                  <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="pickerTo" placeholder="Choose a date">
+                  <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerTo></mat-datepicker>
+                </mat-form-field>
+              </td>
+            </table>
+          </mat-expansion-panel>
 
-          <mat-slider [disabled]="!neighbourTruncationEnabled" name="truncate-neighbour-slider" class="neighbour-truncate-slider" thumbLabel [thumbLabel]="thumbLabel" [(ngModel)]="truncateNeighboursCount" tickInterval="1" min="0" max="100"></mat-slider>
-        </section>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <span>Limit neighbour rendering</span> 
+                <span *ngIf="neighbourTruncationEnabled" class="badge badge-success filter-status">Enabled</span>
+                <span *ngIf="!neighbourTruncationEnabled" class="badge badge-warning filter-status">Disabled</span>
+              </mat-panel-title>
+
+              <mat-panel-description>
+                Limit the number of neighbours rendered per node, per relationship type
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+              <mat-slide-toggle name="neighbourTruncationEnabled" [(ngModel)]="neighbourTruncationEnabled">
+                <span *ngIf="neighbourTruncationEnabled">Enabled</span>
+                <span *ngIf="!neighbourTruncationEnabled">Disabled</span>
+                <h5><span class="badge badge-warning" *ngIf="!neighbourTruncationEnabled">UI Performance may seriously deterioate for nodes with many neighbours</span></h5>
+                <h5><span *ngIf="neighbourTruncationEnabled" class="badge badge-secondary">Limit: {{truncateNeighboursCount}}</span></h5>
+              </mat-slide-toggle>
+
+              <mat-slider [disabled]="!neighbourTruncationEnabled" name="truncate-neighbour-slider" class="neighbour-truncate-slider" thumbLabel [thumbLabel]="thumbLabel" [(ngModel)]="truncateNeighboursCount" tickInterval="1" min="0" max="100"></mat-slider>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Input Clustering
+                <span *ngIf="inputHeuristicEnabled" class="badge badge-success filter-status">Enabled</span>
+                <span *ngIf="!inputHeuristicEnabled" class="badge badge-secondary filter-status">Disabled</span>
+              </mat-panel-title>
+              <mat-panel-description>
+                Distinct addresses that unlock outputs for the same transaction will be considered to be controlled by the same user.
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <mat-slide-toggle class="heuristic-toggle" name="inputHeuristicEnabled" [(ngModel)]="inputHeuristicEnabled">
+              <span *ngIf="inputHeuristicEnabled">Enabled</span>
+              <span *ngIf="!inputHeuristicEnabled">Disabled</span>
+            </mat-slide-toggle>
+
+          </mat-expansion-panel>
+        </mat-accordion>
+
+        
 
 
       </mat-card-content>
