@@ -49,21 +49,35 @@
                 <span *ngIf="!dateFilterEnabled">Disabled</span>
             </mat-slide-toggle>
 
-            <table>
-              <td>
-                <mat-form-field class="example-full-width">
-                  <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="pickerFrom" placeholder="Choose a date">
-                  <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
-                  <mat-datepicker #pickerFrom></mat-datepicker>
-                </mat-form-field>
-              </td>
-              <td>
-                <mat-form-field class="example-full-width">
-                  <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="pickerTo" placeholder="Choose a date">
-                  <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
-                  <mat-datepicker #pickerTo></mat-datepicker>
-                </mat-form-field>
-              </td>
+            <table class="filterDateTime">
+              <tr>
+                <td class="dateColumn">
+                  <mat-form-field class="example-full-width">
+                    <input [disabled]="!dateFilterEnabled" matInput [min]="minDate" [max]="maxDate" [matDatepicker]="pickerFrom" placeholder="Start Date" >
+                    <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerFrom></mat-datepicker>
+                  </mat-form-field>
+                </td>
+                <td class="timeColumn">
+                  Start Time: {{formatLabel(startTime)}}
+
+                  <mat-slider class="time-slider" name="startTime" [disabled]="!dateFilterEnabled" min="0" max="24" step="0.5" [(ngModel)]="startTime"></mat-slider>
+                </td>
+              </tr>
+              <tr>
+                <td class="dateColumn">
+                  <mat-form-field class="example-full-width">
+                    <input [disabled]="!dateFilterEnabled" matInput [min]="minDate" [max]="maxDate" [matDatepicker]="pickerTo" placeholder="End Date">
+                    <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerTo></mat-datepicker>
+                  </mat-form-field>
+                </td>
+                <td class="timeColumn">
+                  End Time: {{formatLabel(endTime)}}
+                  
+                  <mat-slider class="time-slider" name="endTime" [disabled]="!dateFilterEnabled" min="0" max="24" step="0.5" [(ngModel)]="endTime"></mat-slider>
+                </td>
+              </tr>
             </table>
           </mat-expansion-panel>
 

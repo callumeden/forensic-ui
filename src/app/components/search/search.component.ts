@@ -54,7 +54,6 @@ export class SearchComponent {
 					this.waitingOnResponse = false;
 				}
 
-
 			)
 
 			return;
@@ -62,17 +61,27 @@ export class SearchComponent {
 		console.error('bad form input')
 		
 	}	
-
-	formatLabel(value : number | null) {
-		if (!value) {
+	
+	formatLabel(value: number | null) {
+    if (!value) {
       return 0;
     }
 
-    if (value >= 100) {
-      return "No Limit";
+    let decimalPart = +value.toString().replace(/^[^\.]+/,'0');
+    let mm = decimalPart * 60;
+    var mmPart = mm.toString().length == 1 ? mm.toString() + "0" : mm.toString();
+
+    if (value >= 0) {
+      let valueStr = value.toFixed(2);
+      let strArr = valueStr.split(".");
+      if(strArr[0].length == 1) {
+        strArr[0] = "0" + strArr[0];
+      }
+      var hhPart = strArr[0];
+      //console.log(strArr);
     }
 
-    return value;
-	}
+    return hhPart + ":" + mmPart;
+  }
 
 }

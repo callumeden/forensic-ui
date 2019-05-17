@@ -40,6 +40,24 @@ mat-accordion h4 {
 	display: block;
 }
 
+.time-slider {
+	width: 100%;
+	display: block;
+}
+
+
 .filter-status{ 
 margin-left: 5px; 
+}
+
+.filterDateTime {
+	width: 100%;
+}
+
+.filterDateTime .dateColumn {
+	width: 30%;
+}
+
+.filterDateTime .timeColumn {
+	width: 70%;
 }
