@@ -43,7 +43,7 @@ export class TransactionNode implements Node {
     this._expanded = expanded;
   }
 
-   private truncateDisplayText(text: string) {
+  private truncateDisplayText(text: string) {
     return text.slice(0, 6) + '...';
   }
 }

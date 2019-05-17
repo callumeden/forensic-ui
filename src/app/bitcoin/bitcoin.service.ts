@@ -24,14 +24,14 @@ export class BitcoinService {
   }
 
   getAddress(address: string) : Observable<Address> {
-  	return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress?address=" + address) 
+  	return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress/" + address) 
   	.pipe(
   		tap(_ => console.info('got address'))
     );
   }
 
   getOutput(outputId : string) : Observable<Output> {
-    return this.http.get<Output>(this.serviceDomain + "/bitcoin/getOutput?id=" + outputId)
+    return this.http.get<Output>(this.serviceDomain + "/bitcoin/getOutput/" + outputId)
     .pipe(
       tap(_ => console.info('got output')),
       catchError(this.handleError<Output>('getOutput'))
@@ -39,7 +39,7 @@ export class BitcoinService {
   }
 
   getTransaction(transactionId: string) : Observable<Transaction> {
-    return this.http.get<Transaction>(this.serviceDomain + "/bitcoin/getTransaction?txid=" + transactionId)
+    return this.http.get<Transaction>(this.serviceDomain + "/bitcoin/getTransaction/" + transactionId)
     .pipe(
       tap(_ => console.info('got transaction')),
       catchError(this.handleError<Transaction>('getTransaction'))
@@ -53,7 +53,7 @@ export class BitcoinService {
   }
 
   getBlock(hash : string) : Observable<Block> {
-  	return this.http.get<Block>(this.serviceDomain + "/bitcoin/getBlock?hash=" + hash) 
+  	return this.http.get<Block>(this.serviceDomain + "/bitcoin/getBlock/" + hash) 
   	.pipe(
   		tap(_ => console.info('success: fetched block')),
       catchError(this.handleError<Block>('getBlock'))
@@ -61,7 +61,7 @@ export class BitcoinService {
   }
 
   getEntity(name : string) : Observable<Entity> {
-    return this.http.get<Entity>(this.serviceDomain + "/bitcoin/getEntity?name=" + name)
+    return this.http.get<Entity>(this.serviceDomain + "/bitcoin/getEntity/" + name)
     .pipe(
       tap(_ => console.info('success: fetched block')),
       catchError(this.handleError<Entity>('getEntity'))
@@ -69,7 +69,7 @@ export class BitcoinService {
   }
 
   getCoinbase(coinbaseId: string) : Observable<Coinbase> {
-    return this.http.get<Coinbase>(this.serviceDomain + "/bitcoin/getCoinbase?id=" + coinbaseId)
+    return this.http.get<Coinbase>(this.serviceDomain + "/bitcoin/getCoinbase/" + coinbaseId)
     .pipe(
       tap(_ => console.info('success: fetched block')),
       catchError(this.handleError<Coinbase>('getCoinbase'))
