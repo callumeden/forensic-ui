@@ -26,22 +26,42 @@ export class SearchComponent {
 	neighbourTruncationEnabled: boolean = true;
 	btcConversionCurrency: string = 'gbp';
 
-	minDate = new Date(2000, 0, 1);
-  maxDate = new Date(2020, 0, 1);
+	dateFilterEnabled = false;
+	minDate = new Date(2009, 2, 3);
+  maxDate = new Date();
+  filterStartDate = this.minDate;
+  filterEndDate = this.maxDate;
+  startTime = 0;
+  endTime = 0;
 
 	onAddressSearch(form : NgForm) {
 		if (form.valid) {
 
 			this.waitingOnResponse = true;
-			console.info('fetching address data', form.value.address)
-			this.bitcoinService.searchForAddress(form.value.address).subscribe(
+
+			let searchSubscription;
+
+			if (this.dateFilterEnabled) {
+				let startHours = this.startTime % 1 == 0 ? 0 : 30;
+				let endHours = this.endTime % 1 == 0 ? 0 : 30;
+
+				let epochStartDate = this.filterStartDate.setHours(this.startTime, startHours, 0, 0);
+				let epochEndDate= this.filterEndDate.setHours(this.endTime, endHours, 0, 0);
+
+				searchSubscription = this.bitcoinService.searchForAddressFiltered(form.value.address, epochStartDate, epochEndDate)
+			} else {
+				searchSubscription = this.bitcoinService.searchForAddress(form.value.address)
+			}
+
+			searchSubscription.subscribe(
 				(response : Address) => {
-					console.info(response)
 					this.investigationService.provideAddressSearchResponse(
 						response, 
 						this.inputHeuristicEnabled, 
 						this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1,
-						this.btcConversionCurrency);
+						this.btcConversionCurrency
+					);
+
 					this.router.navigateByUrl('/investigation');
 					this.waitingOnResponse = false;
 				},
@@ -61,7 +81,7 @@ export class SearchComponent {
 		console.error('bad form input')
 		
 	}	
-	
+
 	formatLabel(value: number | null) {
     if (!value) {
       return 0;

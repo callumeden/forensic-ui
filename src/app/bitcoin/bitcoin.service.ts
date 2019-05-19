@@ -17,6 +17,10 @@ export class BitcoinService {
     return this.getAddress(address)
   }
 
+  searchForAddressFiltered(address:string, startTime, endTime) {
+    return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress/" + address + "?startTime=" + startTime + "&endTime=" + endTime); 
+  }
+
   getAddresses(addresses: string[]) : Observable<Address>[] {
   	let observables : Observable<Address>[] = [];
   	addresses.forEach(address => observables.push(this.getAddress(address)));
