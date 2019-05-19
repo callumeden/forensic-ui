@@ -118,9 +118,20 @@
                   <span matPrefix *ngIf="priceFilterCurrencySelected == 'gbp'">&pound; &nbsp;</span>
                   <span matPrefix *ngIf="priceFilterCurrencySelected == 'usd'">&#x24; &nbsp;</span>
                   <span matPrefix *ngIf="priceFilterCurrencySelected == 'eur'">&euro; &nbsp;</span>
-                  <input [disabled]="!priceFilterEnabled" type="text" matInput placeholder="Value">
+                  <input [ngModel]="priceFilterFrom" [required]="priceFilterEnabled" name="priceFilterFrom" [disabled]="!priceFilterEnabled" type="number" matInput placeholder="Value From">
                   </mat-form-field>
                 </td>
+
+                <td>
+                  <mat-form-field>
+                  <span matPrefix *ngIf="priceFilterCurrencySelected == 'btc'">&#8383; &nbsp;</span>
+                  <span matPrefix *ngIf="priceFilterCurrencySelected == 'gbp'">&pound; &nbsp;</span>
+                  <span matPrefix *ngIf="priceFilterCurrencySelected == 'usd'">&#x24; &nbsp;</span>
+                  <span matPrefix *ngIf="priceFilterCurrencySelected == 'eur'">&euro; &nbsp;</span>
+                  <input [ngModel]="priceFilterTo" [required]="priceFilterEnabled" name= "priceFilterTo" [disabled]="!priceFilterEnabled" type="number" matInput placeholder="Value To">
+                  </mat-form-field>
+                </td>
+
                 <td>
                   <mat-form-field>
                     <mat-label>Currency</mat-label>

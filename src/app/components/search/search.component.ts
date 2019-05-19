@@ -25,6 +25,7 @@ export class SearchComponent {
 	truncateNeighboursCount: number = 25;
 	neighbourTruncationEnabled: boolean = true;
 	btcConversionCurrency: string = 'gbp';
+	priceFilterEnabled: boolean = false;
 
 	dateFilterEnabled = false;
 	minDate = new Date(2009, 0, 3);
@@ -41,19 +42,24 @@ export class SearchComponent {
 
 			this.waitingOnResponse = true;
 
-			let searchSubscription, epochStartDate, epochEndDate;
+			let searchSubscription, dateFilters;
 
 			if (this.dateFilterEnabled) {
 				let startHours = this.startTime % 1 == 0 ? 0 : 30;
 				let endHours = this.endTime % 1 == 0 ? 0 : 30;
 
-				epochStartDate = this.filterStartDate.setHours(this.startTime, startHours, 0, 0);
-				epochEndDate= this.filterEndDate.setHours(this.endTime, endHours, 0, 0);
-
-				searchSubscription = this.bitcoinService.searchForAddress(form.value.address, {'start': epochStartDate, 'end': epochEndDate})
-			} else {
-				searchSubscription = this.bitcoinService.searchForAddress(form.value.address)
+				let epochStartDate = this.filterStartDate.setHours(this.startTime, startHours, 0, 0);
+				let epochEndDate= this.filterEndDate.setHours(this.endTime, endHours, 0, 0);
+				dateFilters = {'start': epochStartDate, 'end': epochEndDate};
 			}
+
+			let priceFilters;
+
+			if (this.priceFilterEnabled) {
+				priceFilters = {'start': form.value.priceFilterFrom, 'end': form.value.priceFilterTo};
+			}
+
+			searchSubscription = this.bitcoinService.searchForAddress(form.value.address, dateFilters, priceFilters);
 
 			searchSubscription.subscribe(
 				(response : Address) => {
@@ -62,7 +68,7 @@ export class SearchComponent {
 						this.inputHeuristicEnabled, 
 						this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1,
 						this.btcConversionCurrency, 
-						this.dateFilterEnabled ? {'start': epochStartDate, 'end': epochEndDate}: null 
+						dateFilters
 					);
 
 					this.router.navigateByUrl('/investigation');

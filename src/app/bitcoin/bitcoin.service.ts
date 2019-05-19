@@ -11,6 +11,7 @@ export class BitcoinService {
 
 	readonly serviceDomain : string = 'http://localhost:8090';
   private dateFilters?;
+  private priceFilters?;
 
   constructor(private http: HttpClient) { }
 
@@ -21,8 +22,9 @@ export class BitcoinService {
     return "";
   }
 
-  searchForAddress(address:string, dateFilters?) {
+  searchForAddress(address:string, dateFilters?, priceFilters?) {
     this.dateFilters = dateFilters;
+    this.priceFilters = priceFilters;
     return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress/" + address + this.getDateFilterQueryParams()); 
   }
 
