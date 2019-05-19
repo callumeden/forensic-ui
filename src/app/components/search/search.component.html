@@ -94,6 +94,49 @@
           </mat-expansion-panel>
 
           <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <span>Filter by price</span>
+                  <span *ngIf="priceFilterEnabled" class="badge badge-success filter-status">Enabled</span>
+                  <span *ngIf="!priceFilterEnabled" class="badge badge-secondary filter-status">Disabled</span>
+                </mat-panel-title>
+                <mat-panel-description>
+                  Only display input/output relationships with price values of a specified range
+                </mat-panel-description>
+
+              </mat-expansion-panel-header>
+
+              <mat-slide-toggle name="priceFilterEnabled" [(ngModel)]="priceFilterEnabled">
+              <span *ngIf="priceFilterEnabled">Enabled</span>
+              <span *ngIf="!priceFilterEnabled">Disabled</span>
+              </mat-slide-toggle>
+
+              <table>
+                <td>
+                  <mat-form-field>
+                  <span matPrefix *ngIf="priceFilterCurrencySelected == 'btc'">&#8383; &nbsp;</span>
+                  <span matPrefix *ngIf="priceFilterCurrencySelected == 'gbp'">&pound; &nbsp;</span>
+                  <span matPrefix *ngIf="priceFilterCurrencySelected == 'usd'">&#x24; &nbsp;</span>
+                  <span matPrefix *ngIf="priceFilterCurrencySelected == 'eur'">&euro; &nbsp;</span>
+                  <input [disabled]="!priceFilterEnabled" type="text" matInput placeholder="Value">
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field>
+                    <mat-label>Currency</mat-label>
+                    <mat-select [(value)]="priceFilterCurrencySelected" [disabled]="!priceFilterEnabled">
+                      <mat-option value="btc">BTC</mat-option>
+                      <mat-option value="gbp">GBP</mat-option>
+                      <mat-option value="usd">USD</mat-option>
+                      <mat-option value="eur">EUR</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+              </table>
+
+          </mat-expansion-panel>
+
+          <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
                 <span>Limit neighbour rendering</span> 

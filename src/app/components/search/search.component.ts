@@ -34,6 +34,8 @@ export class SearchComponent {
   startTime = 0;
   endTime = 0;
 
+  priceFilterCurrencySelected='btc';
+
 	onAddressSearch(form : NgForm) {
 		if (form.valid) {
 
