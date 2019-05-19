@@ -27,7 +27,7 @@ export class SearchComponent {
 	btcConversionCurrency: string = 'gbp';
 
 	dateFilterEnabled = false;
-	minDate = new Date(2009, 2, 3);
+	minDate = new Date(2009, 0, 3);
   maxDate = new Date();
   filterStartDate = this.minDate;
   filterEndDate = this.maxDate;
@@ -39,16 +39,16 @@ export class SearchComponent {
 
 			this.waitingOnResponse = true;
 
-			let searchSubscription;
+			let searchSubscription, epochStartDate, epochEndDate;
 
 			if (this.dateFilterEnabled) {
 				let startHours = this.startTime % 1 == 0 ? 0 : 30;
 				let endHours = this.endTime % 1 == 0 ? 0 : 30;
 
-				let epochStartDate = this.filterStartDate.setHours(this.startTime, startHours, 0, 0);
-				let epochEndDate= this.filterEndDate.setHours(this.endTime, endHours, 0, 0);
+				epochStartDate = this.filterStartDate.setHours(this.startTime, startHours, 0, 0);
+				epochEndDate= this.filterEndDate.setHours(this.endTime, endHours, 0, 0);
 
-				searchSubscription = this.bitcoinService.searchForAddressFiltered(form.value.address, epochStartDate, epochEndDate)
+				searchSubscription = this.bitcoinService.searchForAddress(form.value.address, {'start': epochStartDate, 'end': epochEndDate})
 			} else {
 				searchSubscription = this.bitcoinService.searchForAddress(form.value.address)
 			}
@@ -59,7 +59,8 @@ export class SearchComponent {
 						response, 
 						this.inputHeuristicEnabled, 
 						this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1,
-						this.btcConversionCurrency
+						this.btcConversionCurrency, 
+						this.dateFilterEnabled ? {'start': epochStartDate, 'end': epochEndDate}: null 
 					);
 
 					this.router.navigateByUrl('/investigation');

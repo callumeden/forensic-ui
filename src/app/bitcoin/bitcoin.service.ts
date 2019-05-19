@@ -10,15 +10,20 @@ import { catchError, map, tap } from 'rxjs/operators';
 export class BitcoinService {
 
 	readonly serviceDomain : string = 'http://localhost:8090';
+  private dateFilters?;
 
   constructor(private http: HttpClient) { }
 
-  searchForAddress(address: string) {
-    return this.getAddress(address)
+  private getDateFilterQueryParams() : string {
+    if (this.dateFilters) {
+      return "?startTime=" + this.dateFilters['start'] + "&endTime=" + this.dateFilters['end'];
+    }
+    return "";
   }
 
-  searchForAddressFiltered(address:string, startTime, endTime) {
-    return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress/" + address + "?startTime=" + startTime + "&endTime=" + endTime); 
+  searchForAddress(address:string, dateFilters?) {
+    this.dateFilters = dateFilters;
+    return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress/" + address + this.getDateFilterQueryParams()); 
   }
 
   getAddresses(addresses: string[]) : Observable<Address>[] {
@@ -35,7 +40,7 @@ export class BitcoinService {
   }
 
   getOutput(outputId : string) : Observable<Output> {
-    return this.http.get<Output>(this.serviceDomain + "/bitcoin/getOutput/" + outputId)
+    return this.http.get<Output>(this.serviceDomain + "/bitcoin/getOutput/" + outputId + this.getDateFilterQueryParams())
     .pipe(
       tap(_ => console.info('got output')),
       catchError(this.handleError<Output>('getOutput'))
@@ -43,21 +48,15 @@ export class BitcoinService {
   }
 
   getTransaction(transactionId: string) : Observable<Transaction> {
-    return this.http.get<Transaction>(this.serviceDomain + "/bitcoin/getTransaction/" + transactionId)
+    return this.http.get<Transaction>(this.serviceDomain + "/bitcoin/getTransaction/" + transactionId + this.getDateFilterQueryParams()) 
     .pipe(
       tap(_ => console.info('got transaction')),
       catchError(this.handleError<Transaction>('getTransaction'))
     );
   }
 
-  getBlocks(hashes: string[]) : Observable<Block>[] {
-  	let observables : Observable<Block>[] = [];
-  	hashes.forEach(hash => observables.push(this.getBlock(hash)));
-  	return observables;
-  }
-
   getBlock(hash : string) : Observable<Block> {
-  	return this.http.get<Block>(this.serviceDomain + "/bitcoin/getBlock/" + hash) 
+  	return this.http.get<Block>(this.serviceDomain + "/bitcoin/getBlock/" + hash + this.getDateFilterQueryParams()) 
   	.pipe(
   		tap(_ => console.info('success: fetched block')),
       catchError(this.handleError<Block>('getBlock'))

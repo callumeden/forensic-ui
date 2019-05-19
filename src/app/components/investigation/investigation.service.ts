@@ -46,12 +46,14 @@ export class InvestigationService {
 	private inputClusteringEnabled : boolean = false;
 	private neighbourLimit: number = 25;
 	private btcConversionCurrency : string = 'gbp';
+	private dateFilters?;
 
-	provideAddressSearchResponse(response : Address, inputClustering : boolean, neighbourLimit: number, btcConversionCurrency : string) {
+	provideAddressSearchResponse(response : Address, inputClustering : boolean, neighbourLimit: number, btcConversionCurrency : string, dateFilters?) {
 		this.investigationActive = true;
 		this.neighbourLimit = neighbourLimit;
 		this.inputClusteringEnabled = inputClustering;
 		this.btcConversionCurrency = btcConversionCurrency;
+		this.dateFilters = dateFilters;
 		this.addressData.next({'response': response, 'inputClustering': inputClustering, 'neighbourLimit': neighbourLimit, 'btcConversionCurrency': btcConversionCurrency});
 	} 
 
