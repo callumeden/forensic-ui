@@ -56,7 +56,7 @@ export class SearchComponent {
 			let priceFilters;
 
 			if (this.priceFilterEnabled) {
-				priceFilters = {'start': form.value.priceFilterFrom, 'end': form.value.priceFilterTo};
+				priceFilters = {'start': form.value.priceFilterFrom, 'end': form.value.priceFilterTo, 'unit': this.priceFilterCurrencySelected};
 			}
 
 			searchSubscription = this.bitcoinService.searchForAddress(form.value.address, dateFilters, priceFilters);

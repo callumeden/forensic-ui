@@ -15,17 +15,28 @@ export class BitcoinService {
 
   constructor(private http: HttpClient) { }
 
-  private getDateFilterQueryParams() : string {
-    if (this.dateFilters) {
-      return "?startTime=" + this.dateFilters['start'] + "&endTime=" + this.dateFilters['end'];
+  private buildQueryParams() {
+    let queryParams = "?";
+    let atLeastOneFilter = false;
+
+     if (this.dateFilters) {
+      queryParams = queryParams + "startTime=" + this.dateFilters['start'] + "&endTime=" + this.dateFilters['end'];
+      atLeastOneFilter = true;
     }
-    return "";
+
+    if (this.priceFilters) {
+      queryParams = queryParams + "&startPrice=" + this.priceFilters['start'] + "&endPrice=" + this.priceFilters['end'] + "&priceUnit=" + this.priceFilters['unit'];
+      atLeastOneFilter = true;
+    }
+
+    return atLeastOneFilter? queryParams : "";
+
   }
 
   searchForAddress(address:string, dateFilters?, priceFilters?) {
     this.dateFilters = dateFilters;
     this.priceFilters = priceFilters;
-    return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress/" + address + this.getDateFilterQueryParams()); 
+    return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress/" + address + this.buildQueryParams()); 
   }
 
   getAddresses(addresses: string[]) : Observable<Address>[] {
@@ -42,7 +53,7 @@ export class BitcoinService {
   }
 
   getOutput(outputId : string) : Observable<Output> {
-    return this.http.get<Output>(this.serviceDomain + "/bitcoin/getOutput/" + outputId + this.getDateFilterQueryParams())
+    return this.http.get<Output>(this.serviceDomain + "/bitcoin/getOutput/" + outputId + this.buildQueryParams())
     .pipe(
       tap(_ => console.info('got output')),
       catchError(this.handleError<Output>('getOutput'))
@@ -50,7 +61,7 @@ export class BitcoinService {
   }
 
   getTransaction(transactionId: string) : Observable<Transaction> {
-    return this.http.get<Transaction>(this.serviceDomain + "/bitcoin/getTransaction/" + transactionId + this.getDateFilterQueryParams()) 
+    return this.http.get<Transaction>(this.serviceDomain + "/bitcoin/getTransaction/" + transactionId + this.buildQueryParams()) 
     .pipe(
       tap(_ => console.info('got transaction')),
       catchError(this.handleError<Transaction>('getTransaction'))
@@ -58,7 +69,7 @@ export class BitcoinService {
   }
 
   getBlock(hash : string) : Observable<Block> {
-  	return this.http.get<Block>(this.serviceDomain + "/bitcoin/getBlock/" + hash + this.getDateFilterQueryParams()) 
+  	return this.http.get<Block>(this.serviceDomain + "/bitcoin/getBlock/" + hash + this.buildQueryParams()) 
   	.pipe(
   		tap(_ => console.info('success: fetched block')),
       catchError(this.handleError<Block>('getBlock'))
