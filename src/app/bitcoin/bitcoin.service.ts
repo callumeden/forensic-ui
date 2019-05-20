@@ -12,6 +12,7 @@ export class BitcoinService {
 	readonly serviceDomain : string = 'http://localhost:8090';
   private dateFilters?;
   private priceFilters?;
+  private inputClusteringEnabled : boolean;
 
   constructor(private http: HttpClient) { }
 
@@ -29,13 +30,19 @@ export class BitcoinService {
       atLeastOneFilter = true;
     }
 
+    if (this.inputClusteringEnabled) {
+      queryParams = queryParams + "&inputClustering=true";
+      atLeastOneFilter = true; 
+    }
+
     return atLeastOneFilter? queryParams : "";
 
   }
 
-  searchForAddress(address:string, dateFilters?, priceFilters?) {
+  searchForAddress(address:string, inputClusteringEnabled: boolean, dateFilters?, priceFilters?) {
     this.dateFilters = dateFilters;
     this.priceFilters = priceFilters;
+    this.inputClusteringEnabled = inputClusteringEnabled;
     return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress/" + address + this.buildQueryParams()); 
   }
 

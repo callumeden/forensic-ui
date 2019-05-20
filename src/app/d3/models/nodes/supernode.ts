@@ -1,21 +1,21 @@
 import APP_CONFIG from '../../../app.config';
 import { Node } from '../node'
-import { Block, NodeType } from '../../../bitcoin/model';
+import { SuperNodeModel, NodeType } from '../../../bitcoin/model';
 
-export class BlockNode implements Node {
+export class SuperNode implements Node {
 
 	id: string; 
 	linkCount: number = 0; 
-  modelData : Block
-  displayText: string;
-  type: NodeType = NodeType.BLOCK;
+  modelData : SuperNodeModel
+  displayText: string = "Block"
+  type: NodeType = NodeType.SUPERNODE;
   totalLinksInGraph : number = 1;
   _expanded: boolean = false;
 
-	constructor(modelData : Block) {
-    this.id = modelData.hash;
+	constructor(id: string, modelData : SuperNodeModel) {
+    this.id = id;
     this.modelData = modelData;
-    this.displayText = this.truncateDisplayText(modelData.hash);
+    this.displayText = this.truncateDisplayText();
   }
 
   normal = () => {
@@ -23,11 +23,11 @@ export class BlockNode implements Node {
   }
 
   get r() {
-    return (50 * this.normal()) + 30;
+    return 150;
   }
 
   get fontSize() {
-    return (20 * this.normal() + 15) + 'px';
+    return 20;
   }
 
   get color() {
@@ -43,7 +43,7 @@ export class BlockNode implements Node {
     this._expanded = expanded;
   }
 
-   private truncateDisplayText(text: string) {
-    return '...' + text.slice(-6);
+   private truncateDisplayText() {
+    return 'SUPERNODE';
   }
 }

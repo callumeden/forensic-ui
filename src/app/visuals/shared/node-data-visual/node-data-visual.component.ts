@@ -80,6 +80,12 @@ export class NodeDataVisualComponent implements OnInit {
           data: nodeItems,
           panelClass: 'node-snackbar'
         })
+        break;
+      case NodeType.SUPERNODE:
+        this.nodeInfoSnackBar.openFromComponent(SuperNodeSnackbarComponent, {
+          data: nodeItems,
+          panelClass: 'node-snackbar'
+        })
   	}
 
   }
@@ -154,6 +160,22 @@ export class TransactionNodeSnackbarComponent {
 export class BlockNodeSnackbarComponent {
   constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,
     private snackbarRef: MatSnackBarRef<BlockNodeSnackbarComponent>) { }
+  private faTimesCircle = faTimesCircle;
+
+  dismiss() {
+    this.snackbarRef.dismiss();
+  }
+}
+
+@Component({
+  selector: 'block-node-snack-bar',
+  templateUrl: './snack-bar-templates/supernode.html',
+  styleUrls: ['./snack-bar-customisation.css']
+})
+export class SuperNodeSnackbarComponent {
+  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,
+    private snackbarRef: MatSnackBarRef<SuperNodeSnackbarComponent>) { 
+ }
   private faTimesCircle = faTimesCircle;
 
   dismiss() {

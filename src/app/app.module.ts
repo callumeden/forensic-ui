@@ -15,10 +15,12 @@ import { GraphComponent } from './visuals/graph/graph.component';
 import { SearchComponent } from './components/search/search.component';
 import { SHARED_VISUALS } from './visuals/shared';
 import { InvestigationGuard } from './components/investigation/investigaiton-guard.service';
-import { NodeDataVisualComponent, AddressNodeSnackbarComponent, EntityNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, CustomNodeSnackbarComponent} from './visuals/shared/node-data-visual/node-data-visual.component';
+import { NodeDataVisualComponent, AddressNodeSnackbarComponent, EntityNodeSnackbarComponent, OutputNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, SuperNodeSnackbarComponent, CustomNodeSnackbarComponent} from './visuals/shared/node-data-visual/node-data-visual.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import { FileSelectDirective } from 'ng2-file-upload';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {ScrollDispatchModule} from '@angular/cdk/scrolling';
+
 const appRoutes: Routes = [
 {path: 'investigation', component: InvestigationComponent, canActivate: [InvestigationGuard]},
 {path: '**', redirectTo: '/search', pathMatch: 'full'},
@@ -35,6 +37,7 @@ const appRoutes: Routes = [
     TransactionNodeSnackbarComponent,
     BlockNodeSnackbarComponent,
     CustomNodeSnackbarComponent,
+    SuperNodeSnackbarComponent,
     AddNodeDialog,
     AddLinkDialog,
     FileSelectDirective,
@@ -59,6 +62,7 @@ const appRoutes: Routes = [
     MatBottomSheetModule,
     MatRadioModule,
     MatExpansionModule,
+    ScrollDispatchModule,
     MatAutocompleteModule,
     MatInputModule,
     MatSelectModule,
@@ -76,7 +80,7 @@ const appRoutes: Routes = [
       appRoutes
     )
   ],
-  entryComponents: [NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, EntityNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, AddNodeDialog, AddLinkDialog, CustomNodeSnackbarComponent],
+  entryComponents: [NodeDataVisualComponent, AddressNodeSnackbarComponent, OutputNodeSnackbarComponent, EntityNodeSnackbarComponent, TransactionNodeSnackbarComponent, BlockNodeSnackbarComponent, AddNodeDialog, AddLinkDialog, CustomNodeSnackbarComponent, SuperNodeSnackbarComponent],
   providers: [D3Service, 
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 500000}}
   ],

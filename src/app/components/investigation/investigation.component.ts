@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import APP_CONFIG from '../../app.config';
-import { Node, Link, BlockNode, AddressNode, OutputNode, EntityNode, TransactionNode, CoinbaseNode, CustomNode } from '../../d3';
+import { Node, Link, BlockNode, AddressNode, OutputNode, EntityNode, TransactionNode, CoinbaseNode, CustomNode, SuperNode } from '../../d3';
 import { BitcoinService } from '../../bitcoin/bitcoin.service'
 import { InvestigationService } from './investigation.service';
-import { Block, Address, Output, Entity, Transaction, Coinbase, InputRelation, OutputRelation } from '../../bitcoin/model'
+import { Block, Address, Output, Entity, Transaction, Coinbase, InputRelation, OutputRelation, SuperNodeModel } from '../../bitcoin/model'
 import { Observable, of, forkJoin} from 'rxjs';
+import * as uuid from 'uuid';
 
 enum LinkLabel {
   CHAINED_FROM="CHAINED_FROM",
@@ -34,6 +35,7 @@ export class InvestigationComponent implements OnInit {
   blockHashes: Set<String> = new Set();
   entityIds: Set<String> = new Set();
   coinbaseIds: Set<String> = new Set();
+  clusteredAddressStore : Map<String, String> = new Map();
 
   linksUnique: Set<String> = new Set();
   customNodeIds: Set<String> = new Set();
@@ -80,15 +82,23 @@ export class InvestigationComponent implements OnInit {
 
       if (addressData) {
 
+        if (this.inputClusteringEnabled && addressData.inputHeuristicLinkedAddresses) {
+          this.createSuperNode(addressData);
+          this.finaliseUpdate();
+          return;
+        }
+
         if (addressData.outputs) {
           addressData.outputs = this.truncateNeighbours(addressData.outputs);
           addressData.outputs.forEach((outputData : Output) => this.handleNewOutputMessage(outputData));
         }
 
-        if (this.inputClusteringEnabled && addressData.inputHeuristicLinkedAddresses){
-          addressData.inputHeuristicLinkedAddresses = this.truncateNeighbours(addressData.inputHeuristicLinkedAddresses);
-          addressData.inputHeuristicLinkedAddresses.forEach((address: Address) => this.createAddressNode(address));
-        } 
+        // if (this.inputClusteringEnabled && addressData.inputHeuristicLinkedAddresses){
+        //   addressData.inputHeuristicLinkedAddresses = this.truncateNeighbours(addressData.inputHeuristicLinkedAddresses);
+        //   addressData.inputHeuristicLinkedAddresses.forEach((address: Address) => this.createAddressNode(address));
+
+        //   this.createSuperNode(addressData);
+        // } 
 
         this.createEntityNode(addressData.entity);
         this.createAddressNode(addressData, true);
@@ -215,7 +225,9 @@ export class InvestigationComponent implements OnInit {
   }
 
   private handleNewOutputMessage(outputData : Output) {
+
     this.createAddressNode(outputData.lockedToAddress);
+
     this.createOutputNode(outputData);
 
     if (outputData.producedByTransaction) {
@@ -226,9 +238,82 @@ export class InvestigationComponent implements OnInit {
     }
   }
 
+  private createSuperNode(addressData : Address) {
+    if (!addressData || this.clusteredAddressStore.has(addressData.address)) {
+      return;
+    }
+
+    let superNodeAddresses = addressData.inputHeuristicLinkedAddresses;
+
+    if (!superNodeAddresses) {
+      this.bitcoinService.getAddress(addressData.address).subscribe((fullAddress: Address) => {
+          this.createSuperNode(fullAddress);
+          this.finaliseUpdate();
+      });
+
+      return;
+    }
+
+    superNodeAddresses.push(addressData);
+
+    let superNodeData : SuperNodeModel = {addresses: addressData.inputHeuristicLinkedAddresses};
+    let supernodeId = uuid.v4();
+    let newSuperNode = new SuperNode(supernodeId, superNodeData);
+    this.clusteredAddressStore.set(addressData.address, supernodeId);
+    this.nodes.push(newSuperNode);
+    this.nodeLookup.set(supernodeId, newSuperNode);
+    this.investigationService.registerId(supernodeId);
+
+    superNodeData.addresses.forEach((address: Address) => {
+      this.clusteredAddressStore.set(address.address, supernodeId);
+      if (address.outputs) {
+        address.outputs.forEach((output : Output) => {
+          this.createOutputNodeOnly(output);
+
+          if (output.producedByTransaction) {
+            this.createNewLink(output.outputId, supernodeId, LinkLabel.LOCKED_TO, {
+              'btc': output.value,
+              'gbp': output.producedByTransaction.gbpValue,
+              'usd': output.producedByTransaction.usdValue,
+              'eur': output.producedByTransaction.eurValue,
+              'currency': this.btcConversionCurrency,
+              'timestamp': output.producedByTransaction.timestamp
+            });
+          } else {
+             this.createNewLink(output.outputId, supernodeId, LinkLabel.LOCKED_TO);
+          }
+
+        }, this)
+      }
+    });
+
+    return supernodeId;
+  }
+
+  createOutputLockedToAddressLink(output: Output, address: Address) {
+     if (output.producedByTransaction) {
+           this.createNewLink(output.outputId, address.address, LinkLabel.LOCKED_TO, {
+             'btc': output.value,
+             'gbp': output.producedByTransaction.gbpValue,
+             'usd': output.producedByTransaction.usdValue,
+             'eur': output.producedByTransaction.eurValue,
+             'currency': this.btcConversionCurrency,
+             'timestamp': output.producedByTransaction.timestamp
+           });
+        } else {
+          this.createNewLink(output.outputId, address.address, LinkLabel.LOCKED_TO);
+      }
+  }
+
   createAddressNode(data : Address, isExpanded? : boolean) {
 
-    if (!data) {
+    if (!data || this.clusteredAddressStore.has(data.address)) {
+      return;
+    }
+
+    if (this.inputClusteringEnabled && data.hasLinkedAddresses) {
+
+      this.createSuperNode(data);
       return;
     }
 
@@ -243,22 +328,7 @@ export class InvestigationComponent implements OnInit {
 
     if (data.outputs) {
       data.outputs = this.truncateNeighbours(data.outputs);
-      data.outputs.forEach(output => {
-        if (output.producedByTransaction) {
-           this.createNewLink(output.outputId, data.address, LinkLabel.LOCKED_TO, {
-             'btc': output.value,
-             'gbp': output.producedByTransaction.gbpValue,
-             'usd': output.producedByTransaction.usdValue,
-             'eur': output.producedByTransaction.eurValue,
-             'currency': this.btcConversionCurrency,
-             'timestamp': output.producedByTransaction.timestamp
-           });
-        } else {
-          this.createNewLink(output.outputId, data.address, LinkLabel.LOCKED_TO);
-
-        }
-      }, this)
-
+      data.outputs.forEach(output => this.createOutputLockedToAddressLink(output, data));
     }
 
     if (data.entity) {
@@ -271,14 +341,9 @@ export class InvestigationComponent implements OnInit {
         this.createNewLink(data.address, linkedAddress.address, LinkLabel.INPUT_HEURISTIC_LINKED_ADDRESS)
       });
     }
-
   }
 
-  createOutputNode(data : Output) {
-    if (!data) {
-      return;
-    }
-
+  private createOutputNodeOnly(data : Output) {
     if (!this.outputIds.has(data.outputId)){
         this.outputIds.add(data.outputId);
         let newOutputNode = new OutputNode(data)
@@ -286,9 +351,43 @@ export class InvestigationComponent implements OnInit {
         this.nodeLookup.set(data.outputId, newOutputNode);
         this.investigationService.registerId(data.outputId);
       }
+  }
 
-      if (data.producedByTransaction && data.producedByTransaction.transaction) {
-        this.createNewLink(data.producedByTransaction.transaction.transactionId, data.outputId, LinkLabel.OUTPUTS, {
+  createOutputNode(data : Output) {
+    if (!data) {
+      return;
+    }
+
+    this.createOutputNodeOnly(data);
+
+    if (data.producedByTransaction && data.producedByTransaction.transaction) {
+      this.createNewLink(data.producedByTransaction.transaction.transactionId, data.outputId, LinkLabel.OUTPUTS, {
+        'btc': data.value,
+        'gbp': data.producedByTransaction.gbpValue,
+        'usd': data.producedByTransaction.usdValue,
+        'eur': data.producedByTransaction.eurValue,
+        'currency': this.btcConversionCurrency,
+        'timestamp': data.producedByTransaction.timestamp
+      });
+    }
+
+    if (data.lockedToAddress) {
+      let addressNodeId;
+      
+      if (this.inputClusteringEnabled && this.clusteredAddressStore.has(data.lockedToAddress.address)) {
+        addressNodeId = this.clusteredAddressStore.get(data.lockedToAddress.address);
+      } else{
+        if (this.inputClusteringEnabled && data.lockedToAddress.hasLinkedAddresses) {
+          addressNodeId = null;
+        } else {
+          addressNodeId = data.lockedToAddress.address;
+        }
+
+      }
+
+      if (addressNodeId != null) {
+
+        this.createNewLink(data.outputId, addressNodeId, LinkLabel.LOCKED_TO, {
           'btc': data.value,
           'gbp': data.producedByTransaction.gbpValue,
           'usd': data.producedByTransaction.usdValue,
@@ -297,36 +396,19 @@ export class InvestigationComponent implements OnInit {
           'timestamp': data.producedByTransaction.timestamp
         });
       }
+    }
 
-      if (data.lockedToAddress) {
-        if (data.producedByTransaction) {
-          this.createNewLink(data.outputId, data.lockedToAddress.address, LinkLabel.LOCKED_TO, {
-            'btc': data.value,
-            'gbp': data.producedByTransaction.gbpValue,
-            'usd': data.producedByTransaction.usdValue,
-            'eur': data.producedByTransaction.eurValue,
-            'currency': this.btcConversionCurrency,
-            'timestamp': data.producedByTransaction.timestamp
-          });
-        } else {
-          this.createNewLink(data.outputId, data.lockedToAddress.address, LinkLabel.LOCKED_TO);
-
-        }
-      }
-
-      if (data.inputsTransaction && data.inputsTransaction.transaction) {
-        this.createNewLink(data.outputId, data.inputsTransaction.transaction.transactionId, LinkLabel.INPUTS, {
-          'btc': data.value,
-          'gbp': data.inputsTransaction.gbpValue,
-          'usd': data.inputsTransaction.usdValue,
-          'eur': data.inputsTransaction.eurValue,
-          'currency': this.btcConversionCurrency,
-          'timestamp': data.inputsTransaction.timestamp
-        });
-      }
+    if (data.inputsTransaction && data.inputsTransaction.transaction) {
+      this.createNewLink(data.outputId, data.inputsTransaction.transaction.transactionId, LinkLabel.INPUTS, {
+        'btc': data.value,
+        'gbp': data.inputsTransaction.gbpValue,
+        'usd': data.inputsTransaction.usdValue,
+        'eur': data.inputsTransaction.eurValue,
+        'currency': this.btcConversionCurrency,
+        'timestamp': data.inputsTransaction.timestamp
+      });
+    }
   }
-
-
 
   createTransactionNodeOnly(transactionData : Transaction) {
      if (!transactionData ) {

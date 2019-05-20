@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Block, Address, Output, Transaction, Entity, Coinbase } from '../../bitcoin/model';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { Node, TransactionNode, OutputNode, EntityNode, AddressNode, BlockNode, CoinbaseNode } from '../../d3/models';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { Node, TransactionNode, OutputNode, EntityNode, AddressNode, BlockNode, CoinbaseNode, SuperNode} from '../../d3/models';
 import { BitcoinService } from '../../bitcoin/bitcoin.service';
 
 @Injectable({
@@ -133,6 +133,10 @@ export class InvestigationService {
 
 		if (node instanceof CoinbaseNode) {
 			return this.expandCoinbaseNodeNeighbours(node);
+		}
+
+		if (node instanceof SuperNode) {
+			return of(true);
 		}
 
 		return null;

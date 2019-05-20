@@ -9,4 +9,7 @@ export interface Address {
   entity: Entity;
 
   inputHeuristicLinkedAddresses: Address[];
+
+
+  hasLinkedAddresses: boolean;
 }

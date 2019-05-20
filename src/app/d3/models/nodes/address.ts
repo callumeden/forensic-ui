@@ -7,7 +7,7 @@ export class AddressNode implements Node {
 	id: string; 
 	linkCount: number = 0;
   modelData : Address;
-  displayText: string = "Address";
+  displayText: string;
   type: NodeType = NodeType.ADDRESS;
   totalLinksInGraph : number = 1;
   _expanded: boolean = false;

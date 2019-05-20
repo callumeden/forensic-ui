@@ -10,3 +10,4 @@ export * from './nodetype';
 export * from './custom-node-type';
 export * from './inputrelation';
 export * from './outputrelation';
+export * from './supernode';
