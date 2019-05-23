@@ -13,12 +13,14 @@ export class BitcoinService {
   private dateFilters?;
   private priceFilters?;
   private inputClusteringEnabled : boolean;
+  private nodeLimit: number;
 
   constructor(private http: HttpClient) { }
 
   private buildQueryParams() {
     let queryParams = "?";
     let atLeastOneFilter = false;
+    debugger;
 
      if (this.dateFilters) {
       queryParams = queryParams + "startTime=" + this.dateFilters['start'] + "&endTime=" + this.dateFilters['end'];
@@ -35,14 +37,23 @@ export class BitcoinService {
       atLeastOneFilter = true; 
     }
 
+
+    if (this.nodeLimit > 0) {
+      queryParams = queryParams + "&nodeLimit=" + this.nodeLimit;
+      atLeastOneFilter = true;
+    }
+
     return atLeastOneFilter? queryParams : "";
 
   }
 
-  searchForAddress(address:string, inputClusteringEnabled: boolean, dateFilters?, priceFilters?) {
+  searchForAddress(address:string, inputClusteringEnabled: boolean, nodeLimit : number, dateFilters?, priceFilters?) {
     this.dateFilters = dateFilters;
     this.priceFilters = priceFilters;
     this.inputClusteringEnabled = inputClusteringEnabled;
+    this.nodeLimit = nodeLimit;
+    //first, we fetch the address without input clustering to see if its associated with an entity 
+
     return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress/" + address + this.buildQueryParams()); 
   }
 
@@ -84,7 +95,7 @@ export class BitcoinService {
   }
 
   getEntity(name : string) : Observable<Entity> {
-    return this.http.get<Entity>(this.serviceDomain + "/bitcoin/getEntity/" + name)
+    return this.http.get<Entity>(this.serviceDomain + "/bitcoin/getEntity/" + name + this.buildQueryParams())
     .pipe(
       tap(_ => console.info('success: fetched block')),
       catchError(this.handleError<Entity>('getEntity'))

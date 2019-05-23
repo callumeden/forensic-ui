@@ -59,7 +59,12 @@ export class SearchComponent {
 				priceFilters = {'start': form.value.priceFilterFrom, 'end': form.value.priceFilterTo, 'unit': this.priceFilterCurrencySelected};
 			}
 
-			searchSubscription = this.bitcoinService.searchForAddress(form.value.address, this.inputHeuristicEnabled, dateFilters, priceFilters);
+			searchSubscription = this.bitcoinService.searchForAddress(
+				form.value.address, 
+				this.inputHeuristicEnabled, 
+				this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1,
+				dateFilters, 
+				priceFilters);
 
 			searchSubscription.subscribe(
 				(response : Address) => {
