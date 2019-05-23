@@ -165,6 +165,10 @@ export class InvestigationComponent implements OnInit {
     let map = this.pendingLinkUpdates.keys()
     this.pendingLinkUpdates.forEach((count:number, id:string) => {
       let nodeToUpdate = this.nodeLookup.get(id);
+      if (nodeToUpdate == null) {
+        debugger;
+        console.info('trying to get id', id);
+      }
       nodeToUpdate.linkCount = nodeToUpdate.linkCount + count;
       this.totalLinkCount += count;
     });
