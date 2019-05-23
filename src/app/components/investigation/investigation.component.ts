@@ -285,6 +285,8 @@ export class InvestigationComponent implements OnInit {
   private createSuperNodeOnly(addressData, superNodeAddresses, knownEntities?) {
   
     let superNodeData : SuperNodeModel = {addresses: superNodeAddresses, knownEntities: knownEntities};
+    superNodeData.addresses = this.truncateNeighbours(superNodeData.addresses);
+
     let supernodeId = uuid.v4();
     let newSuperNode = new SuperNode(supernodeId, superNodeData);
     this.clusteredAddressStore.set(addressData.address, supernodeId);
