@@ -180,34 +180,32 @@ export class InvestigationComponent implements OnInit {
   }
 
   handleNewAddressMessage(addressData : Address) {
-     let createSuperNode = this.inputClusteringEnabled && (addressData.inputHeuristicLinkedAddresses || addressData.entity)
+    if (this.inputClusteringEnabled) {
 
-        if (this.inputClusteringEnabled) {
+      if (addressData.entity) {
+        this.bitcoinService.getEntity(addressData.entity.name).subscribe((loadedEntity : Entity) => {
+          this.createSuperNode(addressData, loadedEntity);
+          this.finaliseUpdate();
+        });
 
-          if (addressData.entity) {
-            this.bitcoinService.getEntity(addressData.entity.name).subscribe((loadedEntity : Entity) => {
-              this.createSuperNode(addressData, loadedEntity);
-              this.finaliseUpdate();
-            });
+        return;
+      }
 
-            return;
-          }
+      if (addressData.inputHeuristicLinkedAddresses) {
+        this.createSuperNode(addressData);
+        this.finaliseUpdate();
+        return;
+      }
 
-          if (addressData.inputHeuristicLinkedAddresses) {
-            this.createSuperNode(addressData);
-            this.finaliseUpdate();
-            return;
-          }
+    }
 
-        }
+    if (addressData.outputs) {
+      addressData.outputs = this.truncateNeighbours(addressData.outputs);
+      addressData.outputs.forEach((outputData : Output) => this.handleNewOutputMessage(outputData));
+    }
 
-        if (addressData.outputs) {
-          addressData.outputs = this.truncateNeighbours(addressData.outputs);
-          addressData.outputs.forEach((outputData : Output) => this.handleNewOutputMessage(outputData));
-        }
-
-        this.createEntityNode(addressData.entity);
-        this.createAddressNode(addressData, true);
+    this.createEntityNode(addressData.entity);
+    this.createAddressNode(addressData, true);
   }
 
   private handleNewTransactionMessage(transactionData : Transaction) {
