@@ -434,7 +434,7 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (addressNodeId == null) {
-      return addressNodeId.address;
+      return address.address;
     }
 
     return addressNodeId;
