@@ -30,17 +30,17 @@ export class InvestigationComponent implements OnInit {
   nodes: Node[] = [];
   links: Link[] = [];
   outputIds: Set<string> = new Set();
-  addressIds: Set<String> = new Set();
-  transactionIds: Set<String> = new Set();
-  blockHashes: Set<String> = new Set();
-  entityIds: Set<String> = new Set();
-  coinbaseIds: Set<String> = new Set();
-  clusteredAddressStore : Map<String, String> = new Map();
-  entityNodeMappings: Map<String, String> = new Map();
+  addressIds: Set<string> = new Set();
+  transactionIds: Set<string> = new Set();
+  blockHashes: Set<string> = new Set();
+  entityIds: Set<string> = new Set();
+  coinbaseIds: Set<string> = new Set();
+  clusteredAddressStore : Map<string, string> = new Map();
+  entityNodeMappings: Map<string, string> = new Map();
 
-  linksUnique: Set<String> = new Set();
-  customNodeIds: Set<String> = new Set();
-  nodeLookup : Map<String, Node>  = new Map();
+  linksUnique: Set<string> = new Set();
+  customNodeIds: Set<string> = new Set();
+  nodeLookup : Map<string, Node>  = new Map();
   changes: number = 0;
   pendingLinkUpdates: Map<string, number> = new Map();
   subscriptions = [];
@@ -192,7 +192,7 @@ export class InvestigationComponent implements OnInit {
         return;
       }
 
-      if (addressData.inputHeuristicLinkedAddresses) {
+      if (addressData.inputHeuristicLinkedAddresses && addressData.inputHeuristicLinkedAddresses.length > 0) {
         this.createSuperNode(addressData);
         this.finaliseUpdate();
         return;
@@ -316,7 +316,6 @@ export class InvestigationComponent implements OnInit {
   }
 
   private createSuperNode(addressData : Address, entityData? : Entity, fetchedBefore?) {
-    debugger;
     if (!addressData || this.clusteredAddressStore.has(addressData.address)) {
       return;
     }
@@ -416,7 +415,7 @@ export class InvestigationComponent implements OnInit {
   }
 
 
-  figureOutTheAddressId(address : Address) {
+  figureOutTheAddressId(address : Address)  : string {
     let addressNodeId;
 
     if (this.inputClusteringEnabled) {
