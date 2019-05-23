@@ -419,25 +419,25 @@ export class InvestigationComponent implements OnInit {
 
   figureOutTheAddressId(address : Address) {
     let addressNodeId;
+    debugger;
 
     if (this.inputClusteringEnabled) {
 
-       if (this.clusteredAddressStore.has(address.address)) {
-           addressNodeId = this.clusteredAddressStore.get(address.address);
-        } else {
+      if (this.clusteredAddressStore.has(address.address)) {
+        return this.clusteredAddressStore.get(address.address);
+      } 
 
-          if (address.entity && this.entityNodeMappings.has(address.entity.name)) {
-            addressNodeId = this.entityNodeMappings.get(address.entity.name);
-          }
-        }
+      if (address.entity && this.entityNodeMappings.has(address.entity.name)) {
+        return this.entityNodeMappings.get(address.entity.name);
+      }
 
-    }
+      if (address.hasLinkedAddresses) {
+        return null;
+      }
 
-    if (addressNodeId == null) {
-      return address.address;
-    }
+    } 
 
-    return addressNodeId;
+    return address.address;
   }
 
 
