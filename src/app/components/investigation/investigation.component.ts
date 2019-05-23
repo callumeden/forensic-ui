@@ -181,6 +181,7 @@ export class InvestigationComponent implements OnInit {
   }
 
   handleNewAddressMessage(addressData : Address) {
+    debugger;
     if (this.inputClusteringEnabled) {
 
       if (addressData.entity) {
@@ -415,6 +416,31 @@ export class InvestigationComponent implements OnInit {
       }
   }
 
+
+  figureOutTheAddressId(address : Address) {
+    let addressNodeId;
+
+    if (this.inputClusteringEnabled) {
+
+       if (this.clusteredAddressStore.has(address.address)) {
+           addressNodeId = this.clusteredAddressStore.get(address.address);
+        } else {
+
+          if (address.entity && this.entityNodeMappings.has(address.entity.name)) {
+            addressNodeId = this.entityNodeMappings.get(address.entity.name);
+          }
+        }
+
+    }
+
+    if (addressNodeId == null) {
+      return addressNodeId.address;
+    }
+
+    return addressNodeId;
+  }
+
+
   createOutputNode(data : Output) {
     if (!data) {
       return;
@@ -434,30 +460,19 @@ export class InvestigationComponent implements OnInit {
     }
 
     if (data.lockedToAddress) {
-      let addressNodeId;
-      
-      if (this.inputClusteringEnabled && this.clusteredAddressStore.has(data.lockedToAddress.address)) {
-        addressNodeId = this.clusteredAddressStore.get(data.lockedToAddress.address);
-      } else{
-        if (this.inputClusteringEnabled && data.lockedToAddress.hasLinkedAddresses) {
-          addressNodeId = null;
-        } else {
-          addressNodeId = data.lockedToAddress.address;
-        }
+      //we need to see if the address is contained in a supernode, and if so, find the ID of the supernode 
+      //instead 
 
-      }
+      let addressNodeId = this.figureOutTheAddressId(data.lockedToAddress);
 
-      if (addressNodeId != null) {
-
-        this.createNewLink(data.outputId, addressNodeId, LinkLabel.LOCKED_TO, {
-          'btc': data.value,
-          'gbp': data.producedByTransaction.gbpValue,
-          'usd': data.producedByTransaction.usdValue,
-          'eur': data.producedByTransaction.eurValue,
-          'currency': this.btcConversionCurrency,
-          'timestamp': data.producedByTransaction.timestamp
-        });
-      }
+      this.createNewLink(data.outputId, addressNodeId, LinkLabel.LOCKED_TO, {
+        'btc': data.value,
+        'gbp': data.producedByTransaction.gbpValue,
+        'usd': data.producedByTransaction.usdValue,
+        'eur': data.producedByTransaction.eurValue,
+        'currency': this.btcConversionCurrency,
+        'timestamp': data.producedByTransaction.timestamp
+      });
     }
 
     if (data.inputsTransaction && data.inputsTransaction.transaction) {
