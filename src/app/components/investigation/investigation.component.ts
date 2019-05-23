@@ -262,6 +262,7 @@ export class InvestigationComponent implements OnInit {
        this.bitcoinService.getEntity(addressData.entity.name).subscribe((loadedEntity : Entity) => {
          debugger;
           this.createEntitySuperNode(addressData, loadedEntity);
+          this.finaliseUpdate();
         });
        return;
     }
@@ -336,7 +337,6 @@ export class InvestigationComponent implements OnInit {
 
       return;
     }
-
 
     let superNodeAddresses: Address[] = [];
     let knownEntities: string[] = [];
