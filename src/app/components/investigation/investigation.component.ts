@@ -260,6 +260,7 @@ export class InvestigationComponent implements OnInit {
     if (!entityData.usesAddresses) {
       console.info('entity data not here...reloading info')
        this.bitcoinService.getEntity(addressData.entity.name).subscribe((loadedEntity : Entity) => {
+         debugger;
           this.createEntitySuperNode(addressData, loadedEntity);
         });
        return;
