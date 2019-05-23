@@ -467,14 +467,16 @@ export class InvestigationComponent implements OnInit {
 
       let addressNodeId = this.figureOutTheAddressId(data.lockedToAddress);
 
-      this.createNewLink(data.outputId, addressNodeId, LinkLabel.LOCKED_TO, {
-        'btc': data.value,
-        'gbp': data.producedByTransaction.gbpValue,
-        'usd': data.producedByTransaction.usdValue,
-        'eur': data.producedByTransaction.eurValue,
-        'currency': this.btcConversionCurrency,
-        'timestamp': data.producedByTransaction.timestamp
-      });
+      if (addressNodeId != null) {
+        this.createNewLink(data.outputId, addressNodeId, LinkLabel.LOCKED_TO, {
+          'btc': data.value,
+          'gbp': data.producedByTransaction.gbpValue,
+          'usd': data.producedByTransaction.usdValue,
+          'eur': data.producedByTransaction.eurValue,
+          'currency': this.btcConversionCurrency,
+          'timestamp': data.producedByTransaction.timestamp
+        });
+      }
     }
 
     if (data.inputsTransaction && data.inputsTransaction.transaction) {
