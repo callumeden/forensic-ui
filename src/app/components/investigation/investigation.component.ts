@@ -248,21 +248,26 @@ export class InvestigationComponent implements OnInit {
     }
   }
 
-  private createSuperNode(addressData : Address, entityData? : Entity) {
+  private createSuperNode(addressData : Address, entityData? : Entity, fetchedBefore?) {
     if (!addressData || this.clusteredAddressStore.has(addressData.address)) {
       return;
     }
 
     let needsRefetching = !addressData.inputHeuristicLinkedAddresses && !entityData;
 
-    if (needsRefetching) {
+    if (needsRefetching && !fetchedBefore) {
       console.info('super node stuff needs refetching.... ')
       this.bitcoinService.getAddress(addressData.address).subscribe((fullAddress: Address) => {
-          this.createSuperNode(fullAddress);
+          this.createSuperNode(fullAddress, null, true);
           this.finaliseUpdate();
       });
 
       return;
+    }
+
+    if (needsRefetching && fetchedBefore) {
+      debugger;
+      console.error('all goes wrong here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     }
 
     let superNodeAddresses: Address[] = [];
