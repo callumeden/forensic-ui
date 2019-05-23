@@ -15,7 +15,7 @@ export class SuperNode implements Node {
 	constructor(id: string, modelData : SuperNodeModel) {
     this.id = id;
     this.modelData = modelData;
-    if (modelData.knownEntities.length > 0) {
+    if (modelData.knownEntities && modelData.knownEntities.length > 0) {
       this.displayText = this.truncateDisplayText(modelData.knownEntities);
     } else {
       this.displayText = "Supernode"

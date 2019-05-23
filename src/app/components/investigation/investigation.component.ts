@@ -36,6 +36,7 @@ export class InvestigationComponent implements OnInit {
   entityIds: Set<String> = new Set();
   coinbaseIds: Set<String> = new Set();
   clusteredAddressStore : Map<String, String> = new Map();
+  entityNodeMappings: Map<String, String> = new Map();
 
   linksUnique: Set<String> = new Set();
   customNodeIds: Set<String> = new Set();
@@ -184,7 +185,7 @@ export class InvestigationComponent implements OnInit {
 
       if (addressData.entity) {
         this.bitcoinService.getEntity(addressData.entity.name).subscribe((loadedEntity : Entity) => {
-          this.createSuperNode(addressData, loadedEntity);
+          this.createEntitySuperNode(addressData, loadedEntity);
           this.finaliseUpdate();
         });
 
@@ -248,49 +249,38 @@ export class InvestigationComponent implements OnInit {
     }
   }
 
-  private createSuperNode(addressData : Address, entityData? : Entity, fetchedBefore?) {
-    if (!addressData || this.clusteredAddressStore.has(addressData.address)) {
+  private createEntitySuperNode(addressData: Address, entityData: Entity) {
+    //address data and entity data are fully feteched
+    //create the entity super node 
+    if (this.entityNodeMappings.has(entityData.name)) {
       return;
     }
 
-    let needsRefetching = !addressData.inputHeuristicLinkedAddresses && !entityData;
-
-    if (needsRefetching && !fetchedBefore) {
-
-      if (addressData.entity) {
+    if (!entityData.usesAddresses) {
+      console.info('entity data not here...reloading info')
        this.bitcoinService.getEntity(addressData.entity.name).subscribe((loadedEntity : Entity) => {
-          this.createSuperNode(addressData, loadedEntity, true);
-          this.finaliseUpdate();
+          this.createEntitySuperNode(addressData, loadedEntity);
         });
-
-        return;
-      }
-
-      console.info('super node stuff needs refetching.... ')
-      this.bitcoinService.getAddress(addressData.address).subscribe((fullAddress: Address) => {
-          this.createSuperNode(fullAddress, null, true);
-          this.finaliseUpdate();
-      });
-
-      return;
-    }
-
-    if (needsRefetching && fetchedBefore) {
-      debugger;
-      console.error('all goes wrong here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+       return;
     }
 
     let superNodeAddresses: Address[] = [];
     let knownEntities: string[] = [];
-    if (addressData.inputHeuristicLinkedAddresses) {
-      addressData.inputHeuristicLinkedAddresses.forEach(address =>superNodeAddresses.push(address));
-    }
 
     if (entityData && entityData.usesAddresses) {
       entityData.usesAddresses.forEach(address => superNodeAddresses.push(address));
       knownEntities.push(entityData.name);
     }
 
+
+    let supernodeId = this.createSuperNodeOnly(addressData, superNodeAddresses, knownEntities);
+
+    this.entityNodeMappings.set(entityData.name, supernodeId);
+    debugger;
+  }
+
+  private createSuperNodeOnly(addressData, superNodeAddresses, knownEntities?) {
+  
     let superNodeData : SuperNodeModel = {addresses: superNodeAddresses, knownEntities: knownEntities};
     let supernodeId = uuid.v4();
     let newSuperNode = new SuperNode(supernodeId, superNodeData);
@@ -325,6 +315,37 @@ export class InvestigationComponent implements OnInit {
     return supernodeId;
   }
 
+  private createSuperNode(addressData : Address, entityData? : Entity, fetchedBefore?) {
+    if (!addressData || this.clusteredAddressStore.has(addressData.address)) {
+      return;
+    }
+
+    if (fetchedBefore) {
+      console.error('something very wrong here... fetching infinite recursion');
+      return;
+    }
+
+    if (!addressData.inputHeuristicLinkedAddresses && !fetchedBefore) {
+
+      console.info('super node stuff needs refetching....');
+      this.bitcoinService.getAddress(addressData.address).subscribe((fullAddress: Address) => {
+          this.createSuperNode(fullAddress, null, true);
+          this.finaliseUpdate();
+      });
+
+      return;
+    }
+
+
+    let superNodeAddresses: Address[] = [];
+    let knownEntities: string[] = [];
+    if (addressData.inputHeuristicLinkedAddresses) {
+      addressData.inputHeuristicLinkedAddresses.forEach(address => superNodeAddresses.push(address));
+    }
+
+    return this.createSuperNodeOnly(addressData, superNodeAddresses);
+  }
+
   createOutputLockedToAddressLink(output: Output, address: Address) {
      if (output.producedByTransaction) {
            this.createNewLink(output.outputId, address.address, LinkLabel.LOCKED_TO, {
@@ -345,7 +366,15 @@ export class InvestigationComponent implements OnInit {
       return;
     }
 
+
     if (this.inputClusteringEnabled && (data.hasLinkedAddresses || data.entity)) {
+      debugger;
+
+      if (data.entity) {
+        this.createEntitySuperNode(data, data.entity);
+        return;
+      }
+
       this.createSuperNode(data);
       return;
     }
