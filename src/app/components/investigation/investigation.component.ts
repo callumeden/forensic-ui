@@ -181,7 +181,6 @@ export class InvestigationComponent implements OnInit {
   }
 
   handleNewAddressMessage(addressData : Address) {
-    debugger;
     if (this.inputClusteringEnabled) {
 
       if (addressData.entity) {
@@ -277,7 +276,6 @@ export class InvestigationComponent implements OnInit {
     let supernodeId = this.createSuperNodeOnly(addressData, superNodeAddresses, knownEntities);
 
     this.entityNodeMappings.set(entityData.name, supernodeId);
-    debugger;
   }
 
   private createSuperNodeOnly(addressData, superNodeAddresses, knownEntities?) {
@@ -369,7 +367,6 @@ export class InvestigationComponent implements OnInit {
 
 
     if (this.inputClusteringEnabled && (data.hasLinkedAddresses || data.entity)) {
-      debugger;
 
       if (data.entity) {
         this.createEntitySuperNode(data, data.entity);
@@ -419,7 +416,6 @@ export class InvestigationComponent implements OnInit {
 
   figureOutTheAddressId(address : Address) {
     let addressNodeId;
-    debugger;
 
     if (this.inputClusteringEnabled) {
 
