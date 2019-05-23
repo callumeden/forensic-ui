@@ -250,6 +250,7 @@ export class InvestigationComponent implements OnInit {
   }
 
   private createEntitySuperNode(addressData: Address, entityData: Entity) {
+    debugger;
     //address data and entity data are fully feteched
     //create the entity super node 
     if (this.entityNodeMappings.has(entityData.name)) {
@@ -315,6 +316,7 @@ export class InvestigationComponent implements OnInit {
   }
 
   private createSuperNode(addressData : Address, entityData? : Entity, fetchedBefore?) {
+    debugger;
     if (!addressData || this.clusteredAddressStore.has(addressData.address)) {
       return;
     }
