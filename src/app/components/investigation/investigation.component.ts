@@ -256,6 +256,16 @@ export class InvestigationComponent implements OnInit {
     let needsRefetching = !addressData.inputHeuristicLinkedAddresses && !entityData;
 
     if (needsRefetching && !fetchedBefore) {
+
+      if (addressData.entity) {
+       this.bitcoinService.getEntity(addressData.entity.name).subscribe((loadedEntity : Entity) => {
+          this.createSuperNode(addressData, loadedEntity, true);
+          this.finaliseUpdate();
+        });
+
+        return;
+      }
+
       console.info('super node stuff needs refetching.... ')
       this.bitcoinService.getAddress(addressData.address).subscribe((fullAddress: Address) => {
           this.createSuperNode(fullAddress, null, true);
