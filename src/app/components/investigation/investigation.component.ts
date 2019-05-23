@@ -166,7 +166,6 @@ export class InvestigationComponent implements OnInit {
     this.pendingLinkUpdates.forEach((count:number, id:string) => {
       let nodeToUpdate = this.nodeLookup.get(id);
       if (nodeToUpdate == null) {
-        debugger;
         console.info('trying to get id', id);
       }
       nodeToUpdate.linkCount = nodeToUpdate.linkCount + count;
@@ -254,7 +253,6 @@ export class InvestigationComponent implements OnInit {
   }
 
   private createEntitySuperNode(addressData: Address, entityData: Entity) {
-    debugger;
     //address data and entity data are fully feteched
     //create the entity super node 
     if (this.entityNodeMappings.has(entityData.name)) {
@@ -264,7 +262,6 @@ export class InvestigationComponent implements OnInit {
     if (!entityData.usesAddresses) {
       console.info('entity data not here...reloading info')
        this.bitcoinService.getEntity(addressData.entity.name).subscribe((loadedEntity : Entity) => {
-         debugger;
           this.createEntitySuperNode(addressData, loadedEntity);
           this.finaliseUpdate();
         });
