@@ -7,7 +7,7 @@ export class SuperNode implements Node {
 	id: string; 
 	linkCount: number = 0; 
   modelData : SuperNodeModel
-  displayText: string = "Block"
+  displayText: string;
   type: NodeType = NodeType.SUPERNODE;
   totalLinksInGraph : number = 1;
   _expanded: boolean = false;
@@ -15,7 +15,12 @@ export class SuperNode implements Node {
 	constructor(id: string, modelData : SuperNodeModel) {
     this.id = id;
     this.modelData = modelData;
-    this.displayText = this.truncateDisplayText();
+    if (modelData.knownEntities.length > 0) {
+      this.displayText = this.truncateDisplayText(modelData.knownEntities);
+    } else {
+      this.displayText = "Supernode"
+    }
+
   }
 
   normal = () => {
@@ -43,7 +48,10 @@ export class SuperNode implements Node {
     this._expanded = expanded;
   }
 
-   private truncateDisplayText() {
-    return 'SUPERNODE';
-  }
+   private truncateDisplayText(names: string[]) {
+    let display = "";
+    names.forEach(name => display = display + name + "  ");
+    return display;
+   }
+
 }
