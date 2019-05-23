@@ -22,7 +22,7 @@ export class SearchComponent {
 	invalidAddress : boolean = false;
 	errorMessage : string;
 	inputHeuristicEnabled : boolean = false;
-	truncateNeighboursCount: number = 25;
+	truncateNeighboursCount: number = 10;
 	neighbourTruncationEnabled: boolean = true;
 	btcConversionCurrency: string = 'gbp';
 	priceFilterEnabled: boolean = false;

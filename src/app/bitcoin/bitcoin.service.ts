@@ -20,7 +20,6 @@ export class BitcoinService {
   private buildQueryParams() {
     let queryParams = "?";
     let atLeastOneFilter = false;
-    debugger;
 
      if (this.dateFilters) {
       queryParams = queryParams + "startTime=" + this.dateFilters['start'] + "&endTime=" + this.dateFilters['end'];

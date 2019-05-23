@@ -103,7 +103,6 @@ export class InvestigationComponent implements OnInit {
 
     const entitySubscription = this.investigationService.currentEntityData.subscribe((entityData : Entity) => {
       if (entityData) {
-        debugger;
 
         if (entityData.usesAddresses) {
           entityData.usesAddresses = this.truncateNeighbours(entityData.usesAddresses);
@@ -328,7 +327,6 @@ export class InvestigationComponent implements OnInit {
   }
 
   createAddressNode(data : Address, isExpanded? : boolean) {
-    debugger;
     if (!data || this.clusteredAddressStore.has(data.address)) {
       return;
     }
