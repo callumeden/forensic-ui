@@ -36,8 +36,8 @@ export class SuperNode implements Node {
   }
 
   get color() {
-    let index = Math.floor((APP_CONFIG.BLOCK_SPECTRUM.length - 1) * this.normal());
-    return APP_CONFIG.BLOCK_SPECTRUM[index];
+    let index = Math.floor((APP_CONFIG.SUPERNODE_SPECTRUM.length - 1) * this.normal());
+    return APP_CONFIG.SUPERNODE_SPECTRUM[index];
   }
 
   get expanded() : boolean {

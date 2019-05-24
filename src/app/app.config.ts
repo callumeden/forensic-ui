@@ -42,6 +42,13 @@ const CONFIG = {
   ],
   COINBASE_SPECTRUM: [
     "rgb(194, 194, 214)"//80
+  ],
+  SUPERNODE_SPECTRUM: [
+    "rgb(153, 255, 255)",
+    "rgb(128, 255, 255)",
+    "rgb(102, 255, 255)",
+    "rgb(77, 255, 255)",
+    "rgb(51, 255, 255)"
   ]
 }
 
