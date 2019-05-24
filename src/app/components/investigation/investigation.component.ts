@@ -326,7 +326,7 @@ export class InvestigationComponent implements OnInit {
       return;
     }
 
-    if (fetchedBefore) {
+    if (fetchedBefore && !!addressData.inputHeuristicLinkedAddresses) {
       console.error('something very wrong here... fetching infinite recursion');
       return;
     }
@@ -401,7 +401,7 @@ export class InvestigationComponent implements OnInit {
       this.createNewLink(data.address, data.entity.name, LinkLabel.HAS_ENTITY);
     }
 
-    if (this.inputClusteringEnabled && data.inputHeuristicLinkedAddresses) {
+    if (this.inputClusteringEnabled && data.inputHeuristicLinkedAddresses && data.inputHeuristicLinkedAddresses.length > 0) {
       data.inputHeuristicLinkedAddresses = this.truncateNeighbours(data.inputHeuristicLinkedAddresses);
       data.inputHeuristicLinkedAddresses.forEach((linkedAddress : Address) => {
         this.createNewLink(data.address, linkedAddress.address, LinkLabel.INPUT_HEURISTIC_LINKED_ADDRESS)
