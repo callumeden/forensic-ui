@@ -326,7 +326,7 @@ export class InvestigationComponent implements OnInit {
       return;
     }
 
-    if (fetchedBefore && !!addressData.inputHeuristicLinkedAddresses) {
+    if (fetchedBefore && !addressData.inputHeuristicLinkedAddresses) {
       console.error('something very wrong here... fetching infinite recursion');
       return;
     }
