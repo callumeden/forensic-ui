@@ -15,9 +15,10 @@
 	text-align: center;
 }
 
-mat-accordion h4 {
+mat-accordion h5 {
 	margin-bottom: 20px;
 	margin-top: 20px;
+	color: grey;
 }
 
 .radio-buttons {
