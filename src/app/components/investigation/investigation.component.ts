@@ -583,7 +583,7 @@ export class InvestigationComponent implements OnInit {
   }
 
   createEntityNode(entityData: Entity) {
-    if (!entityData) {
+    if (!entityData || this.isPathActivatedButNodeRedundant(entityData.name)) {
       return;
     }
 

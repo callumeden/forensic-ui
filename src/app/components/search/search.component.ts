@@ -127,7 +127,6 @@ export class SearchComponent {
 				this.parsePath(result[0]);
 				this.router.navigateByUrl('/investigation');
 				this.waitingOnPathFindingResponse = false;
-
 		},
 
 		error => {
