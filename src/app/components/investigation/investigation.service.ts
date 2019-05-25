@@ -44,6 +44,9 @@ export class InvestigationService {
 	private highlightedLinks = new BehaviorSubject(null);
 	currentHighlightedLinks = this.highlightedLinks.asObservable();
 
+	private pathNodeIds = new BehaviorSubject(null);
+	currentPathNodeIds = this.pathNodeIds.asObservable();
+
 	investigationActive : boolean = false;
 
 	private inputClusteringEnabled : boolean = false;
@@ -87,6 +90,10 @@ export class InvestigationService {
 	newDeleteNodeRequest(nodeData) {
 		this.deleteNodeRequests.next(nodeData);
 	} 
+
+	providePathNodeIds(nodeIds: Set<string>) {
+		this.pathNodeIds.next(nodeIds);
+	}
 
 	highlightRelationships(relationships: any[]) {
 		relationships.forEach(relationship => {
@@ -138,6 +145,7 @@ export class InvestigationService {
 		this.deleteNodeRequests.next(null);
 		this.inputClusteringRequests.next(null);
 		this.highlightedLinks.next(null);
+		this.pathNodeIds.next(null);
 	}
 
 	expandNeighbours(node : Node) : Observable<any> {

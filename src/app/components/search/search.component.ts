@@ -145,19 +145,25 @@ export class SearchComponent {
 		let requests = [];
 
 		let intermediateNodes : any[] = result.intermediateNodes;
+		let relationships : any[] = result.rels;
+		this.investigationService.highlightRelationships(relationships);
+		let nodeIds : Set<string> = new Set();
 
 		intermediateNodes.forEach(nodeData => {
 
 			if (nodeData.address) {
+				nodeIds.add(nodeData.address);
 				requests.push(this.bitcoinService.getAddress(nodeData.address));
 				return;
 			}
 			if (nodeData.outputId) {
+				nodeIds.add(nodeData.outputId);
 				requests.push(this.bitcoinService.getOutput(nodeData.outputId));
 				return;
 			}
 
 			if (nodeData.transactionId) {
+				nodeIds.add(nodeData.transactionId);
 				requests.push(this.bitcoinService.getTransaction(nodeData.transactionId));
 				return;
 			}
@@ -165,6 +171,7 @@ export class SearchComponent {
 		});
 
 
+		this.investigationService.providePathNodeIds(nodeIds);
 		const allRequests = forkJoin(requests);
 
 		allRequests.subscribe((allResponses: any[]) => {
@@ -195,10 +202,11 @@ export class SearchComponent {
 
 			});
 
+			this.investigationService.providePathNodeIds(null);
+
 
 		})
 
-		let relationships : any[] = result.rels;
 
 		this.investigationService.activateInvestigation();
 

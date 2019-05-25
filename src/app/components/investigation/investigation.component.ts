@@ -38,6 +38,7 @@ export class InvestigationComponent implements OnInit {
   clusteredAddressStore : Map<string, string> = new Map();
   entityNodeMappings: Map<string, string> = new Map();
   pathLinks: Set<string> = new Set();
+  pathNodeIds: Set<string>;
 
   linksUnique: Set<string> = new Set();
   customNodeIds: Set<string> = new Set();
@@ -160,6 +161,11 @@ export class InvestigationComponent implements OnInit {
       }
     });
 
+
+    const pathNodeIdsSubscription = this.investigationService.currentPathNodeIds.subscribe((pathNodeIds: Set<string>) => {
+      this.pathNodeIds = pathNodeIds;
+    });
+
     this.subscriptions.push(addressSubscription);
     this.subscriptions.push(outputSubscription);
     this.subscriptions.push(transactionSubscription);
@@ -168,6 +174,8 @@ export class InvestigationComponent implements OnInit {
     this.subscriptions.push(coinbaseSubscription);
     this.subscriptions.push(customNodeSubscription);
     this.subscriptions.push(customLinkSubscription);
+    this.subscriptions.push(removeNodeSubscription);
+    this.subscriptions.push(pathLinksSubscription);
   }
 
   private finaliseUpdate() {
@@ -379,8 +387,18 @@ export class InvestigationComponent implements OnInit {
       }
   }
 
+  private isPathActivatedButNodeRedundant(id) : boolean {
+    if (!this.pathNodeIds) {
+      return false;
+    }
+
+    return !this.pathNodeIds.has(id);
+  }
+
+
   createAddressNode(data : Address, isExpanded? : boolean) {
-    if (!data || this.clusteredAddressStore.has(data.address)) {
+    if (!data || this.clusteredAddressStore.has(data.address) || this.isPathActivatedButNodeRedundant(data.address)) {
+      debugger;
       return;
     }
 
@@ -457,7 +475,7 @@ export class InvestigationComponent implements OnInit {
 
 
   createOutputNode(data : Output) {
-    if (!data) {
+    if (!data || this.isPathActivatedButNodeRedundant(data.outputId)) {
       return;
     }
 
@@ -505,7 +523,7 @@ export class InvestigationComponent implements OnInit {
   }
 
   createTransactionNodeOnly(transactionData : Transaction) {
-     if (!transactionData ) {
+     if (!transactionData || this.isPathActivatedButNodeRedundant(transactionData.transactionId)) {
       return;
     }
 
@@ -521,7 +539,7 @@ export class InvestigationComponent implements OnInit {
 
   createTransactionNode(transactionData : Transaction) {
 
-    if (!transactionData ) {
+    if (!transactionData || this.isPathActivatedButNodeRedundant(transactionData.transactionId)) {
       return;
     }
 
@@ -586,7 +604,7 @@ export class InvestigationComponent implements OnInit {
   }
 
   createBlockNode(blockData : Block) {
-    if (!blockData) {
+    if (!blockData || this.isPathActivatedButNodeRedundant(blockData.hash)) {
       return;
     }
 
@@ -659,13 +677,12 @@ export class InvestigationComponent implements OnInit {
   }
 
   private createNewLink(sourceId : string, targetId: string, label, metadata?) {
-    if (this.linksUnique.has(this.buildLinkString(sourceId, targetId, label)) || sourceId == targetId) {
+    if (this.linksUnique.has(this.buildLinkString(sourceId, targetId, label)) || sourceId == targetId || this.isPathActivatedButNodeRedundant(sourceId) || this.isPathActivatedButNodeRedundant(targetId)) {
       return;
     }
 
     let pathLink = false;
 
-    console.info('is link path??? : ', sourceId, targetId)
     if (this.isPathLink(sourceId, targetId)) {
       pathLink = true;
     }
