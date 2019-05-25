@@ -1,4 +1,4 @@
-import { Address } from './address';
+import { LockedToRelation } from './lockedtorelation';
 import { InputRelation} from './inputrelation';
 import { OutputRelation } from './outputrelation';
 
@@ -11,5 +11,5 @@ export interface Output {
 
 	inputsTransaction: InputRelation;
 
-	lockedToAddress: Address;
+	lockedToAddress: LockedToRelation;
 }

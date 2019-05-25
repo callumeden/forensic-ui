@@ -56,6 +56,10 @@ export class BitcoinService {
     return this.http.get<Address>(this.serviceDomain + "/bitcoin/getAddress/" + address + this.buildQueryParams()); 
   }
 
+  findPath(startAddress:string, endAddress:string) {
+    return this.http.get(this.serviceDomain + "/bitcoin/getShortestPath/" + startAddress + "/" + endAddress);
+  }
+
   getAddresses(addresses: string[]) : Observable<Address>[] {
   	let observables : Observable<Address>[] = [];
   	addresses.forEach(address => observables.push(this.getAddress(address)));

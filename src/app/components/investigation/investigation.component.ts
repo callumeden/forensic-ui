@@ -3,7 +3,7 @@ import APP_CONFIG from '../../app.config';
 import { Node, Link, BlockNode, AddressNode, OutputNode, EntityNode, TransactionNode, CoinbaseNode, CustomNode, SuperNode } from '../../d3';
 import { BitcoinService } from '../../bitcoin/bitcoin.service'
 import { InvestigationService } from './investigation.service';
-import { Block, Address, Output, Entity, Transaction, Coinbase, InputRelation, OutputRelation, SuperNodeModel } from '../../bitcoin/model'
+import { Block, Address, Output, Entity, Transaction, Coinbase, LockedToRelation, InputRelation, OutputRelation, SuperNodeModel } from '../../bitcoin/model'
 import { Observable, of, forkJoin} from 'rxjs';
 import * as uuid from 'uuid';
 
@@ -77,12 +77,14 @@ export class InvestigationComponent implements OnInit {
  
   createNewDataSubscriptions() {
     const addressSubscription = this.investigationService.currentAddressData.subscribe(data => {
-      this.inputClusteringEnabled = data.inputClustering;
-      this.neighbourLimit = data.neighbourLimit;
-      this.btcConversionCurrency = data.btcConversionCurrency;
-      let addressData : Address = data.response;
 
-      if (addressData) {
+      if (data) {
+
+        this.inputClusteringEnabled = data.inputClustering;
+        this.neighbourLimit = data.neighbourLimit;
+        this.btcConversionCurrency = data.btcConversionCurrency;
+        let addressData : Address = data.response;
+
         this.handleNewAddressMessage(addressData);
         this.finaliseUpdate();
       }
@@ -205,7 +207,7 @@ export class InvestigationComponent implements OnInit {
 
     if (addressData.outputs) {
       addressData.outputs = this.truncateNeighbours(addressData.outputs);
-      addressData.outputs.forEach((outputData : Output) => this.handleNewOutputMessage(outputData));
+      addressData.outputs.forEach((outputRelation : LockedToRelation) => this.handleNewOutputMessage(outputRelation.output));
     }
 
     this.createEntityNode(addressData.entity);
@@ -240,7 +242,9 @@ export class InvestigationComponent implements OnInit {
 
   private handleNewOutputMessage(outputData : Output) {
 
-    this.createAddressNode(outputData.lockedToAddress);
+    if (outputData.lockedToAddress) {
+      this.createAddressNode(outputData.lockedToAddress.address);
+    }
 
     this.createOutputNode(outputData);
 
@@ -298,7 +302,9 @@ export class InvestigationComponent implements OnInit {
       this.clusteredAddressStore.set(address.address, supernodeId);
       if (address.outputs) {
         let truncatedOutputs = this.truncateNeighbours(address.outputs);
-        truncatedOutputs.forEach((output : Output) => {
+        truncatedOutputs.forEach((outputRelation : LockedToRelation) => {
+          let output = outputRelation.output;
+
           this.createOutputNodeOnly(output);
 
           if (output.producedByTransaction) {
@@ -394,7 +400,7 @@ export class InvestigationComponent implements OnInit {
 
     if (data.outputs) {
       data.outputs = this.truncateNeighbours(data.outputs);
-      data.outputs.forEach(output => this.createOutputLockedToAddressLink(output, data));
+      data.outputs.forEach(outputRelation => this.createOutputLockedToAddressLink(outputRelation.output, data));
     }
 
     if (data.entity) {
@@ -465,7 +471,7 @@ export class InvestigationComponent implements OnInit {
       //we need to see if the address is contained in a supernode, and if so, find the ID of the supernode 
       //instead 
 
-      let addressNodeId = this.figureOutTheAddressId(data.lockedToAddress);
+      let addressNodeId = this.figureOutTheAddressId(data.lockedToAddress.address);
 
       if (addressNodeId != null) {
         this.createNewLink(data.outputId, addressNodeId, LinkLabel.LOCKED_TO, {

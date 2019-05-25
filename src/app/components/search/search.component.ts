@@ -4,6 +4,7 @@ import { BitcoinService } from '../../bitcoin/bitcoin.service'
 import { InvestigationService } from '../investigation/investigation.service'
 import { Router } from '@angular/router';
 import { Address } from '../../bitcoin/model';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'search',
@@ -34,6 +35,10 @@ export class SearchComponent {
   filterEndDate = this.maxDate;
   startTime = 0;
   endTime = 0;
+
+  waitingOnPathFindingResponse = false;
+  badPathFindForm = false;
+  badPathFindMessage;
 
   priceFilterCurrencySelected='btc';
 
@@ -95,6 +100,105 @@ export class SearchComponent {
 		console.error('bad form input')
 		
 	}	
+
+
+	onFindPath(form : NgForm) {
+		if (!form.valid) {
+			return;
+		}
+
+		this.waitingOnPathFindingResponse = true;
+		let startAddress = form.value.startAddress;
+		let endAddress = form.value.endAddress;
+		let pathExists = false;
+		this.bitcoinService.findPath(startAddress, endAddress).subscribe(
+
+			(result : any[]) => {
+				//handle error response
+				if (result == null || result.length == 0) { 
+					this.badPathFindForm = true;
+					this.badPathFindMessage = 'No path found between addresses';
+					return;
+				}
+
+				//handle when a path is found
+				this.badPathFindForm = false;
+				this.parsePath(result[0]);
+
+				this.router.navigateByUrl('/investigation');
+				this.waitingOnPathFindingResponse = false;
+
+		},
+
+		error => {
+					this.badPathFindForm = true;
+					let errorText = typeof(error.error) == 'string' ? error.error : error.statusText;
+					this.badPathFindMessage = "Something went wrong... Status : " + error.status + ", " + errorText;
+					this.waitingOnPathFindingResponse = false;
+				}
+		);
+	}
+
+	parsePath(result: any) {
+		let startAddressShell : Address = result.startNode;
+		let endAddressShell: Address = result.endNode;
+		let requests = [];
+
+		let fullStartAddressRequest = this.bitcoinService.getAddress(startAddressShell.address);
+		requests.push(fullStartAddressRequest);
+
+		let fullEndAddressRequest = this.bitcoinService.getAddress(endAddressShell.address);
+		requests.push(fullEndAddressRequest);
+
+		let intermediateNodes : any[] = result.intermediateNodes;
+
+		intermediateNodes.forEach(nodeData => {
+			if (nodeData.outputId) {
+				requests.push(this.bitcoinService.getOutput(nodeData.outputId));
+				return;
+			}
+
+			if (nodeData.transactionId) {
+				requests.push(this.bitcoinService.getTransaction(nodeData.transactionId));
+				return;
+			}
+
+		});
+
+		let relationships : any[] = result.rels;
+
+		const allRequests = forkJoin(requests);
+
+		allRequests.subscribe((allResponses: any[]) => {
+
+			allResponses.forEach((response: any) => {
+
+				if (!response) {
+					console.error('got an error');
+					return;
+				}
+
+				if (response.address) {
+					this.investigationService.provideAddressData(response);
+					return;
+				}
+
+				if (response.outputId) {
+					this.investigationService.provideOutputData(response);
+					return;
+				}
+
+				if (response.transactionId) {
+					this.investigationService.provideNewTransactionNode(response);
+					return;
+				}
+
+			});
+
+		})
+
+		this.investigationService.activateInvestigation();
+	}
 
 	formatLabel(value: number | null) {
     if (!value) {

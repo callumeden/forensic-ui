@@ -57,6 +57,18 @@ export class InvestigationService {
 		this.addressData.next({'response': response, 'inputClustering': inputClustering, 'neighbourLimit': neighbourLimit, 'btcConversionCurrency': btcConversionCurrency});
 	} 
 
+	activateInvestigation() {
+		this.investigationActive = true;
+	}
+
+	provideAddressData(address: Address) {
+		this.addressData.next({'response': address});
+	}
+
+	provideOutputData(output: Output) {
+		this.outputData.next(output);
+	}
+
 	provideNewCustomNodeData(customNodeData) {
 		this.customNodeData.next(customNodeData);
 	}

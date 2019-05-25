@@ -1,15 +1,14 @@
-import { Output } from './output';
+import { LockedToRelation } from './lockedtorelation';
 import { Entity } from './entity';
 
 export interface Address {
   address: string;
 
-  outputs: Output[];
+  outputs: LockedToRelation[];
 
   entity: Entity;
 
   inputHeuristicLinkedAddresses: Address[];
-
 
   hasLinkedAddresses: boolean;
 }
