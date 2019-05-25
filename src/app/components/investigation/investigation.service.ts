@@ -41,6 +41,9 @@ export class InvestigationService {
 	private inputClusteringRequests = new BehaviorSubject(null);
 	currentInputClusteringRequest = this.inputClusteringRequests.asObservable();
 
+	private highlightedLinks = new BehaviorSubject(null);
+	currentHighlightedLinks = this.highlightedLinks.asObservable();
+
 	investigationActive : boolean = false;
 
 	private inputClusteringEnabled : boolean = false;
@@ -85,6 +88,21 @@ export class InvestigationService {
 		this.deleteNodeRequests.next(nodeData);
 	} 
 
+	highlightRelationships(relationships: any[]) {
+		relationships.forEach(relationship => {
+			if (relationship.input && relationship.transaction) {
+				this.highlightedLinks.next(relationship.input.outputId + '/' + relationship.transaction.transactionId);
+				return;
+			}
+
+			if (relationship.address && relationship.output) {
+				this.highlightedLinks.next(relationship.address.address + '/' + relationship.output.outputId);
+				return;
+			}
+
+		});
+	}
+
 	createCustomLink(sourceNodeData, targetNodeData, linkLabel) {
 		this.customLinkData.next({
 			'src': sourceNodeData,
@@ -119,6 +137,7 @@ export class InvestigationService {
 		this.customLinkData.next(null);
 		this.deleteNodeRequests.next(null);
 		this.inputClusteringRequests.next(null);
+		this.highlightedLinks.next(null);
 	}
 
 	expandNeighbours(node : Node) : Observable<any> {

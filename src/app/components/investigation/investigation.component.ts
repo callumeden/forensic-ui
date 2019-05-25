@@ -37,6 +37,7 @@ export class InvestigationComponent implements OnInit {
   coinbaseIds: Set<string> = new Set();
   clusteredAddressStore : Map<string, string> = new Map();
   entityNodeMappings: Map<string, string> = new Map();
+  pathLinks: Set<string> = new Set();
 
   linksUnique: Set<string> = new Set();
   customNodeIds: Set<string> = new Set();
@@ -150,6 +151,12 @@ export class InvestigationComponent implements OnInit {
       if (nodeToDelete) {
         this.handleNodeDeletion(nodeToDelete);
         this.finaliseUpdate();
+      }
+    });
+
+    const pathLinksSubscription = this.investigationService.currentHighlightedLinks.subscribe((linkData :string)=> {
+      if (linkData) {
+        this.pathLinks.add(linkData);
       }
     });
 
@@ -655,7 +662,15 @@ export class InvestigationComponent implements OnInit {
     if (this.linksUnique.has(this.buildLinkString(sourceId, targetId, label)) || sourceId == targetId) {
       return;
     }
-    this.links.push(new Link(sourceId, targetId, label, metadata));
+
+    let pathLink = false;
+
+    console.info('is link path??? : ', sourceId, targetId)
+    if (this.isPathLink(sourceId, targetId)) {
+      pathLink = true;
+    }
+
+    this.links.push(new Link(sourceId, targetId, label, pathLink, metadata));
     this.linksUnique.add(this.buildLinkString(sourceId, targetId, label));
     this.updateLinkCounts(sourceId);
     this.updateLinkCounts(targetId);
@@ -668,6 +683,10 @@ export class InvestigationComponent implements OnInit {
     } else {
       this.pendingLinkUpdates.set(id, 1);
     }
+  }
+
+  private isPathLink(id1: string, id2:string) {
+    return this.pathLinks.has(id1 + '/' + id2) || this.pathLinks.has(id2 + '/' + id1);
   }
 
   private buildLinkString(sourceId : string, targetId : string, label: LinkLabel) {

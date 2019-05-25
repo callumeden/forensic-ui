@@ -4,6 +4,12 @@
     opacity: 0.5;
 }
 
+.link-path {
+	stroke-width: 4;
+	stroke: rgb(220,20,60);
+	opacity: 0.5;
+}
+
 .link-label {
   font-family: 'Lato';
   text-anchor: middle;
@@ -15,3 +21,4 @@
 .arrow-head {
 	fill: rgb(165, 171, 182);
 }
+

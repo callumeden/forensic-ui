@@ -10,13 +10,14 @@ export class Link implements d3.SimulationLinkDatum<Node> {
   source: Node | string | number;
   target: Node | string | number;
   type: string;
+  pathLink: boolean;
   metadata?;
 
-  constructor(source, target, type: string, metadata?) {
+  constructor(source, target, type: string, pathLink: boolean, metadata?) {
     this.source = source;
     this.target = target;
     this.type = type;
     this.metadata = metadata;
-   
+    this.pathLink = pathLink;
   }
 }

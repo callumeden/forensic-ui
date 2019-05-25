@@ -2,14 +2,25 @@
 
 <svg:defs>
 
-  <marker id="arrow" viewBox="0 -5 10 10" refX="50" refY="0" markerWidth="10" markerHeight="10" orient="auto">
+<marker id="arrow" viewBox="0 -5 10 10" refX="50" refY="0" markerWidth="10" markerHeight="10" orient="auto">
       <path d="M0,-5L10,0L0,5" class="arrow-head" />
-    </marker>
+ </marker>
 
 </svg:defs>
 
 <svg:line
+        *ngIf="!link.pathLink"
         class="link"
+        marker-end="url(#arrow)"
+        [attr.x1]="link.source.x"
+        [attr.y1]="link.source.y"
+        [attr.x2]="link.target.x"
+        [attr.y2]="link.target.y">
+</svg:line>
+
+<svg:line
+        *ngIf="link.pathLink"
+        class="link-path"
         marker-end="url(#arrow)"
         [attr.x1]="link.source.x"
         [attr.y1]="link.source.y"

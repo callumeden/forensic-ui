@@ -118,13 +118,13 @@ export class SearchComponent {
 				if (result == null || result.length == 0) { 
 					this.badPathFindForm = true;
 					this.badPathFindMessage = 'No path found between addresses';
+					this.waitingOnPathFindingResponse = false;
 					return;
 				}
 
 				//handle when a path is found
 				this.badPathFindForm = false;
 				this.parsePath(result[0]);
-
 				this.router.navigateByUrl('/investigation');
 				this.waitingOnPathFindingResponse = false;
 
@@ -144,15 +144,14 @@ export class SearchComponent {
 		let endAddressShell: Address = result.endNode;
 		let requests = [];
 
-		let fullStartAddressRequest = this.bitcoinService.getAddress(startAddressShell.address);
-		requests.push(fullStartAddressRequest);
-
-		let fullEndAddressRequest = this.bitcoinService.getAddress(endAddressShell.address);
-		requests.push(fullEndAddressRequest);
-
 		let intermediateNodes : any[] = result.intermediateNodes;
 
 		intermediateNodes.forEach(nodeData => {
+
+			if (nodeData.address) {
+				requests.push(this.bitcoinService.getAddress(nodeData.address));
+				return;
+			}
 			if (nodeData.outputId) {
 				requests.push(this.bitcoinService.getOutput(nodeData.outputId));
 				return;
@@ -165,7 +164,6 @@ export class SearchComponent {
 
 		});
 
-		let relationships : any[] = result.rels;
 
 		const allRequests = forkJoin(requests);
 
@@ -177,6 +175,8 @@ export class SearchComponent {
 					console.error('got an error');
 					return;
 				}
+
+				this.investigationService.highlightRelationships(relationships);
 
 				if (response.address) {
 					this.investigationService.provideAddressData(response);
@@ -195,9 +195,13 @@ export class SearchComponent {
 
 			});
 
+
 		})
 
+		let relationships : any[] = result.rels;
+
 		this.investigationService.activateInvestigation();
+
 	}
 
 	formatLabel(value: number | null) {
