@@ -15,7 +15,7 @@
 	text-align: center;
 }
 
-mat-accordion h5 {
+mat-accordion h5.title {
 	margin-bottom: 20px;
 	margin-top: 20px;
 	color: grey;
