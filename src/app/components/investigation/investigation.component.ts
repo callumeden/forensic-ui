@@ -398,7 +398,6 @@ export class InvestigationComponent implements OnInit {
 
   createAddressNode(data : Address, isExpanded? : boolean) {
     if (!data || this.clusteredAddressStore.has(data.address) || this.isPathActivatedButNodeRedundant(data.address)) {
-      debugger;
       return;
     }
 

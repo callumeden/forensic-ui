@@ -163,9 +163,13 @@
               <mat-slide-toggle name="neighbourTruncationEnabled" [(ngModel)]="neighbourTruncationEnabled">
                 <span *ngIf="neighbourTruncationEnabled">Enabled</span>
                 <span *ngIf="!neighbourTruncationEnabled">Disabled</span>
+
+              </mat-slide-toggle>
+
+              <div>
                 <h5><span class="badge badge-warning" *ngIf="!neighbourTruncationEnabled">UI Performance may seriously deterioate for nodes with many neighbours</span></h5>
                 <h5><span *ngIf="neighbourTruncationEnabled" class="badge badge-secondary">Limit: {{truncateNeighboursCount}}</span></h5>
-              </mat-slide-toggle>
+              </div>
 
               <mat-slider [disabled]="!neighbourTruncationEnabled" name="truncate-neighbour-slider" class="neighbour-truncate-slider" thumbLabel [thumbLabel]="thumbLabel" [(ngModel)]="truncateNeighboursCount" tickInterval="1" min="0" max="100"></mat-slider>
           </mat-expansion-panel>
