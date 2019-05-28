@@ -39,6 +39,7 @@ export class SearchComponent {
   waitingOnPathFindingResponse = false;
   badPathFindForm = false;
   badPathFindMessage;
+ 	pathFound = false;
 
   priceFilterCurrencySelected='btc';
 
@@ -101,8 +102,8 @@ export class SearchComponent {
 		
 	}	
 
-
 	onFindPath(form : NgForm) {
+		debugger;
 		if (!form.valid) {
 			return;
 		}
@@ -122,11 +123,11 @@ export class SearchComponent {
 					return;
 				}
 
+				this.pathFound = true;
 				//handle when a path is found
 				this.badPathFindForm = false;
 				this.parsePath(result[0]);
 				this.router.navigateByUrl('/investigation');
-				this.waitingOnPathFindingResponse = false;
 		},
 
 		error => {
@@ -171,9 +172,8 @@ export class SearchComponent {
 
 
 		this.investigationService.providePathNodeIds(nodeIds);
-		const allRequests = forkJoin(requests);
 
-		allRequests.subscribe((allResponses: any[]) => {
+		forkJoin(requests).subscribe((allResponses: any[]) => {
 
 			allResponses.forEach((response: any) => {
 
@@ -202,7 +202,7 @@ export class SearchComponent {
 			});
 
 			this.investigationService.providePathNodeIds(null);
-
+			this.waitingOnPathFindingResponse = false;
 
 		})
 
