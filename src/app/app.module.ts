@@ -5,7 +5,7 @@ import { HttpClientModule }    from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { D3Service, D3_DIRECTIVES } from './d3';
-import { MatListModule, MatExpansionModule, MatBadgeModule,  MatDatepickerModule, MatNativeDateModule, MatCardModule, MatRadioModule, MatSlideToggleModule, MatSliderModule, MatBottomSheetModule, MatDialogModule, MatSelectModule, MatAutocompleteModule, MatDividerModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
+import { MatListModule, MatProgressSpinnerModule, MatExpansionModule, MatBadgeModule,  MatDatepickerModule, MatNativeDateModule, MatCardModule, MatRadioModule, MatSlideToggleModule, MatSliderModule, MatBottomSheetModule, MatDialogModule, MatSelectModule, MatAutocompleteModule, MatDividerModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material';
 import  {BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InvestigationComponent } from './components/investigation/investigation.component';
 import { AddNodeComponent, AddLinkDialog } from './components/add-node/add-node.component';
@@ -60,6 +60,7 @@ const appRoutes: Routes = [
     MatBadgeModule,
     MatNativeDateModule,
     MatBottomSheetModule,
+    MatProgressSpinnerModule,
     MatRadioModule,
     MatExpansionModule,
     ScrollDispatchModule,

@@ -47,12 +47,16 @@ export class InvestigationService {
 	private pathNodeIds = new BehaviorSubject(null);
 	currentPathNodeIds = this.pathNodeIds.asObservable();
 
+	private graphReadyData = new BehaviorSubject(null);
+	currentGraphReady = this.graphReadyData.asObservable();
+
 	investigationActive : boolean = false;
 
 	private inputClusteringEnabled : boolean = false;
 	private neighbourLimit: number = 25;
 	private btcConversionCurrency : string = 'gbp';
 	private dateFilters?;
+	private graphReady: boolean;
 
 	provideAddressSearchResponse(response : Address, inputClustering : boolean, neighbourLimit: number, btcConversionCurrency : string, dateFilters?) {
 		this.investigationActive = true;
@@ -61,11 +65,18 @@ export class InvestigationService {
 		this.btcConversionCurrency = btcConversionCurrency;
 		this.dateFilters = dateFilters;
 		this.addressData.next({'response': response, 'inputClustering': inputClustering, 'neighbourLimit': neighbourLimit, 'btcConversionCurrency': btcConversionCurrency});
+		this.setGraphReady();
 	} 
 
 	activateInvestigation() {
 		this.investigationActive = true;
 	}
+
+	setGraphReady() {
+		this.graphReady = true;
+		this.graphReadyData.next(this.graphReady);
+	}
+
 
 	provideAddressData(address: Address) {
 		this.addressData.next({'response': address});
@@ -96,18 +107,21 @@ export class InvestigationService {
 	}
 
 	highlightRelationships(relationships: any[]) {
+		let rels = new Set();
 		relationships.forEach(relationship => {
 			if (relationship.input && relationship.transaction) {
-				this.highlightedLinks.next(relationship.input.outputId + '/' + relationship.transaction.transactionId);
+				rels.add(relationship.input.outputId + '/' + relationship.transaction.transactionId)
 				return;
 			}
 
 			if (relationship.address && relationship.output) {
-				this.highlightedLinks.next(relationship.address.address + '/' + relationship.output.outputId);
+				rels.add(relationship.address.address + '/' + relationship.output.outputId)
 				return;
 			}
 
 		});
+
+		this.highlightedLinks.next(rels);
 	}
 
 	createCustomLink(sourceNodeData, targetNodeData, linkLabel) {
@@ -146,6 +160,8 @@ export class InvestigationService {
 		this.inputClusteringRequests.next(null);
 		this.highlightedLinks.next(null);
 		this.pathNodeIds.next(null);
+		this.graphReadyData.next(false);
+		this.graphReady = false;
 	}
 
 	expandNeighbours(node : Node) : Observable<any> {

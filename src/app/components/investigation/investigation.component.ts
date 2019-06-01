@@ -48,6 +48,7 @@ export class InvestigationComponent implements OnInit {
   subscriptions = [];
   totalLinkCount: number = 0;
   neighbourLimit: number = 25;
+  graphReady: boolean = false;
 
   inputClusteringEnabled: boolean = false;
   btcConversionCurrency: string = 'gbp';
@@ -155,11 +156,17 @@ export class InvestigationComponent implements OnInit {
       }
     });
 
-    const pathLinksSubscription = this.investigationService.currentHighlightedLinks.subscribe((linkData :string)=> {
+    const pathLinksSubscription = this.investigationService.currentHighlightedLinks.subscribe((linkData :Set<string>)=> {
       if (linkData) {
-        this.pathLinks.add(linkData);
+        linkData.forEach(pathLink => this.pathLinks.add(pathLink));
       }
     });
+
+    const graphReadySubscription = this.investigationService.currentGraphReady.subscribe((graphReady: boolean) => {
+      if (graphReady) {
+        this.graphReady = graphReady;
+      }
+    })
 
 
     const pathNodeIdsSubscription = this.investigationService.currentPathNodeIds.subscribe((pathNodeIds: Set<string>) => {
@@ -176,6 +183,8 @@ export class InvestigationComponent implements OnInit {
     this.subscriptions.push(customLinkSubscription);
     this.subscriptions.push(removeNodeSubscription);
     this.subscriptions.push(pathLinksSubscription);
+    this.subscriptions.push(pathNodeIdsSubscription);
+    this.subscriptions.push(graphReadySubscription);
   }
 
   private finaliseUpdate() {

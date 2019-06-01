@@ -125,8 +125,9 @@ export class SearchComponent {
 				this.pathFound = true;
 				//handle when a path is found
 				this.badPathFindForm = false;
-				this.parsePath(result[0]);
+				this.investigationService.activateInvestigation();
 				this.router.navigateByUrl('/investigation');
+				this.parsePath(result[0]);
 		},
 
 		error => {
@@ -169,44 +170,48 @@ export class SearchComponent {
 
 		});
 
-
 		this.investigationService.providePathNodeIds(nodeIds);
 
-		forkJoin(requests).subscribe((allResponses: any[]) => {
+		forkJoin(requests).subscribe(
 
-			allResponses.forEach((response: any) => {
+			(allResponses: any[]) => {
 
-				if (!response) {
-					console.error('got an error');
-					return;
-				}
+				allResponses.forEach((response: any) => {
 
-				this.investigationService.highlightRelationships(relationships);
+					if (!response) {
+						console.error('got an error');
+						return;
+					}
 
-				if (response.address) {
-					this.investigationService.provideAddressData(response);
-					return;
-				}
+					if (response.address) {
+						this.investigationService.provideAddressData(response);
+						return;
+					}
 
-				if (response.outputId) {
-					this.investigationService.provideOutputData(response);
-					return;
-				}
+					if (response.outputId) {
+						this.investigationService.provideOutputData(response);
+						return;
+					}
 
-				if (response.transactionId) {
-					this.investigationService.provideNewTransactionNode(response);
-					return;
-				}
+					if (response.transactionId) {
+						this.investigationService.provideNewTransactionNode(response);
+						return;
+					}
 
-			});
+				});
 
-			this.investigationService.providePathNodeIds(null);
+				this.waitingOnPathFindingResponse = false;
+				this.investigationService.setGraphReady();
+		},
+
+		error => {
+			this.badPathFindForm = true;
+			let errorText = typeof(error.error) == 'string' ? error.error : error.statusText;
+			this.badPathFindMessage = "Something went wrong... Status : " + error.status + ", " + errorText;
 			this.waitingOnPathFindingResponse = false;
+		}
 
-		})
-
-
-		this.investigationService.activateInvestigation();
+		);
 
 	}
 
