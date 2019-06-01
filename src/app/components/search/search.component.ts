@@ -206,6 +206,7 @@ export class SearchComponent {
 
 				this.waitingOnPathFindingResponse = false;
 				this.investigationService.setGraphReady();
+				this.investigationService.providePathNodeIds(null);
 		},
 
 		error => {
