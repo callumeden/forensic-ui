@@ -154,18 +154,18 @@ export class SearchComponent {
 
 			if (nodeData.address) {
 				nodeIds.add(nodeData.address);
-				requests.push(this.bitcoinService.getAddress(nodeData.address));
+				// requests.push(this.bitcoinService.getAddress(nodeData.address));
 				return;
 			}
 			if (nodeData.outputId) {
 				nodeIds.add(nodeData.outputId);
-				requests.push(this.bitcoinService.getOutput(nodeData.outputId));
+				// requests.push(this.bitcoinService.getOutput(nodeData.outputId));
 				return;
 			}
 
 			if (nodeData.transactionId) {
 				nodeIds.add(nodeData.transactionId);
-				requests.push(this.bitcoinService.getTransaction(nodeData.transactionId));
+				// requests.push(this.bitcoinService.getTransaction(nodeData.transactionId));
 				return;
 			}
 
