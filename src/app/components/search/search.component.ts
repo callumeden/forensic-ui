@@ -151,10 +151,9 @@ export class SearchComponent {
 
 		intermediateNodes.forEach(nodeData => {
 
-
 			if (nodeData.address) {
 				nodeIds.add(nodeData.address);
-				// requests.push(this.bitcoinService.getAddress(nodeData.address));
+				requests.push(this.bitcoinService.getAddress(nodeData.address));
 				return;
 			}
 			if (nodeData.outputId) {
