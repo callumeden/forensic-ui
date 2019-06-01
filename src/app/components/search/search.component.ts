@@ -149,7 +149,10 @@ export class SearchComponent {
 		this.investigationService.highlightRelationships(relationships);
 		let nodeIds : Set<string> = new Set();
 
+		debugger;
+		
 		intermediateNodes.forEach(nodeData => {
+
 
 			if (nodeData.address) {
 				nodeIds.add(nodeData.address);
