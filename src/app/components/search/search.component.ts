@@ -168,7 +168,6 @@ export class SearchComponent {
 				return;
 			}
 
-			debugger;
 			console.error("IM HERE.....!", nodeData);
 
 		});
@@ -180,8 +179,6 @@ export class SearchComponent {
 			(allResponses: any[]) => {
 
 				allResponses.forEach((response: any) => {
-					debugger;
-
 					if (!response) {
 						console.error('got an error');
 						return;
@@ -202,7 +199,6 @@ export class SearchComponent {
 						return;
 					}
 
-					debugger;
 					console.error("IM HERE.....!", response);
 
 
