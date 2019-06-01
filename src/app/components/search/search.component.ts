@@ -177,6 +177,7 @@ export class SearchComponent {
 			(allResponses: any[]) => {
 
 				allResponses.forEach((response: any) => {
+					debugger;
 
 					if (!response) {
 						console.error('got an error');
@@ -205,6 +206,7 @@ export class SearchComponent {
 		},
 
 		error => {
+			console.error('something went wrong here', error);
 			this.badPathFindForm = true;
 			let errorText = typeof(error.error) == 'string' ? error.error : error.statusText;
 			this.badPathFindMessage = "Something went wrong... Status : " + error.status + ", " + errorText;
