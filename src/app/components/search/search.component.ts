@@ -158,13 +158,13 @@ export class SearchComponent {
 			}
 			if (nodeData.outputId) {
 				nodeIds.add(nodeData.outputId);
-				// requests.push(this.bitcoinService.getOutput(nodeData.outputId));
+				requests.push(this.bitcoinService.getOutput(nodeData.outputId));
 				return;
 			}
 
 			if (nodeData.transactionId) {
 				nodeIds.add(nodeData.transactionId);
-				// requests.push(this.bitcoinService.getTransaction(nodeData.transactionId));
+				requests.push(this.bitcoinService.getTransaction(nodeData.transactionId));
 				return;
 			}
 
