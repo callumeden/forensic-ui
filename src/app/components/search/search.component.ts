@@ -103,7 +103,6 @@ export class SearchComponent {
 	}	
 
 	onFindPath(form : NgForm) {
-		debugger;
 		if (!form.valid) {
 			return;
 		}
