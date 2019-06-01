@@ -149,8 +149,6 @@ export class SearchComponent {
 		this.investigationService.highlightRelationships(relationships);
 		let nodeIds : Set<string> = new Set();
 
-		debugger;
-		
 		intermediateNodes.forEach(nodeData => {
 
 
@@ -170,6 +168,9 @@ export class SearchComponent {
 				requests.push(this.bitcoinService.getTransaction(nodeData.transactionId));
 				return;
 			}
+
+			debugger;
+			console.error("IM HERE.....!", nodeData);
 
 		});
 
@@ -201,6 +202,10 @@ export class SearchComponent {
 						this.investigationService.provideNewTransactionNode(response);
 						return;
 					}
+
+					debugger;
+					console.error("IM HERE.....!", response);
+
 
 				});
 
