@@ -109,6 +109,7 @@ export class InvestigationService {
 	highlightRelationships(relationships: any[]) {
 		let rels = new Set();
 		relationships.forEach(relationship => {
+			debugger;
 			if (relationship.input && relationship.transaction) {
 				rels.add(relationship.input.outputId + '/' + relationship.transaction.transactionId)
 				return;
