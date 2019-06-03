@@ -108,20 +108,27 @@ export class InvestigationComponent implements OnInit {
     });
 
     const entitySubscription = this.investigationService.currentEntityData.subscribe(data => {
-
+      debugger;
       if (data) {
         this.inputClusteringEnabled = data.inputClustering;
         this.neighbourLimit = data.neighbourLimit;
         this.btcConversionCurrency = data.btcConversionCurrency;
-        
+
         let entityData : Entity= data.response;
 
         if (entityData.usesAddresses) {
           entityData.usesAddresses = this.truncateNeighbours(entityData.usesAddresses);
-          entityData.usesAddresses.forEach((address : Address) => this.handleNewAddressMessage(address));
+        }
+
+        if (this.inputClusteringEnabled) {
+          this.createEntitySuperNodeWithAddresses(entityData.usesAddresses, entityData);
+        } else {
+          if (entityData.usesAddresses) {
+            entityData.usesAddresses.forEach((address : Address) => this.handleNewAddressMessage(address));
+          }
+          this.createEntityNode(entityData);
         }
         
-        this.createEntityNode(entityData);
         this.finaliseUpdate();
       }
     });
@@ -286,6 +293,12 @@ export class InvestigationComponent implements OnInit {
     }
   }
 
+  private createEntitySuperNodeWithAddresses(addressData: Address[], entityData: Entity) {
+    let supernodeId = this.createSuperNodeOnly(addressData[0], addressData, [entityData.name]);
+
+    this.entityNodeMappings.set(entityData.name, supernodeId);
+
+  }
   private createEntitySuperNode(addressData: Address, entityData: Entity) {
     //address data and entity data are fully feteched
     //create the entity super node 

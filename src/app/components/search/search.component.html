@@ -18,20 +18,14 @@
             </mat-form-field>
           </td>
 
-          <td *ngIf="searchType == 'address'">
+          <td >
             <mat-form-field>
-            <input required [(ngModel)]="address" name="address" class="full-width" matInput #message maxlength="35" placeholder="Address">
-            <mat-hint align="start"><strong>Search for a particular Bitcoin Address</strong> </mat-hint>
+            <input required [(ngModel)]="address" name="address" class="full-width" matInput #message maxlength="35" placeholder="Address or Entity">
+            <mat-hint *ngIf="searchType == 'address'" align="start"><strong>Search for a particular Bitcoin Address</strong> </mat-hint>
+            <mat-hint *ngIf="searchType == 'entity'" align="start"><strong>Search by a entity name (e.g wallet/service)</strong> </mat-hint>
             </mat-form-field>
           </td>
 
-          <td *ngIf="searchType == 'entity'">
-            <mat-form-field>
-            <input required [(ngModel)]="entity" name="entity" class="full-width" matInput #message maxlength="35" placeholder="Entity Name">
-            <mat-hint align="start"><strong>Search by a entity name (e.g wallet/service)</strong> </mat-hint>
-            </mat-form-field>
-          </td>
-         
         </table>
 
 

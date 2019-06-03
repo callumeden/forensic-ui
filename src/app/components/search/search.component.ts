@@ -83,7 +83,7 @@ export class SearchComponent {
   	let searchSubscription;
 
   	searchSubscription = this.bitcoinService.searchForEntity(
-  		form.value.entity,
+  		form.value.address,
   		this.inputHeuristicEnabled, 
 			this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1,
 			dateFilters, 
