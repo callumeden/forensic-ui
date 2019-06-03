@@ -36,14 +36,12 @@ export class BitcoinService {
       atLeastOneFilter = true; 
     }
 
-
     if (this.nodeLimit > 0) {
       queryParams = queryParams + "&nodeLimit=" + this.nodeLimit;
-    } else {
-       queryParams = queryParams + "&nodeLimit=25";
-    }
+      atLeastOneFilter = true; 
+    } 
 
-    return queryParams;
+    return atLeastOneFilter? queryParams : "";
 
   }
 
