@@ -243,7 +243,7 @@ export class InvestigationService {
 		
 		observable.subscribe(entity => {
 			if (entity) {
-				this.entityData.next(entity);
+				this.entityData.next({'response': entity, 'inputClustering' : this.inputClusteringEnabled, 'neighbourLimit': this.neighbourLimit, 'btcConversionCurrency': this.btcConversionCurrency});
 			}
 		})
 
