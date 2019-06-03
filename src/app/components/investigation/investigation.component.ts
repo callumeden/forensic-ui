@@ -293,7 +293,8 @@ export class InvestigationComponent implements OnInit {
   }
 
   private createEntitySuperNodeWithAddresses(addressData: Address[], entityData: Entity) {
-    let supernodeId = this.createSuperNodeOnly(addressData[0], addressData, [entityData.name]);
+    let firstAddress = addressData == null ? null : addressData[0];
+    let supernodeId = this.createSuperNodeOnly(firstAddress, addressData, [entityData.name]);
 
     this.entityNodeMappings.set(entityData.name, supernodeId);
 
