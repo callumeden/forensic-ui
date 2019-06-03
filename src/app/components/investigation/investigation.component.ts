@@ -107,8 +107,14 @@ export class InvestigationComponent implements OnInit {
       }
     });
 
-    const entitySubscription = this.investigationService.currentEntityData.subscribe((entityData : Entity) => {
-      if (entityData) {
+    const entitySubscription = this.investigationService.currentEntityData.subscribe(data => {
+
+      if (data) {
+        this.inputClusteringEnabled = data.inputClustering;
+        this.neighbourLimit = data.neighbourLimit;
+        this.btcConversionCurrency = data.btcConversionCurrency;
+        
+        let entityData : Entity= data.response;
 
         if (entityData.usesAddresses) {
           entityData.usesAddresses = this.truncateNeighbours(entityData.usesAddresses);

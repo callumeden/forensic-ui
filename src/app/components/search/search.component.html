@@ -5,10 +5,35 @@
     </mat-card-title>
     <form #f="ngForm" (ngSubmit)="onAddressSearch(f)" layout-align="center center">
       <mat-card-content>
-        <mat-form-field>
-          <input required [(ngModel)]="address" name="address" class="full-width" matInput #message maxlength="35" placeholder="Address">
-          <mat-hint align="start"><strong>Search for a particular Bitcoin Address</strong> </mat-hint>
-        </mat-form-field>
+          
+
+         <table class="main-search-table">
+           <td class="search-type-selection">
+            <mat-form-field>
+              <mat-label>Search Type</mat-label>
+              <mat-select [(value)]="searchType">
+                <mat-option value="address">Bitcoin Address</mat-option>
+                <mat-option value="entity">Entity Name</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+
+          <td *ngIf="searchType == 'address'">
+            <mat-form-field>
+            <input required [(ngModel)]="address" name="address" class="full-width" matInput #message maxlength="35" placeholder="Address">
+            <mat-hint align="start"><strong>Search for a particular Bitcoin Address</strong> </mat-hint>
+            </mat-form-field>
+          </td>
+
+          <td *ngIf="searchType == 'entity'">
+            <mat-form-field>
+            <input required [(ngModel)]="entity" name="entity" class="full-width" matInput #message maxlength="35" placeholder="Entity Name">
+            <mat-hint align="start"><strong>Search by a entity name (e.g wallet/service)</strong> </mat-hint>
+            </mat-form-field>
+          </td>
+         
+        </table>
+
 
         <mat-accordion>
           <h5 class="title">Additional search options</h5>

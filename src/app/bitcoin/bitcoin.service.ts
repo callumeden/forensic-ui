@@ -57,6 +57,14 @@ export class BitcoinService {
     return this.http.get<Address>(this.serviceDomain + "/bitcoin/address/" + address + this.buildQueryParams()); 
   }
 
+  searchForEntity(entityName:string, inputClusteringEnabled: boolean, nodeLimit : number, dateFilters?, priceFilters?) {
+    this.dateFilters = dateFilters;
+    this.priceFilters = priceFilters;
+    this.inputClusteringEnabled = inputClusteringEnabled;
+    this.nodeLimit = nodeLimit;
+    return this.http.get<Entity>(this.serviceDomain + "/bitcoin/entity/" + entityName + this.buildQueryParams())
+  }
+
   findPath(startAddress:string, endAddress:string) {
     return this.http.get(this.serviceDomain + "/bitcoin/shortestPath/" + startAddress + "/" + endAddress);
   }

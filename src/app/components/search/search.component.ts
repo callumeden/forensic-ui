@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { BitcoinService } from '../../bitcoin/bitcoin.service'
 import { InvestigationService } from '../investigation/investigation.service'
 import { Router } from '@angular/router';
-import { Address } from '../../bitcoin/model';
+import { Address, Entity } from '../../bitcoin/model';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -43,6 +43,81 @@ export class SearchComponent {
 
   priceFilterCurrencySelected='btc';
 
+  searchType = 'address';
+
+  searchForAddress(form, dateFilters, priceFilters) {
+  	let searchSubscription;
+
+  	searchSubscription = this.bitcoinService.searchForAddress(
+				form.value.address, 
+				this.inputHeuristicEnabled, 
+				this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1,
+				dateFilters, 
+				priceFilters);
+
+		searchSubscription.subscribe(
+			(response : Address) => {
+				this.investigationService.provideAddressSearchResponse(
+					response, 
+					this.inputHeuristicEnabled, 
+					this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1,
+					this.btcConversionCurrency, 
+					dateFilters
+				);
+
+				this.router.navigateByUrl('/investigation');
+				this.waitingOnResponse = false;
+			},
+
+			error => {
+				this.invalidAddress = true;
+				let errorText = typeof(error.error) == 'string' ? error.error : error.statusText;
+				this.errorMessage = "Something went wrong... Status : " + error.status + ", " + errorText;
+				console.error('address search got error', error);
+				this.waitingOnResponse = false;
+			}
+		)
+  }
+
+  searchForEntity(form, dateFilters, priceFilters) {
+  	let searchSubscription;
+
+  	searchSubscription = this.bitcoinService.searchForEntity(
+  		form.value.entity,
+  		this.inputHeuristicEnabled, 
+			this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1,
+			dateFilters, 
+			priceFilters);
+
+  	searchSubscription.subscribe(
+
+  		(response : Entity) => {
+	  		if (!response) {
+	  			this.invalidAddress = true;
+	  			this.errorMessage = "Entity not found";
+	  			this.waitingOnResponse = false;
+	  			return;
+	  		}
+
+	  		this.investigationService.provideEntitySearchResponse(
+	  			response,
+	  			this.inputHeuristicEnabled, 
+					this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1,
+					this.btcConversionCurrency, 
+					dateFilters)
+
+	  		this.router.navigateByUrl('/investigation');
+				this.waitingOnResponse = false;
+  		},
+  		error => {
+				this.invalidAddress = true;
+				let errorText = typeof(error.error) == 'string' ? error.error : error.statusText;
+				this.errorMessage = "Something went wrong... Status : " + error.status + ", " + errorText;
+				console.error('address search got error', error);
+				this.waitingOnResponse = false;
+			})
+  }
+
 	onAddressSearch(form : NgForm) {
 		if (form.valid) {
 
@@ -65,38 +140,18 @@ export class SearchComponent {
 				priceFilters = {'start': form.value.priceFilterFrom, 'end': form.value.priceFilterTo, 'unit': this.priceFilterCurrencySelected};
 			}
 
-			searchSubscription = this.bitcoinService.searchForAddress(
-				form.value.address, 
-				this.inputHeuristicEnabled, 
-				this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1,
-				dateFilters, 
-				priceFilters);
 
-			searchSubscription.subscribe(
-				(response : Address) => {
-					this.investigationService.provideAddressSearchResponse(
-						response, 
-						this.inputHeuristicEnabled, 
-						this.neighbourTruncationEnabled? this.truncateNeighboursCount : -1,
-						this.btcConversionCurrency, 
-						dateFilters
-					);
+			if (this.searchType=='address') {
+				this.searchForAddress(form, dateFilters, priceFilters);
+				return;
+			}
 
-					this.router.navigateByUrl('/investigation');
-					this.waitingOnResponse = false;
-				},
-
-				error => {
-					this.invalidAddress = true;
-					let errorText = typeof(error.error) == 'string' ? error.error : error.statusText;
-					this.errorMessage = "Something went wrong... Status : " + error.status + ", " + errorText;
-					console.error('address search got error', error);
-					this.waitingOnResponse = false;
-				}
-
-			)
-
-			return;
+			if (this.searchType=='entity') {
+				this.searchForEntity(form, dateFilters, priceFilters);
+				return;
+			}
+			
+			console.error('!!!!!!!!!!!!!! something went terribly wrong');
 		}
 		console.error('bad form input')
 		

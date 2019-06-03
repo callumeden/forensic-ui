@@ -62,3 +62,11 @@ margin-left: 5px;
 .filterDateTime .timeColumn {
 	width: 70%;
 }
+
+table.main-search-table {
+	width: 100%;
+}
+
+table .search-type-selection {
+	width: 30%;
+}

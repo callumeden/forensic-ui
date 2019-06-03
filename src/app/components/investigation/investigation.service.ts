@@ -68,6 +68,16 @@ export class InvestigationService {
 		this.setGraphReady();
 	} 
 
+	provideEntitySearchResponse(response: Entity, inputClustering : boolean, neighbourLimit: number, btcConversionCurrency : string, dateFilters?) {
+		this.investigationActive = true;
+		this.neighbourLimit = neighbourLimit;
+		this.inputClusteringEnabled = inputClustering;
+		this.btcConversionCurrency = btcConversionCurrency;
+		this.dateFilters = dateFilters;
+		this.entityData.next({'response': response, 'inputClustering': inputClustering, 'neighbourLimit': neighbourLimit, 'btcConversionCurrency': btcConversionCurrency})
+		this.setGraphReady();
+	}
+
 	activateInvestigation() {
 		this.investigationActive = true;
 	}
