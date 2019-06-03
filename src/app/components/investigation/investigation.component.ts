@@ -108,7 +108,6 @@ export class InvestigationComponent implements OnInit {
     });
 
     const entitySubscription = this.investigationService.currentEntityData.subscribe(data => {
-      debugger;
       if (data) {
         this.inputClusteringEnabled = data.inputClustering;
         this.neighbourLimit = data.neighbourLimit;
