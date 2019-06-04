@@ -336,11 +336,19 @@ export class InvestigationComponent implements OnInit {
 
     let supernodeId = uuid.v4();
     let newSuperNode = new SuperNode(supernodeId, superNodeData);
-    this.clusteredAddressStore.set(addressData.address, supernodeId);
+    
+    if (addressData) {
+      this.clusteredAddressStore.set(addressData.address, supernodeId);
+    }
+
     this.nodes.push(newSuperNode);
     this.nodeLookup.set(supernodeId, newSuperNode);
     this.investigationService.registerId(supernodeId);
 
+    if (!superNodeData.addresses) {
+      return supernodeId;
+    }
+    
     superNodeData.addresses.forEach((address: Address) => {
       this.clusteredAddressStore.set(address.address, supernodeId);
       if (address.outputs) {
